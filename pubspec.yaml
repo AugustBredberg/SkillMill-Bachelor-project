@@ -20,7 +20,8 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.7.0 <3.0.0"
 
-dependencies:
+dependencies: 
+  zoomer: "^0.0.3"
   sticky_headers: "^0.1.8"
   zoom_widget: ^0.1.3
   flutter:
