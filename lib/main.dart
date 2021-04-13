@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'journalView.dart';
 
+import 'loginView.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,9 +28,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: new JournalView("August"),
-      
-      //home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
@@ -75,13 +73,18 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
+    return LoginView();
+
+    /*Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
+      body: LoginView(),
+
+      /*
+       Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -101,6 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            
             Text(
               'You have pushed the button this many times:',
             ),
@@ -111,11 +115,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      */
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    );*/
   }
 }
