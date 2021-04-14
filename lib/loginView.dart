@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'forgotPasswordView.dart';
+import 'newUserView.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -85,7 +86,12 @@ class _LoginViewState extends State<LoginView> {
               alignment: Alignment.bottomCenter,
               child: TextButton(
                 child: Text('New User? Create Account'),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NewUserView()),
+                  );
+                },
               ),
             ),
           ],

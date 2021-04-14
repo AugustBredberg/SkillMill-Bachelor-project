@@ -27,13 +27,23 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                   child: Image.asset('images/don_quixote.jpg')),
             ),
           ),
-          Text(
-            "Forgot Password?",
-            style: TextStyle(color: Colors.black, fontSize: 25),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Text(
+              "Forgot Password?",
+              style: TextStyle(color: Colors.black, fontSize: 25),
+              textAlign: TextAlign.center,
+            ),
           ),
-          Text(
-            "We just need your registered email address to send your password reset",
-            style: TextStyle(color: Colors.grey, fontSize: 17),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            child: Center(
+              child: Text(
+                "We just need your registered email address to send your password reset",
+                style: TextStyle(color: Colors.grey, fontSize: 17),
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
           Padding(
             //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
