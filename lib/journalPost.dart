@@ -1,47 +1,50 @@
 
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/objects/zoomableObject.dart';
-import 'objects/movableObject.dart';
-import 'objects/zoomableObject.dart';
-
+import 'package:flutter/cupertino.dart';
+import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 
 class JournalPost extends StatefulWidget{
 
-  //JournalPost();
-
+  
   @override
   _JournalPost createState() => _JournalPost();
 }
 
-
+class ChosenEmoji {
+  static String chosenEmoji;
+  static List<Widget> movableEmojis = [];
+}
 
 class _JournalPost extends State<JournalPost> {
+  String title;
+  String emoji;
+  List<Widget> emojiList = [];
 
-String title;
-String emoji;
-List<Widget> movableItems = [];
+  //final EmojiKeyboardClass emojiKeyboard;
 
-@override
+  //_JournalPost(this.emojiKeyboard);
+
+
+  @override
+  void initState() {
+    ChosenEmoji();
+    ChosenEmoji.movableEmojis = [];
+    emojiList = ChosenEmoji.movableEmojis; 
+    super.initState();
+  }
+
+  void callback() {
+    setState(() {
+      this.emojiList = ChosenEmoji.movableEmojis;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           
           
           //mainAxisAlignment: MainAxisAlignment.,
@@ -62,22 +65,22 @@ List<Widget> movableItems = [];
             ),
             Container(
               margin: EdgeInsets.only(left:8, right:8),
-              height: 400,
+              height: MediaQuery.of(context).size.height * 0.30,
               child: Card(
                 elevation: 10,
                 child: Stack(
-                  alignment: Alignment.topCenter,
+                  alignment: Alignment.center,
                   children: 
-                    movableItems,
+                    ChosenEmoji.movableEmojis,
                   
                   
                   
                 ),
               ),
             ),
-            Divider(
-              color: Colors.black,
-            ),
+            
+            EmojiKeyboardClass(callback),
+            /*
             ElevatedButton(
               onPressed: () {  
                 setState(() {
@@ -87,6 +90,8 @@ List<Widget> movableItems = [];
               },
               child: Text("Add Emoji", style: TextStyle(fontSize: 30),),
             ),
+
+            */
           ],
         ),
       ),

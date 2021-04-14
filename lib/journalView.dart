@@ -33,7 +33,93 @@ class _JournalView extends State<JournalView> {
         // the App.build method, and use it to set our appbar title.
         title: Center(child: Text(widget.name)),
       ),
-      body: new JournalFeed(),
+      body: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+
+            JournalFeed(),
+
+
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ////////////////////////////////////////////////////////////////////////////7
+                  /// FORGET BUTTON 
+                  ////////////////////////////////////////////////////////////////////////////7
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                       shape: CircleBorder(), 
+                       primary: Colors.red[300]
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 20),
+                      width:  MediaQuery.of(context).size.width * 0.30,
+                      height: MediaQuery.of(context).size.width * 0.30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: Text(
+                        'Forget',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    onPressed: () {},
+                  ),
+                  ////////////////////////////////////////////////////////////////////////////7
+                  /// CREATE BUTTON 
+                  ////////////////////////////////////////////////////////////////////////////7
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                       shape: CircleBorder(), 
+                       primary: Colors.red
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 20),
+                      width:  MediaQuery.of(context).size.width * 0.35,
+                      height: MediaQuery.of(context).size.width * 0.35,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: Text(
+                        'Create',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => new JournalPost()),
+                      );
+                    },
+                  ),
+                  ////////////////////////////////////////////////////////////////////////////7
+                  /// ARCHIVE BUTTON 
+                  ////////////////////////////////////////////////////////////////////////////7
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                       shape: CircleBorder(), 
+                       primary: Colors.red[300]                    ),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 20),
+                      width:  MediaQuery.of(context).size.width * 0.30,
+                      height: MediaQuery.of(context).size.width * 0.30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(shape: BoxShape.circle),
+                      child: Text(
+                        'Archive',
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        
+      ),
           
         
       

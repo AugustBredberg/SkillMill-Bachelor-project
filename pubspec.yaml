@@ -21,9 +21,8 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
-  zoomer: "^0.0.3"
-  sticky_headers: "^0.1.8"
-  zoom_widget: ^0.1.3
+  flutter_emoji_keyboard: ^0.1.3
+  flutter_multi_carousel: ^1.0.0
   flutter:
     sdk: flutter
 
@@ -50,6 +49,11 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/log.jpeg
+    - images/jack.png
+    - images/back.png
+    - images/joker.jpg
+    - images/king.jpg
+    - images/queen.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

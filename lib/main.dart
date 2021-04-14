@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'journalView.dart';
-
+import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 
 void main() {
   runApp(MyApp());
@@ -79,9 +79,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("Flutter Emoji Keyboard"),
       ),
-      body: Center(
+
+
+      //body: 
+      
+      body: 
+      Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
@@ -111,11 +116,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+
+      
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

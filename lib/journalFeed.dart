@@ -1,7 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'dart:async';
-//import 'journalFeed.dart';
+import 'objects/cardCarousel.dart';
+
+import 'package:flutter_multi_carousel/carousel.dart';
+
+
+/// THIS IS THE CLASS FOS CREATING THE CAROUSEL WITH FIVE LATEST CARDS. 
 
 class JournalFeed extends StatefulWidget {
 
@@ -11,47 +16,22 @@ class JournalFeed extends StatefulWidget {
 
 
 class _JournalFeed extends State<JournalFeed>{
-  Future<List<dynamic>> _activities;
+  List imageAdresses = [
+    "assets/images/log.jpeg",
+    "assets/images/jack.png",
+    "assets/images/back.png",
+    "assets/images/joker.jpg",
+    "assets/images/king.jpg",
+    "assets/images/queen.png"
+  ];
+
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
-            future: null,
-            builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-              if (false) {
-                return Center(child: CircularProgressIndicator());
-              }
-              print("BAABBABABBABA");
-              return Container(
-                margin: EdgeInsets.all(5),
-                child: GridView.builder(
-                  itemCount: 10,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-
-                  ),
-                  itemBuilder: (context, index)  {
-                    return Card(
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image.asset('images/log.jpeg',
-                        fit: BoxFit.fill,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      elevation: 5,
-                      //margin: EdgeInsets.all(),
-                    );
-
-                  },
-                ),
-              );
-                  
-            
-            },
-    );
+    return Container(
+        //padding: EdgeInsets.only(left:50),
+        child: CardCarousel(imageAdresses)
+      );
+    
   }
 }
