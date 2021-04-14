@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  http: "^0.13.1"
   matrix_gesture_detector: ^0.1.0
   flutter_emoji_keyboard: ^0.1.3
   flutter_multi_carousel: ^1.0.0
@@ -55,6 +56,7 @@ flutter:
     - images/joker.jpg
     - images/king.jpg
     - images/queen.png
+    - images/don_quixote.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

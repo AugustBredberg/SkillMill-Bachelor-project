@@ -19,8 +19,8 @@ class EmojiKeyboardClass extends StatelessWidget {
     ChosenEmoji.chosenEmoji = emoji.text; 
     ChosenEmoji.movableEmojis.add(
       MoveableStackItem(
-      Text('${ChosenEmoji.chosenEmoji}', style: TextStyle(fontSize: 200),))
-      
+        Text('${ChosenEmoji.chosenEmoji}', style: TextStyle(fontSize: 200),)
+      )
     );
     print(ChosenEmoji.chosenEmoji);
     //ChosenEmoji();
