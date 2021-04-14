@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 import 'forgotPasswordView.dart';
 import 'newUserView.dart';
+import 'dart:convert';
 
 class LoginView extends StatefulWidget {
   @override
@@ -9,6 +10,24 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  void attemptLogin(String email, String password) async {
+    Map data = {"email": email, "password": password};
+
+    String body = json.encode(data);
+
+    Uri url = Uri.parse('ptsv2.com/t/y2l7f-1618404472/post');
+
+    http.Response response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    print(response);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +55,7 @@ class _LoginViewState extends State<LoginView> {
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Email',
@@ -47,6 +67,7 @@ class _LoginViewState extends State<LoginView> {
                   left: 15.0, right: 15.0, top: 0, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -72,7 +93,9 @@ class _LoginViewState extends State<LoginView> {
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  attemptLogin(emailController.text, passwordController.text);
+                },
                 child: Text(
                   'Login',
                   style: TextStyle(color: Colors.white, fontSize: 25),
