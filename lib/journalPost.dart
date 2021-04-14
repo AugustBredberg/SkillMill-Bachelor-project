@@ -36,9 +36,12 @@ class _JournalPost extends State<JournalPost> {
   }
 
   void callback() {
-    setState(() {
+    //setState(() {
       this.emojiList = ChosenEmoji.movableEmojis;
-    });
+    //});
+    setState(() {
+          
+        });
   }
 
   @override
@@ -77,6 +80,8 @@ class _JournalPost extends State<JournalPost> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+
+                      this.emojiList.length != 0 ?
                       IconButton(
                         icon: Icon(Icons.undo, size:30),
                         onPressed: (){
@@ -85,7 +90,9 @@ class _JournalPost extends State<JournalPost> {
                             this.emojiList = ChosenEmoji.movableEmojis;
                           });
                         },
-                      ),
+                      )
+                      : Text(''),
+                      
 
 
                     ]

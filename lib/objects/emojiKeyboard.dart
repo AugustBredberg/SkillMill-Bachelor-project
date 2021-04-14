@@ -19,21 +19,24 @@ class EmojiKeyboardClass extends StatelessWidget {
     ChosenEmoji.chosenEmoji = emoji.text; 
     ChosenEmoji.movableEmojis.add(
       MoveableStackItem(
-      Text('${ChosenEmoji.chosenEmoji}', style: TextStyle(fontSize: 50),))
+      Text('${ChosenEmoji.chosenEmoji}', style: TextStyle(fontSize: 200),))
       
     );
     print(ChosenEmoji.chosenEmoji);
-    //setState(() {});
+    //ChosenEmoji();
     callback();
   }
 
-  void clearText() => controller.text = '';
+  //void clearText() => controller.text = '';
 
 
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+
+    
+
+    return  Container(
       color: Colors.black38,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,8 +63,9 @@ class EmojiKeyboardClass extends StatelessWidget {
             onPressed: clearText,
           ),
           */
+          
           EmojiKeyboard(
-            floatingHeader: true,
+            floatingHeader: false,
             height: MediaQuery.of(context).size.height * 0.25,
             onEmojiSelected: onEmojiSelected,
           ),

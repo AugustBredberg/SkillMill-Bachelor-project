@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:skillmill_demo/objects/pinchableObject.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
-
+import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
 class MoveableStackItem extends StatefulWidget { 
   Widget givenWidget;
@@ -34,7 +34,24 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
   }
   @override
   Widget build(BuildContext context) {
-    return Positioned(
+    final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
+    return MatrixGestureDetector(
+        onMatrixUpdate: (m, tm, sm, rm) {
+          notifier.value = m;
+        },
+        child: AnimatedBuilder(
+          animation: notifier,
+          builder: (ctx, child) {
+            return Transform(
+              transform: notifier.value,
+              child: widget.givenWidget
+            
+            );
+          },
+        )
+    
+    /*
+    Positioned(
       top: yPosition,
       left: xPosition,
       child: GestureDetector(
@@ -47,7 +64,21 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
           });
         },
         
-        /*
+        
+        child: Transform(
+                //alignment: FractionalOffset.center,
+                transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
+                child: widget.givenWidget,
+           
+        ),
+      
+        
+      ),
+
+      */
+      ////////////////////////////////////////////////////////////////////////////////7
+
+/*
         onScaleStart: (ScaleStartDetails details) {
           print(details);
           
@@ -86,68 +117,6 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
         },
         */
 
-        child: Transform(
-                //alignment: FractionalOffset.center,
-                transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
-                child: widget.givenWidget,
-           
-        ),
-      
-        
-      ),
-      
     );
   }
 }
-
-/*
-class MovableObject extends StatefulWidget {
-  @override
-  _MovableObject createState() => _MovableObject();
-}
-
-class _MovableObject extends State<MovableObject> {
-  Offset offset = Offset.zero;
-  double angle = 0.0;
-  Offset newPosition = Offset.zero;
-  double newRotation = 0.0;
-  double newScale = 0.0;
-  Offset touchPositionFromCenter = Offset.zero;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 500,
-      height:500,
-      child: Positioned(
-            left: offset.dx,
-            top: offset.dy,
-            
-              
-                child:  GestureDetector(
-                    onPanUpdate: (details) {
-                    setState(() {
-                        offset = Offset(
-                            offset.dx + details.delta.dx, offset.dy + details.delta.dy);
-                      });
-                    },
-                    child:
-                    InteractiveViewer(
-                  minScale: 0.1,
-                  maxScale: 4.0,
-                  boundaryMargin: const EdgeInsets.all(double.infinity),
-                  constrained: false,
-                
-                 
-                  child: Text("Emoji"),//PinchableObject()),
-                  ),
-                ),
-              
-            
-        ),
-    );
-    
-  }
-}
-
-*/
