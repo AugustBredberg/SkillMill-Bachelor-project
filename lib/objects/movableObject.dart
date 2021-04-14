@@ -90,22 +90,10 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
                 //alignment: FractionalOffset.center,
                 transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
                 child: widget.givenWidget,
-                
-                //Container(height: 100, width: 100, color: Colors.orange,)
-                
-                //Icon(Icons.access_alarms, size: 100),
-                //Text("test"),
-           
            
         ),
       
         
-        
-        /*
-        Center(
-          child:  Text("🤔", style: TextStyle(fontSize: 30),),//Container(decoration: BoxDecoration(color: Colors.green),height: 150,width: 150),
-          */
-    
       ),
       
     );

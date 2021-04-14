@@ -54,11 +54,15 @@ class EmojiKeyboardClass extends StatelessWidget {
             ),
           ),
           */
+          /*
           FloatingActionButton(
             child: const Icon(Icons.clear),
             onPressed: clearText,
           ),
+          */
           EmojiKeyboard(
+            floatingHeader: true,
+            height: MediaQuery.of(context).size.height * 0.25,
             onEmojiSelected: onEmojiSelected,
           ),
         ],

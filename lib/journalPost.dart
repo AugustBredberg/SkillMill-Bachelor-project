@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/objects/zoomableObject.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 
@@ -20,6 +19,7 @@ class _JournalPost extends State<JournalPost> {
   String title;
   String emoji;
   List<Widget> emojiList = [];
+  bool isSuccessful;
 
   //final EmojiKeyboardClass emojiKeyboard;
 
@@ -31,6 +31,7 @@ class _JournalPost extends State<JournalPost> {
     ChosenEmoji();
     ChosenEmoji.movableEmojis = [];
     emojiList = ChosenEmoji.movableEmojis; 
+    isSuccessful = false;
     super.initState();
   }
 
@@ -47,26 +48,57 @@ class _JournalPost extends State<JournalPost> {
         child: Column(
           
           
-          //mainAxisAlignment: MainAxisAlignment.,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
         
           children: [
-            
-            Container(
-              margin: EdgeInsets.only(top:25, left:5, right:5, bottom: 0),
-              height: MediaQuery.of(context).size.width * 0.20,      
-              child: Center(
-                child: Column(
-                  children: [
-                    Text("Situation context", style: TextStyle(fontSize: 35)),
-                    Text("Use symbols to describe the context of the situation", style: TextStyle(fontSize: 15)),
-                  ],
+          //// width:  20 + 8
+          //// height: 10 + 8 + ish50 + 25 = 75 + 18 = 93 %
+                Container(
+                  margin: EdgeInsets.only(top:25, left:5, right:5, bottom: 0),
+                  height: MediaQuery.of(context).size.height * 0.10,      
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text("Situation context", style: TextStyle(fontSize: 35)),
+                        Text("Use symbols to describe the context of the situation", style: TextStyle(fontSize: 15)),
+                         
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+
+
+                ///////////////////////////////////////////
+                /// Container for buttons in CREATE POST view.
+                ///////////////////////////////////////////
+                Container(
+                  height: MediaQuery.of(context).size.width * 0.08,
+                  //color: Colors.amber,    
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.undo, size:30),
+                        onPressed: (){
+                          setState(() {
+                            ChosenEmoji.movableEmojis.removeLast();
+                            this.emojiList = ChosenEmoji.movableEmojis;
+                          });
+                        },
+                      ),
+
+
+                    ]
+                  ),
+           
             ),
+
             Container(
               margin: EdgeInsets.only(left:8, right:8),
-              height: MediaQuery.of(context).size.height * 0.30,
+              height: MediaQuery.of(context).size.width * 0.95,
+              width: MediaQuery.of(context).size.width * 0.95,
               child: Card(
+                margin: EdgeInsets.all(5),
                 elevation: 10,
                 child: Stack(
                   alignment: Alignment.center,
@@ -76,8 +108,12 @@ class _JournalPost extends State<JournalPost> {
                   
                   
                 ),
+                
               ),
             ),
+             
+                 
+           
             
             EmojiKeyboardClass(callback),
             /*
