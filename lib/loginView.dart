@@ -13,18 +13,19 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  void attemptLogin(String email, String password) async {
+  Future<bool> attemptLogin(String email, String password) async {
     Map data = {"email": email, "password": password};
 
     http.Response response = await http.post(
       Uri.parse('http://ptsv2.com/t/5yk6y-1618407005/post'),
       body: json.encode(data),
     );
-
-    if (response.statusCode == 200) {
-      print(response.body);
-    }
-    else throw
+    return (response.statusCode == 200);
+    //if (response.statusCode == 200) {
+    // print(response.body);
+    // return true;
+    //} else
+    //  return false;
   }
 
   @override

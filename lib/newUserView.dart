@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/loginView.dart';
 
 class NewUserView extends StatefulWidget {
@@ -7,6 +9,21 @@ class NewUserView extends StatefulWidget {
 }
 
 class _NewUserViewState extends State<NewUserView> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  Future<bool> attemptRegisterAccount(
+      String name, String email, String password) async {
+    Map data = {"name": name, "email": email, "password": password};
+
+    http.Response response = await http.post(
+      Uri.parse('http://ptsv2.com/t/5yk6y-1618407005/post'),
+      body: json.encode(data),
+    );
+    return (response.statusCode == 200);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +46,7 @@ class _NewUserViewState extends State<NewUserView> {
             padding: EdgeInsets.only(
                 left: 15.0, right: 15.0, top: 15.0, bottom: 7.5),
             child: TextField(
+              controller: nameController,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Full Name',
@@ -40,6 +58,7 @@ class _NewUserViewState extends State<NewUserView> {
             padding:
                 EdgeInsets.only(left: 15.0, right: 15.0, top: 7.5, bottom: 7.5),
             child: TextField(
+              controller: emailController,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Email',
@@ -51,6 +70,7 @@ class _NewUserViewState extends State<NewUserView> {
                 left: 15.0, right: 15.0, top: 7.5, bottom: 15.0),
             //padding: EdgeInsets.symmetric(horizontal: 15),
             child: TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -64,7 +84,10 @@ class _NewUserViewState extends State<NewUserView> {
             decoration: BoxDecoration(
                 color: Colors.blue, borderRadius: BorderRadius.circular(20)),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                attemptRegisterAccount(nameController.text,
+                    emailController.text, passwordController.text);
+              },
               child: Text(
                 'Register New User',
                 style: TextStyle(color: Colors.white, fontSize: 25),
