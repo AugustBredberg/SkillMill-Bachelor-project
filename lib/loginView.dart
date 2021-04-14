@@ -16,16 +16,15 @@ class _LoginViewState extends State<LoginView> {
   void attemptLogin(String email, String password) async {
     Map data = {"email": email, "password": password};
 
-    String body = json.encode(data);
-
-    Uri url = Uri.parse('ptsv2.com/t/y2l7f-1618404472/post');
-
     http.Response response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: body,
+      Uri.parse('http://ptsv2.com/t/5yk6y-1618407005/post'),
+      body: json.encode(data),
     );
-    print(response);
+
+    if (response.statusCode == 200) {
+      print(response.body);
+    }
+    else throw
   }
 
   @override
