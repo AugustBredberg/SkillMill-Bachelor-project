@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:skillmill_demo/journalView.dart';
+//import 'package:http/http.dart' as http;
 import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
+import 'journalView.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  /*
   Future<bool> attemptLogin(String email, String password) async {
     Map data = {"email": email, "password": password};
 
@@ -26,7 +28,7 @@ class _LoginViewState extends State<LoginView> {
     // return true;
     //} else
     //  return false;
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,11 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                  attemptLogin(emailController.text, passwordController.text);
+                   Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JournalView('Skillmill')),
+                );
+                  //attemptLogin(emailController.text, passwordController.text);
                 },
                 child: Text(
                   'Login',

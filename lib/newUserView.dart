@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/loginView.dart';
 
 class NewUserView extends StatefulWidget {
@@ -12,7 +12,7 @@ class _NewUserViewState extends State<NewUserView> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  /*
   Future<bool> attemptRegisterAccount(
       String name, String email, String password) async {
     Map data = {"name": name, "email": email, "password": password};
@@ -23,7 +23,7 @@ class _NewUserViewState extends State<NewUserView> {
     );
     return (response.statusCode == 200);
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,8 +85,8 @@ class _NewUserViewState extends State<NewUserView> {
                 color: Colors.blue, borderRadius: BorderRadius.circular(20)),
             child: ElevatedButton(
               onPressed: () {
-                attemptRegisterAccount(nameController.text,
-                    emailController.text, passwordController.text);
+                //attemptRegisterAccount(nameController.text,
+                    //emailController.text, passwordController.text);
               },
               child: Text(
                 'Register New User',

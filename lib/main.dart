@@ -82,19 +82,16 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text("Flutter Emoji Keyboard"),
       ),
-<<<<<<< HEAD
 
 
       //body: 
       
       body: 
       Center(
-=======
       body: LoginView(),
 
       /*
        Center(
->>>>>>> 25d99b5f372d64d08049a3c56b2abb3f638906ff
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
