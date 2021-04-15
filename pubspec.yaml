@@ -26,7 +26,7 @@ dependencies:
   flutter_multi_carousel: ^1.0.0
   flutter:
     sdk: flutter
-
+  http: "^0.13.1"
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -55,6 +55,7 @@ flutter:
     - images/joker.jpg
     - images/king.jpg
     - images/queen.png
+    - images/don_quixote.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
