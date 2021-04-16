@@ -6,6 +6,25 @@ import 'package:skillmill_demo/journalPost.dart';
 
 import 'package:skillmill_demo/objects/movableObject.dart';
 
+class EmojiMetadata{
+  String emoji;
+  List<double> matrixArguments;
+  
+  
+  
+  
+  List<double> column0;
+  List<double> column1;
+  List<double> column2;
+  List<double> column3;
+
+  EmojiMetadata(String emoji, List<double> args){
+    this.emoji = emoji;
+    this.matrixArguments = args;
+  }
+}
+
+
 
 class EmojiKeyboardClass extends StatelessWidget {
   final Function callback;
@@ -16,14 +35,19 @@ class EmojiKeyboardClass extends StatelessWidget {
 
   void onEmojiSelected(Emoji emoji) {
     controller.text += emoji.text;
-    ChosenEmoji.chosenEmoji = emoji.text; 
-    ChosenEmoji.movableEmojis.add(
+    //ChosenEmoji.chosenEmoji = emoji.text; 
+    EmojisOnStack.movableEmojis.add(
       MoveableStackItem(
-        Text('${ChosenEmoji.chosenEmoji}', style: TextStyle(fontSize: 200),)
+        
+        EmojiMetadata(emoji.text,
+        [0.6463089079186324, 0.13423912881164965, 0.0, 0.0,
+        -0.13423912881164965,0.6463089079186324, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        58.29945312195869, 11.104368977904983, 0.0, 1.0]
+        )
       )
     );
-    print(ChosenEmoji.chosenEmoji);
-    //ChosenEmoji();
+    print(emoji.text);
     callback();
   }
 

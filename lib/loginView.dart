@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
+import 'journalView.dart';
+import 'pageViewHandler.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -21,7 +24,7 @@ class _LoginViewState extends State<LoginView> {
       body: json.encode(data),
     );
     return (response.statusCode == 200);
-  
+      
 
 
     //if (response.statusCode == 200) {
@@ -97,7 +100,14 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                  attemptLogin(emailController.text, passwordController.text);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        //builder: (context) => new JournalView("August" ))
+                        builder: (context) => PageViewClass())
+                  );
+                  ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
+                  //attemptLogin(emailController.text, passwordController.text);
                 },
                 child: Text(
                   'Login',

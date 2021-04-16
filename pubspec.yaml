@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  flex_color_picker: ^2.0.1
   http: "^0.13.1"
   matrix_gesture_detector: ^0.1.0
   flutter_emoji_keyboard: ^0.1.3

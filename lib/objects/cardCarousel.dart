@@ -38,8 +38,8 @@ class _CardCarousel extends State<CardCarousel>{
   Widget build(BuildContext context) {
     return Center(
         child: Carousel(
-          height: MediaQuery.of(context).size.height * 0.40,
-          width: MediaQuery.of(context).size.width * 0.40,
+          height: MediaQuery.of(context).size.height * 0.50,
+          width: MediaQuery.of(context).size.width * 0.50,
           initialPage: 0,
           showArrow: false,
           showIndicator: false,

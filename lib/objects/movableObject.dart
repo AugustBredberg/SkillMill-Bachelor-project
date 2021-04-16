@@ -6,12 +6,27 @@ import 'package:skillmill_demo/journalPost.dart';
 import 'package:skillmill_demo/objects/pinchableObject.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
+import 'package:skillmill_demo/objects/emojiKeyboard.dart';
+
+
+import 'dart:convert';
+//import 'dart:io';
+//import 'dart:typed_data';
+//
+
+
 
 class MoveableStackItem extends StatefulWidget { 
+  EmojiMetadata _emojiMetadata;
   Widget givenWidget;
+  
 
-  MoveableStackItem(Widget given) {
-    givenWidget = given;
+
+  MoveableStackItem(EmojiMetadata given) {
+    _emojiMetadata = given;
+    givenWidget = FittedBox(
+                fit: BoxFit.contain,
+                child: Text(given.emoji,textScaleFactor:2, style: TextStyle(fontSize: 150)));
   }
   
   @override State<StatefulWidget> createState() { 
@@ -20,103 +35,89 @@ class MoveableStackItem extends StatefulWidget {
 
 }
 class _MoveableStackItemState extends State<MoveableStackItem> {
-  double xPosition = 0;
-  double yPosition = 0;
-  Color color;
-  double _scale = 1.0;
-  double _previousScale = 1.0;
+  final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
 
 
   @override
   void initState() {
-    color = Colors.orange;
+    notifier.value = Matrix4(
+      widget._emojiMetadata.matrixArguments[0],
+      widget._emojiMetadata.matrixArguments[1],
+      widget._emojiMetadata.matrixArguments[2],
+      widget._emojiMetadata.matrixArguments[3],
+      widget._emojiMetadata.matrixArguments[4],
+      widget._emojiMetadata.matrixArguments[5],
+      widget._emojiMetadata.matrixArguments[6],
+      widget._emojiMetadata.matrixArguments[7],
+      widget._emojiMetadata.matrixArguments[8],
+      widget._emojiMetadata.matrixArguments[9],
+      widget._emojiMetadata.matrixArguments[10],
+      widget._emojiMetadata.matrixArguments[11],
+      widget._emojiMetadata.matrixArguments[12],
+      widget._emojiMetadata.matrixArguments[13],
+      widget._emojiMetadata.matrixArguments[14],
+      widget._emojiMetadata.matrixArguments[15]
+    );
     super.initState();
   }
+  
+
+  var json = { 
+    "emoji":"🤗",
+    "col0":"[0.6463089079186324, 0.13423912881164965, 0.0, 0.0,]",
+    "col1":"[-0.13423912881164965,0.6463089079186324, 0.0, 0.0,]",
+    "col2":"[0.0, 0.0, 1.0, 0.0,]",
+    "col3":"[58.29945312195869, 11.104368977904983, 0.0, 1.0]" };
+
+  
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
-    return MatrixGestureDetector(
-        onMatrixUpdate: (m, tm, sm, rm) {
-          notifier.value = m;
-        },
-        child: AnimatedBuilder(
-          animation: notifier,
-          builder: (ctx, child) {
-            return Transform(
-              transform: notifier.value,
-              child: widget.givenWidget
-            
-            );
-          },
-        )
-    
     /*
-    Positioned(
-      top: yPosition,
-      left: xPosition,
-      child: GestureDetector(
-        
-        
-        onPanUpdate: (tapInfo) {
-          setState(() {
-            xPosition += tapInfo.delta.dx;
-            yPosition += tapInfo.delta.dy;
-          });
-        },
-        
-        
-        child: Transform(
-                //alignment: FractionalOffset.center,
-                transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
-                child: widget.givenWidget,
-           
-        ),
+    final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
+    notifier.value = Matrix4(
+      widget._emojiMetadata.matrixArguments[0],
+      widget._emojiMetadata.matrixArguments[1],
+      widget._emojiMetadata.matrixArguments[2],
+      widget._emojiMetadata.matrixArguments[3],
+      widget._emojiMetadata.matrixArguments[4],
+      widget._emojiMetadata.matrixArguments[5],
+      widget._emojiMetadata.matrixArguments[6],
+      widget._emojiMetadata.matrixArguments[7],
+      widget._emojiMetadata.matrixArguments[8],
+      widget._emojiMetadata.matrixArguments[9],
+      widget._emojiMetadata.matrixArguments[10],
+      widget._emojiMetadata.matrixArguments[11],
+      widget._emojiMetadata.matrixArguments[12],
+      widget._emojiMetadata.matrixArguments[13],
+      widget._emojiMetadata.matrixArguments[14],
+      widget._emojiMetadata.matrixArguments[15]
+    );
+    */
+    //print(_attemptOfJsonDecoding());
+    //print(presetTest.getColumn(0));
+    return MatrixGestureDetector(
+          clipChild: true,
+          //shouldTranslate: false,
+          onMatrixUpdate: (m, tm, sm, rm) {
+
+            print(m.getColumn(0));
+            print(m.getColumn(1));
+            print(m.getColumn(2));
+            print(m.getColumn(3));
+            
+            notifier.value = m;
+          },
+          child: AnimatedBuilder(
+            animation: notifier,
+            builder: (ctx, child) {
+              return Transform(
+                transform: notifier.value,
+                child: widget.givenWidget
+              
+              );
+            },
+          )
       
-        
-      ),
-
-      */
-      ////////////////////////////////////////////////////////////////////////////////7
-
-/*
-        onScaleStart: (ScaleStartDetails details) {
-          print(details);
-          
-          
-          setState(() {
-            _previousScale = _scale;
-            var offset = details.localFocalPoint;
-            //xPosition = offset.dx;
-            //yPosition = offset.dy; 
-          });
-        },
-        onScaleUpdate: (ScaleUpdateDetails details) {
-          
-          //lastRotation += details.rotation;
-          
-
-
-          print(details);
-          
-          //xPosition = details. focalPoint.dx - xPosition; //  .delta.dx;
-          //yPosition = details.focalPoint.dy - yPosition;
-          
-
-          setState(() {
-            var offset = details.localFocalPoint;
-            //xPosition = offset.dx; //-MediaQuery.of(context).size.width * 1;
-            //yPosition = offset.dy; //-MediaQuery.of(context).size.height * 1; 
-            _scale = _previousScale * details.scale;
-          });
-        },
-        onScaleEnd: (ScaleEndDetails details) {
-          _previousScale = 1.0;
-          //xPosition = details.  .localFocalPoint.dx; //  .delta.dx;
-          //yPosition = details.localFocalPoint.dy;
-          setState(() {});
-        },
-        */
-
     );
   } 
 }
