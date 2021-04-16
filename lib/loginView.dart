@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/journalView.dart';
-//import 'package:http/http.dart' as http;
 import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
 import 'journalView.dart';
+import 'pageViewHandler.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -17,12 +19,15 @@ class _LoginViewState extends State<LoginView> {
   /*
   Future<bool> attemptLogin(String email, String password) async {
     Map data = {"email": email, "password": password};
-
+  
     http.Response response = await http.post(
       Uri.parse('http://ptsv2.com/t/5yk6y-1618407005/post'),
       body: json.encode(data),
     );
     return (response.statusCode == 200);
+      
+
+
     //if (response.statusCode == 200) {
     // print(response.body);
     // return true;
@@ -96,11 +101,13 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                   Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => JournalView('Skillmill')),
-                );
-                  //attemptLogin(emailController.text, passwordController.text);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        //builder: (context) => new JournalView("August" ))
+                        builder: (context) => PageViewClass())
+                  );
+                  ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
                 },
                 child: Text(
                   'Login',

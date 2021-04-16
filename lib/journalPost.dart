@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
+import 'package:skillmill_demo/objects/movableObject.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 
 class JournalPost extends StatefulWidget{
 
@@ -10,15 +12,16 @@ class JournalPost extends StatefulWidget{
   _JournalPost createState() => _JournalPost();
 }
 
-class ChosenEmoji {
+class EmojisOnStack {
   static String chosenEmoji;
-  static List<Widget> movableEmojis = [];
+  static List<MoveableStackItem> movableEmojis = [];
 }
+
 
 class _JournalPost extends State<JournalPost> {
   String title;
   String emoji;
-  List<Widget> emojiList = [];
+  List<MoveableStackItem> emojiList= [];
   bool isSuccessful;
 
   //final EmojiKeyboardClass emojiKeyboard;
@@ -28,16 +31,16 @@ class _JournalPost extends State<JournalPost> {
 
   @override
   void initState() {
-    ChosenEmoji();
-    ChosenEmoji.movableEmojis = [];
-    emojiList = ChosenEmoji.movableEmojis; 
+    EmojisOnStack();
+    EmojisOnStack.movableEmojis = [];
+    emojiList = EmojisOnStack.movableEmojis; 
     isSuccessful = false;
     super.initState();
   }
 
   void callback() {
     //setState(() {
-      this.emojiList = ChosenEmoji.movableEmojis;
+      this.emojiList = EmojisOnStack.movableEmojis;
     //});
     setState(() {
           
@@ -80,19 +83,44 @@ class _JournalPost extends State<JournalPost> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                       
+                   
 
                       this.emojiList.length != 0 ?
                       IconButton(
                         icon: Icon(Icons.undo, size:30),
                         onPressed: (){
                           setState(() {
-                            ChosenEmoji.movableEmojis.removeLast();
-                            this.emojiList = ChosenEmoji.movableEmojis;
+                            EmojisOnStack.movableEmojis.removeLast();
+                            this.emojiList = EmojisOnStack.movableEmojis;
                           });
                         },
                       )
                       : Text(''),
-                      
+                      Row(
+                        children: [
+                          Text("Add rotated emoji"),
+                          IconButton(
+                            icon: Icon(Icons.add, size:30),
+                            onPressed: (){
+                              setState(() {
+                                
+                                EmojisOnStack.movableEmojis.add(
+                                  MoveableStackItem(
+                                    EmojiMetadata("👾",
+                                    [0.3691091979487912,-0.5389790934653924,0.0,0.0,
+                                    0.5389790934653924,0.3691091979487912,0.0,0.0,
+                                    0.0, 0.0, 1.0, 0.0,
+                                    -47.092849436353475,75.43127847705173,0.0,1.0]
+                                    )
+                                  )
+                                );
+                                
+                              });
+                            },
+                          ),
+                        ],
+                      )
 
 
                     ]
@@ -101,20 +129,29 @@ class _JournalPost extends State<JournalPost> {
             ),
 
             Container(
+              decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Colors.green,
+                Colors.blue,
+                Colors.red,
+              ],
+            )
+          ), 
               margin: EdgeInsets.only(left:8, right:8),
               height: MediaQuery.of(context).size.width * 0.95,
               width: MediaQuery.of(context).size.width * 0.95,
-              child: Card(
-                margin: EdgeInsets.all(5),
-                elevation: 10,
+              
                 child: Stack(
                   alignment: Alignment.center,
                   children: 
-                    ChosenEmoji.movableEmojis,
+                    EmojisOnStack.movableEmojis,
                   
                   
                   
-                ),
+                
                 
               ),
             ),
