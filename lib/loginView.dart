@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
+import 'package:skillmill_demo/journalView.dart';
 import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
@@ -15,7 +16,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  /*
   Future<bool> attemptLogin(String email, String password) async {
     Map data = {"email": email, "password": password};
   
@@ -32,7 +33,7 @@ class _LoginViewState extends State<LoginView> {
     // return true;
     //} else
     //  return false;
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,6 @@ class _LoginViewState extends State<LoginView> {
                         builder: (context) => PageViewClass())
                   );
                   ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
-                  //attemptLogin(emailController.text, passwordController.text);
                 },
                 child: Text(
                   'Login',
