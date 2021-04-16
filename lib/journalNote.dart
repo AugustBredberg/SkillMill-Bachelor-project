@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:skillmill_demo/objects/emojiKeyboard.dart';
+import 'package:skillmill_demo/objects/movableObject.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 
 class JournalNote extends StatefulWidget {
-  JournalPost impact;
+  List<MoveableStackItem> impact;
 
-  JournalNote(JournalPost impact) {
+  JournalNote(List<MoveableStackItem> impact) {
     this.impact = impact;
   }
   @override
@@ -33,18 +38,18 @@ class _JournalNote extends State<JournalNote> {
                   ),
                 ),
               ),
-              Container(
-                child: widget.impact,
-                margin:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.width * 0.5,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
+              Column(
+                children: widget.impact,
+                // margin:
+                //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                //  width: MediaQuery.of(context).size.width * 0.8,
+                //  height: MediaQuery.of(context).size.width * 0.5,
+                // decoration: BoxDecoration(
+                //   border: Border.all(color: Colors.black),
+                //  borderRadius: BorderRadius.all(
+                //    Radius.circular(20),
+                //   ),
+                // ),
               ),
               Container(
                 padding: EdgeInsets.only(
