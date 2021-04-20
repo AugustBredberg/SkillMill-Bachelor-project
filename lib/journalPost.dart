@@ -4,6 +4,7 @@ import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'journalNote.dart';
+import 'objects/emojiCanvas.dart';
 
 class JournalPost extends StatefulWidget {
   @override
@@ -125,7 +126,7 @@ class _JournalPost extends State<JournalPost> {
                 )
               ]),
             ),
-
+/*
             Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -145,7 +146,11 @@ class _JournalPost extends State<JournalPost> {
                 children: EmojisOnStack.movableEmojis,
               ),
             ),
-
+*/
+            Container(
+              height: MediaQuery.of(context).size.width * 0.95,
+              width: MediaQuery.of(context).size.width * 0.95,
+              child: EmojiCanvas([],[])),
             EmojiKeyboardClass(callback),
             /*
             ElevatedButton(
