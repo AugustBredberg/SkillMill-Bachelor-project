@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:skillmill_demo/journalView.dart';
+import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import './objects/cardCarousel.dart';
 
 class JournalNote extends StatefulWidget {
-  List<MoveableStackItem> impact;
+  EmojiCanvas impact;
 
-  JournalNote(List<MoveableStackItem> impact) {
+  JournalNote(EmojiCanvas impact) {
     this.impact = impact;
   }
   @override
@@ -17,63 +20,66 @@ class JournalNote extends StatefulWidget {
 }
 
 class _JournalNote extends State<JournalNote> {
+  List imageAdresses = [
+    "assets/images/log.jpeg",
+    "assets/images/jack.png",
+    "assets/images/back.png",
+    "assets/images/joker.jpg",
+    "assets/images/king.jpg",
+    "assets/images/queen.png"
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("SkillMill")),
+        title: Center(child: Text("Situation")),
       ),
       body: Container(
         child: Center(
           child: Column(
             children: [
               Container(
+                width: MediaQuery.of(context).size.width * 0.8,
                 padding: EdgeInsets.only(
                     top: (MediaQuery.of(context).size.width * 0.05)),
-                child: Text(
-                  "Situation context",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: (MediaQuery.of(context).size.width * 0.07),
-                  ),
-                ),
-              ),
-              Column(
-                children: widget.impact,
-                // margin:
-                //     EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                //  width: MediaQuery.of(context).size.width * 0.8,
-                //  height: MediaQuery.of(context).size.width * 0.5,
-                // decoration: BoxDecoration(
-                //   border: Border.all(color: Colors.black),
-                //  borderRadius: BorderRadius.all(
-                //    Radius.circular(20),
-                //   ),
-                // ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                  top: (MediaQuery.of(context).size.width * 0.05),
-                ),
-                child: Text(
-                  "Situation impact",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: (MediaQuery.of(context).size.width * 0.07),
+                child: TextField(
+                  maxLength: 20,
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter situation name",
                   ),
                 ),
               ),
               Container(
                 child: Center(
-                  child: Text("Context emoji thingy"),
-                ),
-                //margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.0),
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.width * 0.5,
+                    child: Stack(
+                  children: [
+                    widget.impact,
+                    IconButton(
+                      icon: Icon(
+                        IconData(59109, fontFamily: 'MaterialIcons'),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => JournalPost()),
+                        );
+                      },
+                    ),
+                  ],
+                )),
+                width: MediaQuery.of(context).size.width * 0.6,
+                height: MediaQuery.of(context).size.width * 0.6,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.width * 0.3,
+                child: CardCarousel(imageAdresses),
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
@@ -81,7 +87,7 @@ class _JournalNote extends State<JournalNote> {
                     top: (MediaQuery.of(context).size.width * 0.05)),
                 child: TextField(
                   maxLength: 250,
-                  maxLines: 5,
+                  maxLines: 3,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: "Write a short note about your entry",

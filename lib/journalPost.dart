@@ -89,10 +89,10 @@ class _JournalPost extends State<JournalPost> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                new JournalNote(this.emojiList)),
+                                new JournalNote(EmojiCanvas([], []))),
                       );
                     },
-                    child: Text("notes")),
+                    child: Text("Done")),
                 Row(
                   children: [
                     Text("Add rotated emoji"),
@@ -148,9 +148,9 @@ class _JournalPost extends State<JournalPost> {
             ),
 */
             Container(
-              height: MediaQuery.of(context).size.width * 0.95,
-              width: MediaQuery.of(context).size.width * 0.95,
-              child: EmojiCanvas([],[])),
+                height: MediaQuery.of(context).size.width * 0.95,
+                width: MediaQuery.of(context).size.width * 0.95,
+                child: EmojiCanvas([], [])),
             EmojiKeyboardClass(callback),
             /*
             ElevatedButton(
