@@ -11,7 +11,7 @@ class JournalPost extends StatefulWidget {
   _JournalPost createState() => _JournalPost();
 }
 
-class EmojisOnStack {
+class EmojisOnStack extends ChangeNotifier{
   static String chosenEmoji;
   static List<MoveableStackItem> movableEmojis = [];
 }
@@ -37,13 +37,14 @@ class _JournalPost extends State<JournalPost> {
 
   void callback() {
     //setState(() {
-    this.emojiList = EmojisOnStack.movableEmojis;
+    //this.emojiList = EmojisOnStack.movableEmojis;
     //});
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Center(
         child: Column(
@@ -78,7 +79,7 @@ class _JournalPost extends State<JournalPost> {
                         onPressed: () {
                           setState(() {
                             EmojisOnStack.movableEmojis.removeLast();
-                            this.emojiList = EmojisOnStack.movableEmojis;
+                            //this.emojiList = EmojisOnStack.movableEmojis;
                           });
                         },
                       )
@@ -150,7 +151,8 @@ class _JournalPost extends State<JournalPost> {
             Container(
               height: MediaQuery.of(context).size.width * 0.95,
               width: MediaQuery.of(context).size.width * 0.95,
-              child: EmojiCanvas([],[])),
+              child: EmojiCanvas([],[])
+            ),
             EmojiKeyboardClass(callback),
             /*
             ElevatedButton(
