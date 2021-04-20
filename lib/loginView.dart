@@ -19,7 +19,7 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController passwordController = TextEditingController();
 
   Future<bool> attemptLogin(String email, String password) async {
-    Map data = {"email": email, "password": password};
+    Map data = {"123": email};
     http.Response response = await http.post(
       Uri.parse('https://hayashida.se/skillmill/api/test'),
       body: data,
