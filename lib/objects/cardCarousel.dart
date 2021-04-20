@@ -36,20 +36,23 @@ class _CardCarousel extends State<CardCarousel>{
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Carousel(
-          height: MediaQuery.of(context).size.height * 0.50,
-          width: MediaQuery.of(context).size.width * 0.50,
+    return new LayoutBuilder(
+    builder: (BuildContext context, BoxConstraints constraints) {
+      return Carousel(
+          height: constraints.maxHeight,//MediaQuery.of(context).size.height * 0.50,
+          width: constraints.maxWidth,//MediaQuery.of(context).size.width * 0.50,
           initialPage: 0,
-          showArrow: false,
-          showIndicator: false,
-          //indicatorType: IndicatorTypes.values,
+          //showArrow: true,
+          showIndicator: true,
+          indicatorType: IndicatorTypes.bar,
+          indicatorBackgroundOpacity: 0,
+          activeIndicatorColor: Colors.red,
           allowWrap: true,
           type: Types.slideSwiper,
           onCarouselTap: (i) {
             print("onTap $i");
           },
-          axis: Axis.vertical,
+          axis: Axis.horizontal,
           children:[
             Card(
               elevation: 10,
@@ -74,7 +77,10 @@ class _CardCarousel extends State<CardCarousel>{
 
 
           ] 
-        ),
+        
+      );
+    }
+  
       );
   }
 }

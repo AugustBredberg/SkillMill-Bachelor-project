@@ -6,7 +6,6 @@ import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
 import 'journalView.dart';
-import 'pageViewHandler.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -101,12 +100,17 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
+                  Navigator.of(context)
+                                    .pushReplacementNamed('/home');
+                  /*
                   Navigator.push(
                     context,
                     MaterialPageRoute(
+                      
                         //builder: (context) => new JournalView("August" ))
                         builder: (context) => PageViewClass())
                   );
+                  */
                   ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
                 },
                 child: Text(
