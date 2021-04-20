@@ -60,7 +60,7 @@ class EmojiKeyboardClass extends StatelessWidget {
 
     
 
-    return  Container(
+    return Container(
       color: Colors.black38,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

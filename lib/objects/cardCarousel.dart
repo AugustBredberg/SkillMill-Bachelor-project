@@ -17,7 +17,6 @@ class CardCarousel extends StatefulWidget{
 class _CardCarousel extends State<CardCarousel>{
   //List<String> cardPics = [];
   String testUrl = "images/king.jpg";
-//  cardPics.add("");
   Image a = Image.asset('images/king.jpg');
   Image b = Image.asset('images/back.png');
   Image c = Image.asset('images/jack.png');

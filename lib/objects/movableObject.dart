@@ -7,7 +7,7 @@ import 'package:skillmill_demo/objects/pinchableObject.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'dart:convert';
 //import 'dart:io';
@@ -26,7 +26,7 @@ class MoveableStackItem extends StatefulWidget {
     _emojiMetadata = given;
     givenWidget = FittedBox(
                 fit: BoxFit.contain,
-                child: Text(given.emoji,textScaleFactor:2, style: TextStyle(fontSize: 150)));
+                child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)));
   }
   
   @override State<StatefulWidget> createState() { 
