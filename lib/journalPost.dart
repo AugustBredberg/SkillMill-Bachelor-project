@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
-import 'journalNote.dart';
+import 'newJournal.dart';
 import 'objects/emojiCanvas.dart';
 
 class JournalPost extends StatefulWidget {
@@ -90,7 +90,7 @@ class _JournalPost extends State<JournalPost> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                new JournalNote(EmojiCanvas([], []))),
+                                new NewJournal()),
                       );
                     },
                     child: Text("Done")),

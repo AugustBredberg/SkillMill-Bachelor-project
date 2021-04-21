@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/home.dart';
+import 'package:skillmill_demo/navigationBar.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:skillmill_demo/newUserView.dart';
-import 'journalView.dart';
+import 'home.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'loginView.dart';
-import 'home.dart';
+import 'navigationBar.dart';
 
 import 'dart:typed_data';
 
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       home: _defaultHome,
       routes: <String, WidgetBuilder>{
         // Set named routes for using the Navigator.
-        '/home': (BuildContext context) => new HomePage(),
+        '/home': (BuildContext context) => new NavigationBar(),
         '/login': (BuildContext context) => new LoginView(),
         '/signUp': (BuildContext context) => new NewUserView(),
         '/post': (BuildContext context) => new JournalPost()

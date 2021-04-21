@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
-import 'package:skillmill_demo/journalView.dart';
+import 'package:skillmill_demo/home.dart';
 import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
-import 'journalView.dart';
+import 'home.dart';
 
 class LoginView extends StatefulWidget {
   @override

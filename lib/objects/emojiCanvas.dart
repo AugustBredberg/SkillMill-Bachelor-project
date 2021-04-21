@@ -1,8 +1,4 @@
 
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
@@ -26,9 +22,7 @@ class EmojiCanvas extends StatefulWidget {
   } 
 
 }
-class _EmojiCanvas extends State<EmojiCanvas> {
-
- 
+class _EmojiCanvas extends State<EmojiCanvas> { 
 
   @override
   Widget build(BuildContext context) {

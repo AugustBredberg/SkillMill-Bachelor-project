@@ -1,77 +1,77 @@
-
-
-
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/journalFeed.dart';
-import 'package:skillmill_demo/journalView.dart';
-import 'package:skillmill_demo/skillPage.dart';
+import 'package:skillmill_demo/newJournal.dart';
+import 'journalFeed.dart';
+import 'journalPost.dart';
+import 'objects/emojiCanvas.dart';
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => new Container(
-        color: Colors.yellow,
-        child: WillPopScope(
-          onWillPop: () async => false,
-          child: DefaultTabController(
-            length: 3,
-            child: new Scaffold(
-              body: TabBarView(
-                children: [
-                  TabContent(new JournalView("haj")),
-                  TabContent(new SkillPage()),
-                  TabContent(new SkillPage()),
-                ],
-              ),
-              bottomNavigationBar: new TabBar(
-                tabs: [
-                  Tab(
-                    icon: Container(child: Text("HOME"),)
-                  ),
-                  Tab(
-                    icon: Container(child: Text("SKILLS"),),
-                  ),
-                  Tab(
-                    icon: Container(child: Text("SETTINGS"),),
-                  ),
-                ],
-                labelColor: Colors.yellow,
-                unselectedLabelColor: Colors.blue,
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorPadding: EdgeInsets.all(5.0),
-                indicatorColor: Colors.redAccent,
-              ),
-              backgroundColor: Colors.black,
-            ),
-          ),
-        ),
-      );
-}
+class Home extends StatefulWidget {
+  //JournalView({Key key, this.title}) : super(key: key);
 
-class TabContent extends StatefulWidget {
-  final Widget content;
-  TabContent(this.content);
+  String name;
 
-  @override
-  _TabContentState createState() => _TabContentState();
-}
-
-class _TabContentState extends State<TabContent>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    print('init ${widget.content}');
-    super.initState();
+  Home(name) {
+    this.name = name;
   }
+  @override
+  _Home createState() => _Home();
+}
 
+class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    // This method is rerun every time setState is called, for instance as done
+    // by the _incrementCounter method above.
+    //
+    // The Flutter framework has been optimized to make rerunning build methods
+    // fast, so that you can just rebuild anything that needs updating rather
+    // than having to individually change instances of widgets.
+    return Scaffold(
+      body: Container(
+        padding: EdgeInsets.only(top: 20),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Text("Skill Mill",
+                  style: TextStyle(
+                    fontSize: 80,
+                  )),
+            ),
+            JournalFeed(),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(), primary: Colors.red),
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 20),
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.width * 0.25,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: Text(
+                  'New Situation',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          new NewJournal()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
 
-    // print('build ${widget.content}');
+      /*FloatingActionButton(
+        onPressed: (){},
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
 
-    return widget.content;
+      */
+    );
   }
-
-  @override
-  bool get wantKeepAlive => false;
 }

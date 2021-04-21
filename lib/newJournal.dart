@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skillmill_demo/journalView.dart';
+import 'package:skillmill_demo/home.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
-import './objects/cardCarousel.dart';
+import 'objects/cardCarousel.dart';
 
-class JournalNote extends StatefulWidget {
-  EmojiCanvas impact;
+class NewJournal extends StatefulWidget {
 
-  JournalNote(EmojiCanvas impact) {
-    this.impact = impact;
+  NewJournal() {
+
   }
   @override
-  _JournalNote createState() => _JournalNote();
+  _NewJournal createState() => _NewJournal();
 }
 
-class _JournalNote extends State<JournalNote> {
+class _NewJournal extends State<NewJournal> {
+  EmojiCanvas impact;
+
   List imageAdresses = [
     "assets/images/log.jpeg",
     "assets/images/jack.png",
@@ -28,6 +29,14 @@ class _JournalNote extends State<JournalNote> {
     "assets/images/king.jpg",
     "assets/images/queen.png"
   ];
+
+  @override
+  void initState() {
+    impact = EmojiCanvas([], []);
+    super.initState();
+  }
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +64,7 @@ class _JournalNote extends State<JournalNote> {
                 child: Center(
                     child: Stack(
                   children: [
-                    widget.impact,
+                    impact,
                     IconButton(
                       icon: Icon(
                         IconData(59109, fontFamily: 'MaterialIcons'),
