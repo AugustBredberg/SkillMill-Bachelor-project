@@ -10,7 +10,7 @@ import 'navigationBar.dart';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-
+import 'dart:ui';
 import 'dart:io';
 import 'dart:async';
 
@@ -18,7 +18,6 @@ Widget _defaultHome;
 Socket socket;
 Stream<Uint8List> socketStream;
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
 
 void main() async {
   // Connection to the server
@@ -52,7 +51,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 
 /*
 void main() {

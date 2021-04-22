@@ -173,7 +173,7 @@ class _NewJournal extends State<NewJournal> {
   Widget createJournalPost() {
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height * 0.87,
+      height: MediaQuery.of(context).size.height * 0.93,
       width: MediaQuery.of(context).size.width * 1.0,
       child: Center(
         child: Column(
@@ -195,31 +195,35 @@ class _NewJournal extends State<NewJournal> {
             ), //EmojiCanvas([], [])),
             //EmojiKeyboardClass(null),
 
-            Row(
-              children: [
-                Material(
-                  color: Colors.white,
-                  child: IconButton(
-                    iconSize: 50,
-                    icon: Icon(IconData(0xe7eb, fontFamily: 'MaterialIcons')),
-                    onPressed: () {
-                      showKeyboard(context);
-                    },
-                  ),
-                ),
-                Material(
-                  color: Colors.white,
-                  child: IconButton(
-                    iconSize: 50,
-                    icon: Icon(
-                      Icons.color_lens,
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Material(
+                    color: Colors.white,
+                    child: IconButton(
+                      iconSize: 50,
+                      icon: Icon(IconData(0xe7eb, fontFamily: 'MaterialIcons')),
+                      onPressed: () {
+                        showKeyboard(context);
+                      },
                     ),
-                    onPressed: () {
-                      showColorSlider(context);
-                    },
                   ),
-                ),
-              ],
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.40),
+                  Material(
+                    color: Colors.white,
+                    child: IconButton(
+                      iconSize: 50,
+                      icon: Icon(
+                        Icons.color_lens,
+                      ),
+                      onPressed: () {
+                        showColorSlider(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
 
             ElevatedButton(
