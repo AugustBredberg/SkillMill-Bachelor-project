@@ -2,6 +2,7 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 
+/*
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,12 +17,13 @@ class MyApp extends StatelessWidget {
           title: Text("Color Picker Demo"),
         ),
         body: SafeArea(
-          child: ColorPicker(300),
+          child: ColorPicker(300, ),
         ),
       ),
     );
   }
 }
+*/
 
 class _SliderIndicatorPainter extends CustomPainter {
   final double position;
@@ -40,7 +42,8 @@ class _SliderIndicatorPainter extends CustomPainter {
 
 class ColorPicker extends StatefulWidget {
   final double width;
-  ColorPicker(this.width);
+  final Function callback;
+  ColorPicker(this.width, this.callback);
   @override
   _ColorPickerState createState() => _ColorPickerState();
 }
@@ -65,12 +68,15 @@ class _ColorPickerState extends State<ColorPicker> {
   double _shadeSliderPosition;
   Color _currentColor;
   Color _shadedColor;
+  
+
   @override
   initState() {
     super.initState();
     _currentColor = _calculateSelectedColor(_colorSliderPosition);
     _shadeSliderPosition = widget.width / 2; //center the shader selector
     _shadedColor = _calculateShadedColor(_shadeSliderPosition);
+  
   }
 
   _colorChangeHandler(double position) {
@@ -169,6 +175,11 @@ class _ColorPickerState extends State<ColorPicker> {
       _currentColor = Color.fromARGB(255, redValue, greenValue, blueValue);
     }
     return _currentColor;
+  }
+
+  void colorChosen(Color color){
+
+
   }
 
   @override
@@ -271,6 +282,8 @@ class _ColorPickerState extends State<ColorPicker> {
                         fontWeight: FontWeight.bold),
                   ),
                   onPressed: () {
+                    widget.callback(_shadedColor);
+                    //colorChosen(_shadedColor);
                     //Change color of canvas and pop
                     //journalPost();
                   },

@@ -19,13 +19,13 @@ class EmojiMetadata{
 
 class EmojiCanvas extends StatefulWidget { 
   final List<MoveableStackItem> emojis;
-  final List<Color> colors;
+  final Color color;
   //final List<MoveableStackItem> currentEmojis;
 
 
 
 
-  EmojiCanvas({Key key, @required this.emojis, @required this.colors}) : super(key: key);
+  EmojiCanvas({Key key, @required this.emojis, @required this.color}) : super(key: key);
 
 /*
   EmojiCanvas(List<MoveableStackItem> emojis, List<Color> colors) {
@@ -43,6 +43,7 @@ class EmojiCanvas extends StatefulWidget {
 
 class EmojiCanvasState extends State<EmojiCanvas> { 
   List<MoveableStackItem> currentEmojis;
+  Color currentColors;
   
   void appendEmoji(MoveableStackItem item){
     setState(() {
@@ -50,21 +51,25 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     });
   }
 
+  void appendColor(Color color){
+    setState(() {
+      currentColors = color;      
+    });
+  }
+
   LayoutBuilder createPreviewCanvas(){
     return  new LayoutBuilder(
     builder: (BuildContext context, BoxConstraints constraints) {
       return Container(
+        /*
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
-              colors: [
-                Colors.green,
-                Colors.blue,
-                Colors.red,
-              ],
+              colors: currentColors,
             )
           ),
+          */
           height: constraints.maxHeight,
           width: constraints.maxWidth,
           child: Stack(
@@ -81,6 +86,8 @@ class EmojiCanvasState extends State<EmojiCanvas> {
   @override
   void initState() {
     currentEmojis = widget.emojis;
+    currentColors = Colors.white; 
+
     super.initState();
   }
 
@@ -89,17 +96,15 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     return new LayoutBuilder(
     builder: (BuildContext context, BoxConstraints constraints) {
       return Container(
+        color: currentColors,
+        /*
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
-              colors: [
-                Colors.green,
-                Colors.blue,
-                Colors.red,
-              ],
+              colors: currentColors
             )
-          ),
+          ),*/
           height: constraints.maxHeight,
           width: constraints.maxWidth,
           child: Stack(

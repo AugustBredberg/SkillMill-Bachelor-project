@@ -39,9 +39,13 @@ class _NewJournal extends State<NewJournal> {
     /// Completely empty canvas, ready to be filled with emojis
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
     impact =
-        EmojiCanvas(key: _myEmojiCanvas, emojis: [], colors: []); //([], []);
+        EmojiCanvas(key: _myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
     impactPreview = impact;
     super.initState();
+  }
+
+  void setColorToChosen(Color color){
+    this._myEmojiCanvas.currentState.appendColor(color);
   }
 
   void _appendEmojiToImpactCanvas(MoveableStackItem item) {
@@ -49,7 +53,7 @@ class _NewJournal extends State<NewJournal> {
     this._myEmojiCanvas.currentState.appendEmoji(item);
     impactPreview = EmojiCanvas(
       emojis: impact.emojis,
-      colors: [],
+      color: Colors.white,
     );
   }
 
@@ -303,8 +307,8 @@ class _NewJournal extends State<NewJournal> {
                   child: Container(
                       height: MediaQuery.of(context).size.height * 0.37,
                       width: MediaQuery.of(context).size.width * 1,
-                      child:
-                          ColorPicker(MediaQuery.of(context).size.width * 0.5)),
+                      child: ColorPicker(MediaQuery.of(context).size.width * 0.5, setColorToChosen)
+                  ),
                 ),
               ],
             ),
