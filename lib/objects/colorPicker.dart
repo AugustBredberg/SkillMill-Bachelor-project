@@ -1,193 +1,287 @@
-
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:skillmill_demo/journalPost.dart';
 
-
-class ColorPickerDemo extends StatefulWidget {
-  const ColorPickerDemo({Key key}) : super(key: key);
-
-  @override
-  _ColorPickerDemoState createState() => _ColorPickerDemoState();
-}
-
-class _ColorPickerDemoState extends State<ColorPickerDemo> {
-  ThemeMode themeMode;
-  @override
-  void initState() {
-    super.initState();
-    themeMode = ThemeMode.light;
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'ColorPicker',
-      theme: ThemeData.from(colorScheme: const ColorScheme.highContrastLight())
-          .copyWith(
-              scaffoldBackgroundColor: Colors.grey[50],
-              appBarTheme: const AppBarTheme(brightness: Brightness.dark)),
-      darkTheme:
-          ThemeData.from(colorScheme: const ColorScheme.highContrastDark()),
-      themeMode: themeMode,
-      home: ColorPickerPage(
-        themeMode: (ThemeMode mode) {
-          setState(() {
-            themeMode = mode;
-          });
-        },
+      title: 'Color Picker Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-    );
-  }
-}
-
-class ColorPickerPage extends StatefulWidget {
-  const ColorPickerPage({Key key, this.themeMode}) : super(key: key);
-  final ValueChanged<ThemeMode> themeMode;
-
-  @override
-  _ColorPickerPageState createState() => _ColorPickerPageState();
-}
-
-class _ColorPickerPageState extends State<ColorPickerPage> {
-  Color screenPickerColor; // Color for picker shown in Card on the screen.
-  Color dialogPickerColor; // Color for picker in dialog using onChanged
-  Color dialogSelectColor; // Color for picker using color select dialog.
-  bool isDark;
-
-  // Define some custom colors for the custom picker segment.
-  // The 'guide' color values are from
-  // https://material.io/design/color/the-color-system.html#color-theme-creation
-  static const Color guidePrimary = Color(0xFF6200EE);
-  static const Color guidePrimaryVariant = Color(0xFF3700B3);
-  static const Color guideSecondary = Color(0xFF03DAC6);
-  static const Color guideSecondaryVariant = Color(0xFF018786);
-  static const Color guideError = Color(0xFFB00020);
-  static const Color guideErrorDark = Color(0xFFCF6679);
-  static const Color blueBlues = Color(0xFF174378);
-
-  // Make a custom ColorSwatch to name map from the above custom colors.
-  final Map<ColorSwatch<Object>, String> colorsNameMap =
-      <ColorSwatch<Object>, String>{
-    ColorTools.createPrimarySwatch(guidePrimary): 'Guide Purple',
-    ColorTools.createPrimarySwatch(guidePrimaryVariant): 'Guide Purple Variant',
-    ColorTools.createAccentSwatch(guideSecondary): 'Guide Teal',
-    ColorTools.createAccentSwatch(guideSecondaryVariant): 'Guide Teal Variant',
-    ColorTools.createPrimarySwatch(guideError): 'Guide Error',
-    ColorTools.createPrimarySwatch(guideErrorDark): 'Guide Error Dark',
-    ColorTools.createPrimarySwatch(blueBlues): 'Blue blues',
-  };
-
-  @override
-  void initState() {
-    screenPickerColor = Colors.blue;
-    dialogPickerColor = Colors.red;
-    dialogSelectColor = const Color(0xFFA239CA);
-    isDark = false;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('ColorPicker Demo'),
-      ),
-      body: Scrollbar(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-          children: <Widget>[
-            // Pick color in a dialog.
-            ListTile(
-              title: const Text('Click this color to modify it in a dialog'),
-              subtitle: Text(
-                '${ColorTools.materialNameAndCode(dialogPickerColor, colorSwatchNameMap: colorsNameMap)} '
-                'aka ${ColorTools.nameThatColor(dialogPickerColor)}',
-              ),
-              trailing: ColorIndicator(
-                width: 44,
-                height: 44,
-                borderRadius: 4,
-                color: dialogPickerColor,
-                onSelectFocus: false,
-                onSelect: () async {
-                  // Store current color before we open the dialog.
-                  final Color colorBeforeDialog = dialogPickerColor;
-                  // Wait for the picker to close, if dialog was dismissed,
-                  // then restore the color we had before it was opened.
-                  // 
-                  /*
-                  if (!(await colorPickerDialog())) {
-                    setState(() {
-                      dialogPickerColor = colorBeforeDialog;
-                    });
-                    
-                  }*/
-                  
-                },
-              ),
-            ),
-
-
-
-
-            
-          ],
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Color Picker Demo"),
+        ),
+        body: SafeArea(
+          child: ColorPicker(300),
         ),
       ),
     );
   }
+}
 
-  Future<bool> colorPickerDialog() async {
-    return ColorPicker(
-      color: dialogPickerColor,
-      onColorChanged: (Color color) =>
-          setState(() => dialogPickerColor = color),
-      width: 40,
-      height: 40,
-      borderRadius: 4,
-      spacing: 5,
-      runSpacing: 5,
-      wheelDiameter: 155,
-      heading: Text(
-        'Select color',
-        //style: Theme.of(context).textTheme.subtitle1,
+class _SliderIndicatorPainter extends CustomPainter {
+  final double position;
+  _SliderIndicatorPainter(this.position);
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawCircle(
+        Offset(position, size.height / 2), 12, Paint()..color = Colors.grey);
+  }
+
+  @override
+  bool shouldRepaint(_SliderIndicatorPainter old) {
+    return true;
+  }
+}
+
+class ColorPicker extends StatefulWidget {
+  final double width;
+  ColorPicker(this.width);
+  @override
+  _ColorPickerState createState() => _ColorPickerState();
+}
+
+class _ColorPickerState extends State<ColorPicker> {
+  final List<Color> _colors = [
+    Color.fromARGB(255, 255, 0, 0),
+    Color.fromARGB(255, 255, 128, 0),
+    Color.fromARGB(255, 255, 255, 0),
+    Color.fromARGB(255, 128, 255, 0),
+    Color.fromARGB(255, 0, 255, 0),
+    Color.fromARGB(255, 0, 255, 128),
+    Color.fromARGB(255, 0, 255, 255),
+    Color.fromARGB(255, 0, 128, 255),
+    Color.fromARGB(255, 0, 0, 255),
+    Color.fromARGB(255, 127, 0, 255),
+    Color.fromARGB(255, 255, 0, 255),
+    Color.fromARGB(255, 255, 0, 127),
+    Color.fromARGB(255, 128, 128, 128),
+  ];
+  double _colorSliderPosition = 0;
+  double _shadeSliderPosition;
+  Color _currentColor;
+  Color _shadedColor;
+  @override
+  initState() {
+    super.initState();
+    _currentColor = _calculateSelectedColor(_colorSliderPosition);
+    _shadeSliderPosition = widget.width / 2; //center the shader selector
+    _shadedColor = _calculateShadedColor(_shadeSliderPosition);
+  }
+
+  _colorChangeHandler(double position) {
+    //handle out of bounds positions
+    if (position > widget.width) {
+      position = widget.width;
+    }
+    if (position < 0) {
+      position = 0;
+    }
+    print("New pos: $position");
+    setState(() {
+      _colorSliderPosition = position;
+      _currentColor = _calculateSelectedColor(_colorSliderPosition);
+      _shadedColor = _calculateShadedColor(_shadeSliderPosition);
+    });
+  }
+
+  _shadeChangeHandler(double position) {
+    //handle out of bounds gestures
+    if (position > widget.width) position = widget.width;
+    if (position < 0) position = 0;
+    setState(() {
+      _shadeSliderPosition = position;
+      _shadedColor = _calculateShadedColor(_shadeSliderPosition);
+      print(
+          "r: ${_shadedColor.red}, g: ${_shadedColor.green}, b: ${_shadedColor.blue}");
+    });
+  }
+
+  Color _calculateShadedColor(double position) {
+    double ratio = position / widget.width;
+    if (ratio > 0.5) {
+      //Calculate new color (values converge to 255 to make the color lighter)
+      int redVal = _currentColor.red != 255
+          ? (_currentColor.red +
+                  (255 - _currentColor.red) * (ratio - 0.5) / 0.5)
+              .round()
+          : 255;
+      int greenVal = _currentColor.green != 255
+          ? (_currentColor.green +
+                  (255 - _currentColor.green) * (ratio - 0.5) / 0.5)
+              .round()
+          : 255;
+      int blueVal = _currentColor.blue != 255
+          ? (_currentColor.blue +
+                  (255 - _currentColor.blue) * (ratio - 0.5) / 0.5)
+              .round()
+          : 255;
+      return Color.fromARGB(255, redVal, greenVal, blueVal);
+    } else if (ratio < 0.5) {
+      //Calculate new color (values converge to 0 to make the color darker)
+      int redVal = _currentColor.red != 0
+          ? (_currentColor.red * ratio / 0.5).round()
+          : 0;
+      int greenVal = _currentColor.green != 0
+          ? (_currentColor.green * ratio / 0.5).round()
+          : 0;
+      int blueVal = _currentColor.blue != 0
+          ? (_currentColor.blue * ratio / 0.5).round()
+          : 0;
+      return Color.fromARGB(255, redVal, greenVal, blueVal);
+    } else {
+      //return the base color
+      return _currentColor;
+    }
+  }
+
+  Color _calculateSelectedColor(double position) {
+    //determine color
+    double positionInColorArray =
+        (position / widget.width * (_colors.length - 1));
+    print(positionInColorArray);
+    int index = positionInColorArray.truncate();
+    print(index);
+    double remainder = positionInColorArray - index;
+    if (remainder == 0.0) {
+      _currentColor = _colors[index];
+    } else {
+      //calculate new color
+      int redValue = _colors[index].red == _colors[index + 1].red
+          ? _colors[index].red
+          : (_colors[index].red +
+                  (_colors[index + 1].red - _colors[index].red) * remainder)
+              .round();
+      int greenValue = _colors[index].green == _colors[index + 1].green
+          ? _colors[index].green
+          : (_colors[index].green +
+                  (_colors[index + 1].green - _colors[index].green) * remainder)
+              .round();
+      int blueValue = _colors[index].blue == _colors[index + 1].blue
+          ? _colors[index].blue
+          : (_colors[index].blue +
+                  (_colors[index + 1].blue - _colors[index].blue) * remainder)
+              .round();
+      _currentColor = Color.fromARGB(255, redValue, greenValue, blueValue);
+    }
+    return _currentColor;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      //margin: const EdgeInsets.all(15.0),
+      //padding: const EdgeInsets.all(3.0),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.25,
+      decoration: BoxDecoration(
+          color: Colors.white, border: Border.all(color: Colors.black)),
+      child: Column(
+        children: <Widget>[
+          Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onHorizontalDragStart: (DragStartDetails details) {
+                print("_-------------------------STARTED DRAG");
+                _colorChangeHandler(details.localPosition.dx);
+              },
+              onHorizontalDragUpdate: (DragUpdateDetails details) {
+                _colorChangeHandler(details.localPosition.dx);
+              },
+              onTapDown: (TapDownDetails details) {
+                _colorChangeHandler(details.localPosition.dx);
+              },
+              //This outside padding makes it much easier to grab the   slider because the gesture detector has
+              // the extra padding to recognize gestures inside of
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Container(
+                  width: widget.width,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.grey[800]),
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(colors: _colors),
+                  ),
+                  child: CustomPaint(
+                    painter: _SliderIndicatorPainter(_colorSliderPosition),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Center(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onHorizontalDragStart: (DragStartDetails details) {
+                print("_-------------------------STARTED DRAG");
+                _shadeChangeHandler(details.localPosition.dx);
+              },
+              onHorizontalDragUpdate: (DragUpdateDetails details) {
+                _shadeChangeHandler(details.localPosition.dx);
+              },
+              onTapDown: (TapDownDetails details) {
+                _shadeChangeHandler(details.localPosition.dx);
+              },
+              //This outside padding makes it much easier to grab the slider because the gesture detector has
+              // the extra padding to recognize gestures inside of
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Container(
+                  width: widget.width,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.grey[800]),
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                        colors: [Colors.black, _currentColor, Colors.white]),
+                  ),
+                  child: CustomPaint(
+                    painter: _SliderIndicatorPainter(_shadeSliderPosition),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Row(children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                color: _shadedColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            SizedBox(height: 40),
+            ConstrainedBox(
+                constraints: BoxConstraints.tightFor(
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    height: MediaQuery.of(context).size.width * 0.15),
+                child: ElevatedButton(
+                  child: Text(
+                    'Set color',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    //Change color of canvas and pop
+                    //journalPost();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: CircleBorder(),
+                    primary: Colors.white,
+                  ),
+                )),
+          ]),
+        ],
       ),
-      subheading: Text(
-        'Select color shade',
-        //style: Theme.of(context).textTheme.subtitle1,
-      ),
-      wheelSubheading: Text(
-        'Selected color and its shades',
-        //style: Theme.of(context).textTheme.subtitle1,
-      ),
-      showMaterialName: true,
-      showColorName: true,
-      showColorCode: true,
-      copyPasteBehavior: const ColorPickerCopyPasteBehavior(
-        longPressMenu: true,
-      ),
-      /*
-      materialNameTextStyle: Theme.of(context).textTheme.caption,
-      colorNameTextStyle: Theme.of(context).textTheme.caption,
-      colorCodeTextStyle: Theme.of(context).textTheme.bodyText2,
-      colorCodePrefixStyle: Theme.of(context).textTheme.caption,
-      selectedPickerTypeColor: Theme.of(context).colorScheme.primary,
-      */
-      pickersEnabled: const <ColorPickerType, bool>{
-        ColorPickerType.both: false,
-        ColorPickerType.primary: true,
-        ColorPickerType.accent: true,
-        ColorPickerType.bw: false,
-        ColorPickerType.custom: true,
-        ColorPickerType.wheel: false,
-      },
-      customColorSwatchesAndNames: colorsNameMap,
-    ).showPickerDialog(
-      context,
-      constraints:
-          const BoxConstraints(minHeight: 480, minWidth: 300, maxWidth: 320),
     );
   }
 }
