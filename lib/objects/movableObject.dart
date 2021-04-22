@@ -8,7 +8,7 @@ import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'emojiCanvas.dart';
 import 'dart:convert';
 //import 'dart:io';
 //import 'dart:typed_data';

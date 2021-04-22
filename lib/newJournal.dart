@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:skillmill_demo/home.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
-import 'package:skillmill_demo/objects/emojiKeyboard.dart';
+//import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
-import 'package:flex_color_picker/flex_color_picker.dart';
 import 'objects/cardCarousel.dart';
+import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 
 class NewJournal extends StatefulWidget {
 
-  NewJournal() {
-
-  }
+  NewJournal() {}
   @override
   _NewJournal createState() => _NewJournal();
 }
 
+
+
 class _NewJournal extends State<NewJournal> {
+  final TextEditingController controller = TextEditingController(); // controller for the keyboard
+  GlobalKey<EmojiCanvasState> _myEmojiCanvas; 
+
   EmojiCanvas impact;
+  EmojiCanvas impactPreview;
+  OverlayEntry overlayEntry;
+  OverlayEntry overlayKeyboard;
 
   List imageAdresses = [
     "assets/images/log.jpeg",
@@ -32,16 +36,46 @@ class _NewJournal extends State<NewJournal> {
 
   @override
   void initState() {
-    impact = EmojiCanvas([], []);
+    /// Completely empty canvas, ready to be filled with emojis 
+    _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
+    impact = EmojiCanvas(key: _myEmojiCanvas, emojis: [], colors: []);//([], []);
+    impactPreview = impact;
     super.initState();
   }
-  
+
+  void _appendEmojiToImpactCanvas(MoveableStackItem item){
+    //this.impact._appendEmoji(item); 
+    this._myEmojiCanvas.currentState.appendEmoji(item);
+    impactPreview = EmojiCanvas(emojis: impact.emojis, colors: [],);
+  }
+
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text("Situation")),
+      appBar:  AppBar(
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            ElevatedButton(child: Text("Back"),
+              onPressed: (){
+                if (this.overlayEntry != null){
+                  if(!this.overlayEntry.mounted){                                                                                                                             
+                    Navigator.pop(context);
+                    return;
+                  }
+                  else{
+                    popOverLay(context);
+                  }
+                }
+                else{ 
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            Center(child: Text("Situation Name")),
+          ],
+        ),
       ),
       body: Container(
         child: Center(
@@ -64,17 +98,15 @@ class _NewJournal extends State<NewJournal> {
                 child: Center(
                     child: Stack(
                   children: [
-                    impact,
+
+                    impactPreview,//this.impact,
                     IconButton(
                       icon: Icon(
                         IconData(59109, fontFamily: 'MaterialIcons'),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => JournalPost()),
-                        );
+                        showOverlay(context);
+                        //showAsBottomSheet();
                       },
                     ),
                   ],
@@ -111,6 +143,153 @@ class _NewJournal extends State<NewJournal> {
           ),
         ),
       ),
+        
+    );
+        
+  
+  }
+
+  showOverlay(BuildContext context) {
+    OverlayState overlayState = Overlay.of(context);
+    this.overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).size.width * 0.000000001,
+        child: createJournalPost(),
+        
+        //JournalPost(),
+        //Text("haj")
+      ),
+    );
+    overlayState.insert(overlayEntry);
+  }
+
+  popOverLay(BuildContext context) {
+    //OverlayState overlayState = Overlay.of(context);
+    this.overlayEntry.remove();
+  }
+
+  Widget createJournalPost(){
+    return Container(
+      color: Colors.white,
+      height:MediaQuery.of(context).size.height * 0.87,
+      width:MediaQuery.of(context).size.width * 1.0,
+      child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              //// width:  20 + 8
+              //// height: 10 + 8 + ish50 + 25 = 75 + 18 = 93 %
+              
+
+              ///////////////////////////////////////////
+              /// Container for buttons in CREATE POST view.
+              ///////////////////////////////////////////
+              
+              Material(
+                child: Container(
+                    height: MediaQuery.of(context).size.width * 0.95,
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: impact,
+                    ),
+              ),//EmojiCanvas([], [])),
+              //EmojiKeyboardClass(null),
+              
+              Row(
+                children: [
+                  Material(
+                    color: Colors.white,
+                    child: IconButton(
+                        iconSize: 50,
+                        icon: Icon(IconData(0xe7eb, fontFamily: 'MaterialIcons')), 
+                        onPressed: (){
+                          showKeyboard(context);
+                          print("pungen");
+                        },  
+                        
+                      ),
+                  ),
+                  
+                ],
+              ),
+
+              ElevatedButton(
+                onPressed: () {
+                  popOverLay(context);
+                  setState(() {
+                                      
+                                    });
+                },
+                child: Text("Done")
+              ),
+            ],
+          ),
+        ),
     );
   }
+
+  showKeyboard(BuildContext context) {
+    OverlayState overlayState = Overlay.of(context);
+    this.overlayKeyboard = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).size.width * 0.000000001,
+        child: Material(
+          color: Colors.white,
+          child:Container(
+            height:MediaQuery.of(context).size.height * 0.37,
+            width: MediaQuery.of(context).size.width * 1,
+            child: Column(
+              children: [
+                
+                Positioned(
+                  right:0,
+                  top:0,
+                  child: IconButton(
+                    iconSize: 50,
+                    icon: Icon(IconData(0xebdf, fontFamily: 'MaterialIcons'), color: Colors.green,), 
+                    onPressed: (){
+                      popKeyboard(context);
+                      print("poppade keyboard");
+                    },  
+                  ),
+                ),
+                EmojiKeyboard(
+                  //categoryTitles: CategoryTitles(). ,
+                  floatingHeader: false,
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  onEmojiSelected: onEmojiSelected,
+                ),
+                //EmojiKeyboardClass(null),
+              ],
+            ),
+          )
+        ),
+        
+        //JournalPost(),
+        //Text("haj")
+      ),
+      
+    );
+    overlayState.insert(overlayKeyboard);
+  }
+
+  popKeyboard(BuildContext context) {
+    //OverlayState overlayState = Overlay.of(context);
+    this.overlayKeyboard.remove();
+  }
+
+  void onEmojiSelected(Emoji emoji) {
+    controller.text += emoji.text;
+    MoveableStackItem item = MoveableStackItem(
+        EmojiMetadata(emoji.text,
+        [0.6463089079186324, 0.13423912881164965, 0.0, 0.0,
+        -0.13423912881164965,0.6463089079186324, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        58.29945312195869, 11.104368977904983, 0.0, 1.0]
+        )
+    );
+    _appendEmojiToImpactCanvas(item);
+    
+  }
 }
+
+

@@ -18,8 +18,22 @@ class NavigationBar extends StatelessWidget {
               body: TabBarView(
                 children: [
                   TabContent(new Home("haj")),
-                  TabContent(new SkillPage()),
-                  TabContent(new SkillPage()),
+                  TabContent(
+                    Center(
+                      child: Container(
+                        color: Colors.white,
+                        child: Text("SKILL PAGE"),
+                      ),
+                    )
+                  ),
+                  TabContent(
+                    Center(
+                      child: Container(
+                        color: Colors.white,
+                        child: Text("SETTINGS"),
+                      ),
+                    )
+                  ),
                 ],
               ),
               bottomNavigationBar: new TabBar(

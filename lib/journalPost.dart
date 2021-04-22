@@ -151,7 +151,8 @@ class _JournalPost extends State<JournalPost> {
             Container(
                 height: MediaQuery.of(context).size.width * 0.95,
                 width: MediaQuery.of(context).size.width * 0.95,
-                child: EmojiCanvas([], [])),
+                child: Text("replaced canvas with text in journalpost"),
+                ),//EmojiCanvas([], [])),
             EmojiKeyboardClass(callback),
             /*
             ElevatedButton(
