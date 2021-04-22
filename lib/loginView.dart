@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
@@ -15,24 +17,17 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  /*
+
   Future<bool> attemptLogin(String email, String password) async {
-    Map data = {"email": email, "password": password};
-  
+    Map data = {"123": email};
     http.Response response = await http.post(
-      Uri.parse('http://ptsv2.com/t/5yk6y-1618407005/post'),
-      body: json.encode(data),
+      Uri.parse('https://hayashida.se/skillmill/api/test'),
+      body: data,
     );
+    print(response.body.toString());
+    print(response.statusCode);
     return (response.statusCode == 200);
-      
-
-
-    //if (response.statusCode == 200) {
-    // print(response.body);
-    // return true;
-    //} else
-    //  return false;
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +95,7 @@ class _LoginViewState extends State<LoginView> {
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context)
-                                    .pushReplacementNamed('/home');
+                  Navigator.of(context).pushReplacementNamed('/home');
                   /*
                   Navigator.push(
                     context,
@@ -112,6 +106,7 @@ class _LoginViewState extends State<LoginView> {
                   );
                   */
                   ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
+                  attemptLogin(emailController.text, passwordController.text);
                 },
                 child: Text(
                   'Login',
