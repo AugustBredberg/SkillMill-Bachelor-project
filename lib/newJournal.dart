@@ -197,7 +197,7 @@ class _NewJournal extends State<NewJournal> {
     
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height * 0.87,
+      height: MediaQuery.of(context).size.height * 0.93,
       width: MediaQuery.of(context).size.width * 1.0,
       child: Center(
         child: Column(
@@ -223,6 +223,7 @@ class _NewJournal extends State<NewJournal> {
                     },
                   ),
                 ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.40),
                 Material(
                   color: Colors.white,
                   child: IconButton(
@@ -231,13 +232,12 @@ class _NewJournal extends State<NewJournal> {
                       Icons.color_lens,
                     ),
                     onPressed: () {
-                      print("haj");
                       showColorSlider(context);
-                      //print("hajdå");
                     },
                   ),
                 ),
               ],
+              
             ),
 
             ElevatedButton(
