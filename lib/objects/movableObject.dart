@@ -99,21 +99,34 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
           clipChild: true,
           //shouldTranslate: false,
           onMatrixUpdate: (m, tm, sm, rm) {
-
+/*
             print(m.getColumn(0));
             print(m.getColumn(1));
             print(m.getColumn(2));
             print(m.getColumn(3));
+  */        
+             
             
             notifier.value = m;
+            List<num> newMatrix = m.storage;
+            
+            print(newMatrix);
+
+            //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
+
+            setState(() {
+              widget._emojiMetadata.matrixArguments = newMatrix;
+            });
+            
           },
           child: AnimatedBuilder(
             animation: notifier,
             builder: (ctx, child) {
               return Transform(
+                //alignment: Alignment.center,
                 transform: notifier.value,
                 child: widget.givenWidget
-              
+
               );
             },
           )

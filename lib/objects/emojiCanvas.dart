@@ -18,8 +18,9 @@ class EmojiMetadata{
 
 
 class EmojiCanvas extends StatefulWidget { 
-  final List<MoveableStackItem> emojis;
-  final Color color;
+  List<MoveableStackItem> emojis;
+  Color color;
+  //final RenderBox currentConstraints;
   //final List<MoveableStackItem> currentEmojis;
 
 
@@ -44,6 +45,7 @@ class EmojiCanvas extends StatefulWidget {
 class EmojiCanvasState extends State<EmojiCanvas> { 
   List<MoveableStackItem> currentEmojis;
   Color currentColors;
+  RenderBox currentConstraints;
   
   void appendEmoji(MoveableStackItem item){
     setState(() {
@@ -61,22 +63,11 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     return  new LayoutBuilder(
     builder: (BuildContext context, BoxConstraints constraints) {
       return Container(
-        /*
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: currentColors,
-            )
-          ),
-          */
           height: constraints.maxHeight,
           width: constraints.maxWidth,
           child: Stack(
             alignment: Alignment.center,
-            children: currentEmojis,//EmojisOnStack.movableEmojis, 
-            //widget.currentEmojis, 
-            //
+            children: currentEmojis,
           ),
         );
       } 
@@ -86,8 +77,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
   @override
   void initState() {
     currentEmojis = widget.emojis;
-    currentColors = Colors.white; 
-
+    currentColors = widget.color;//.white; 
     super.initState();
   }
 
