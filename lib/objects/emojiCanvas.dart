@@ -43,13 +43,25 @@ class EmojiCanvas extends StatefulWidget {
 
 
 class EmojiCanvasState extends State<EmojiCanvas> { 
-  List<MoveableStackItem> currentEmojis;
+  List<GestureDetector> currentEmojis;
   Color currentColors;
   RenderBox currentConstraints;
   
   void appendEmoji(MoveableStackItem item){
+    var finalItem;
+    finalItem = GestureDetector(
+      onLongPress: (){
+        print("tryckersomfan");
+        setState(() {
+        this.currentEmojis.remove(finalItem);          
+                });
+        
+      },
+      child: item,
+    );
+
     setState(() {
-      currentEmojis.add(item);      
+      currentEmojis.add(finalItem);      
     });
   }
 
@@ -76,7 +88,12 @@ class EmojiCanvasState extends State<EmojiCanvas> {
 
   @override
   void initState() {
-    currentEmojis = widget.emojis;
+    currentEmojis = [];
+    for(int i=0; i<widget.emojis.length; i++){
+      appendEmoji(widget.emojis[i]);
+    }
+    
+    //currentEmojis = widget.emojis;
     currentColors = widget.color;//.white; 
     super.initState();
   }

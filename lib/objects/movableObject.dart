@@ -25,8 +25,9 @@ class MoveableStackItem extends StatefulWidget {
   MoveableStackItem(EmojiMetadata given) {
     _emojiMetadata = given;
     givenWidget = FittedBox(
-                fit: BoxFit.contain,
-                child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)));
+        fit: BoxFit.contain,
+        child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
+      );
   }
   
   @override State<StatefulWidget> createState() { 
@@ -96,40 +97,41 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
     //print(_attemptOfJsonDecoding());
     //print(presetTest.getColumn(0));
     return MatrixGestureDetector(
-          clipChild: true,
-          //shouldTranslate: false,
-          onMatrixUpdate: (m, tm, sm, rm) {
+            clipChild: true,
+            //shouldTranslate: false,
+            onMatrixUpdate: (m, tm, sm, rm) {
 /*
-            print(m.getColumn(0));
-            print(m.getColumn(1));
-            print(m.getColumn(2));
-            print(m.getColumn(3));
+              print(m.getColumn(0));
+              print(m.getColumn(1));
+              print(m.getColumn(2));
+              print(m.getColumn(3));
   */        
-             
-            
-            notifier.value = m;
-            List<num> newMatrix = m.storage;
-            
-            print(newMatrix);
+               
+              
+              notifier.value = m;
+              List<num> newMatrix = m.storage;
+              
+              print(newMatrix);
 
-            //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
+              //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
 
-            setState(() {
-              widget._emojiMetadata.matrixArguments = newMatrix;
-            });
-            
-          },
-          child: AnimatedBuilder(
-            animation: notifier,
-            builder: (ctx, child) {
-              return Transform(
-                //alignment: Alignment.center,
-                transform: notifier.value,
-                child: widget.givenWidget
-
-              );
+              setState(() {
+                widget._emojiMetadata.matrixArguments = newMatrix;
+              });
+              
             },
-          )
+            child: AnimatedBuilder(
+              animation: notifier,
+              builder: (ctx, child) {
+                return Transform(
+                  //alignment: Alignment.center,
+                  transform: notifier.value,
+                  child: widget.givenWidget
+
+                );
+              },
+            )
+        
       
     );
   } 

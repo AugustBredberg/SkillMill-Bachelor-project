@@ -207,7 +207,7 @@ class _NewJournal extends State<NewJournal> {
               child: Container(
                 height: MediaQuery.of(context).size.width * 0.95,
                 width: MediaQuery.of(context).size.width * 0.95,
-                child: EmojiCanvas(key: _editKey, emojis: _myEmojiCanvas.currentState.currentEmojis ,color: _myEmojiCanvas.currentState.currentColors),//impact,
+                child: EmojiCanvas(key: _editKey, emojis: [],color: _myEmojiCanvas.currentState.currentColors),//impact,
               ),
             ),
             
