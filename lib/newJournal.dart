@@ -211,33 +211,36 @@ class _NewJournal extends State<NewJournal> {
               ),
             ),
             
-            Row(
-              children: [
-                Material(
-                  color: Colors.white,
-                  child: IconButton(
-                    iconSize: 50,
-                    icon: Icon(Icons.keyboard),//Icon(IconData(0xe7eb, fontFamily: 'MaterialIcons')),
-                    onPressed: () {
-                      showKeyboard(context);
-                    },
-                  ),
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.40),
-                Material(
-                  color: Colors.white,
-                  child: IconButton(
-                    iconSize: 50,
-                    icon: Icon(
-                      Icons.color_lens,
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Material(
+                    color: Colors.white,
+                    child: IconButton(
+                      iconSize: 50,
+                      icon: Icon(Icons.keyboard),//Icon(IconData(0xe7eb, fontFamily: 'MaterialIcons')),
+                      onPressed: () {
+                        showKeyboard(context);
+                      },
                     ),
-                    onPressed: () {
-                      showColorSlider(context);
-                    },
                   ),
-                ),
-              ],
-              
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.40),
+                  Material(
+                    color: Colors.white,
+                    child: IconButton(
+                      iconSize: 50,
+                      icon: Icon(
+                        Icons.color_lens,
+                      ),
+                      onPressed: () {
+                        showColorSlider(context);
+                      },
+                    ),
+                  ),
+                ],
+                
+              ),
             ),
 
             ElevatedButton(
@@ -344,16 +347,15 @@ class _NewJournal extends State<NewJournal> {
                 Material(
                   color: Colors.white,
                   child: Container(
-                      height: MediaQuery.of(context).size.height * 0.37,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       width: MediaQuery.of(context).size.width * 1,
-                      child: ColorPicker(MediaQuery.of(context).size.width * 0.5, setColorToChosen)
+                      child: ColorPicker(MediaQuery.of(context).size.width * 0.6, setColorToChosen)
                   ),
                 ),
               ],
             ),
           )
           //JournalPost(),
-          //Text("haj")
           ),
     );
 

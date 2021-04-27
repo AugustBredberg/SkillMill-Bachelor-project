@@ -106,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
                   );
                   */
                   ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
-                  attemptLogin(emailController.text, passwordController.text);
+                  //attemptLogin(emailController.text, passwordController.text);
                 },
                 child: Text(
                   'Login',
