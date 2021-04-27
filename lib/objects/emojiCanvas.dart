@@ -44,10 +44,13 @@ class EmojiCanvas extends StatefulWidget {
 
 class EmojiCanvasState extends State<EmojiCanvas> { 
   List<GestureDetector> currentEmojis;
+  List<EmojiMetadata> currentMetaData; 
+
   Color currentColors;
   RenderBox currentConstraints;
   
   void appendEmoji(MoveableStackItem item){
+    EmojiMetadata metadata = item.getMetaData();
     var finalItem;
     finalItem = GestureDetector(
       onLongPress: (){
@@ -61,8 +64,34 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     );
 
     setState(() {
-      currentEmojis.add(finalItem);      
+      
+      currentEmojis.add(finalItem);  
+      currentMetaData.add(metadata);    
     });
+  }
+
+  List<MoveableStackItem> getStackItems(){
+    List<MoveableStackItem> items;
+    for(int i=0; i<currentEmojis.length; i++){
+      MoveableStackItem item = this.currentEmojis[0].child;
+      items.add(item);
+    }
+    print(items);
+    return items;
+  }
+
+
+  List<EmojiMetadata> getEmojiMetaDataFomCanvas(){
+    List<EmojiMetadata> metaDataList= [];
+
+    for(int i=0; i < this.currentEmojis.length; i++){
+      MoveableStackItem item;
+      item = currentEmojis[i].child;
+      metaDataList.add(  item.getMetaData()  );
+    }
+    return metaDataList;
+
+
   }
 
   void appendColor(Color color){
@@ -89,6 +118,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
   @override
   void initState() {
     currentEmojis = [];
+    currentMetaData = [];
     for(int i=0; i<widget.emojis.length; i++){
       appendEmoji(widget.emojis[i]);
     }
@@ -117,8 +147,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
           child: Stack(
             alignment: Alignment.center,
             children: currentEmojis,//EmojisOnStack.movableEmojis, 
-            //widget.currentEmojis, 
-            //
+            
           ),
         );
       } 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
+import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 //import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'objects/cardCarousel.dart';
@@ -18,14 +19,18 @@ class NewJournal extends StatefulWidget {
 class _NewJournal extends State<NewJournal> {
   final TextEditingController controller = TextEditingController(); // controller for the keyboard
   GlobalKey<EmojiCanvasState> _myEmojiCanvas;
-  GlobalKey<EmojiCanvasState> _editKey;
+  GlobalKey<EmojiCanvasPreviewState> _previewKey;
   //GlobalKey<EmojiCanvasState> _myEmojiCanvasPreview;
 
   EmojiCanvas impact;
+  EmojiCanvasPreview preview;
   //EmojiCanvas impactPreview;
   OverlayEntry overlayEntry;
   OverlayEntry overlayKeyboard;
   OverlayEntry overlayColorSlider;
+
+  ConnectionState connectionState;
+
 
   List imageAdresses = [
     "assets/images/log.jpeg",
@@ -40,39 +45,32 @@ class _NewJournal extends State<NewJournal> {
   void initState() {
     /// Completely empty canvas, ready to be filled with emojis
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
-    _editKey = new GlobalKey<EmojiCanvasState>();
+    _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
     //_myEmojiCanvasPreview = new GlobalKey<EmojiCanvasState>();
-    this.impact        = EmojiCanvas(key: this._myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
-    //impactPreview = EmojiCanvas(key: _myEmojiCanvasPreview, emojis: [], color: Colors.blue);
+    this.impact = EmojiCanvas(key: this._myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
+    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: [], color: Colors.white);
     super.initState();
+ 
   }
 
   void setColorToChosen(Color color){
     //this._myEmojiCanvas.currentState.currentColors = color;
     this._myEmojiCanvas.currentState.appendColor(color);
-    this._editKey.currentState.appendColor(color);
-    //this._myEmojiCanvas.currentState.setState(() {
-          
-      //  });
-    /*
-    setState(() {
-      _myEmojiCanvas.currentState.setState(() {});
-      _editKey.currentState.setState(() {});
-    });
-    */
+    //this._editKey.currentState.appendColor(color);
+
   }
 
   void _appendEmojiToImpactCanvas(MoveableStackItem item) {
     //this.impact._appendEmoji(item);
     this._myEmojiCanvas.currentState.appendEmoji(item);
-    this._editKey.currentState.appendEmoji(item);
+    setState(() {
+          
+        });
+    //this._editKey.currentState.appendEmoji(item);
   }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-          
-        });
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -118,21 +116,22 @@ class _NewJournal extends State<NewJournal> {
                 child: Center(
                     child: Stack(
                   children: [
-                    GestureDetector(
-                      onPanUpdate: (d){},
-                      //// DOES NOTHING, ONLY PREVENTS EMOJIS FROM BEING MOVABLE
-                      /// FUNKAR INTE, TESTA MED MED MAKEPREVIEWCANVAS???? PROBLEM MED DUPLICATE GLOBALKEY JUST NU
-                      child: impact,//_myEmojiCanvas.currentState ==null ? EmojiCanvas(emojis: [] ,color: Colors.white) : EmojiCanvas(emojis: _myEmojiCanvas.currentState.currentEmojis ,color: _myEmojiCanvas.currentState.currentColors),
+
+                      /// FUNKAR INTE, TESTA MED MED MAKEPREVIEWCANVAS???? 
+                      //_myEmojiCanvas.currentState == null ?
+                      //EmojiCanvasPreview([],Colors.blue)
+                    this.preview,
+                      //TextColors("sfsdf"),
                       
-                      //makePreviewCanvas(),
-                      //impact
-                      ),
-                    //this.impactPreview,
+
+
+
                     IconButton(
                       icon: Icon(
                         Icons.edit//IconData(icon:Icons.edit, fontFamily: 'MaterialIcons'),
                       ),
                       onPressed: () {
+                        
                         showOverlay(context);
                         //showAsBottomSheet();
                       },
@@ -175,12 +174,13 @@ class _NewJournal extends State<NewJournal> {
     );
   }
 
+
   showOverlay(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).size.width * 0.000000001,
-        child: createJournalPost(context),
+        child: createJournalPost(),
 
         //JournalPost(),
       ),
@@ -193,8 +193,9 @@ class _NewJournal extends State<NewJournal> {
     this.overlayEntry.remove();
   }
 
-  Widget createJournalPost(BuildContext context) { 
-    
+  Widget createJournalPost() {
+    print(this.impact.color); 
+    print(this.impact.emojis);
     return Container(
       color: Colors.white,
       height: MediaQuery.of(context).size.height * 0.93,
@@ -207,7 +208,8 @@ class _NewJournal extends State<NewJournal> {
               child: Container(
                 height: MediaQuery.of(context).size.width * 0.95,
                 width: MediaQuery.of(context).size.width * 0.95,
-                child: EmojiCanvas(key: _editKey, emojis: [],color: _myEmojiCanvas.currentState.currentColors),//impact,
+                child: this.impact,
+              //EmojiCanvas(key: _myEmojiCanvas, emojis: _myEmojiCanvas.currentState,color: _myEmojiCanvas.currentState.currentColors),//impact,
               ),
             ),
             
@@ -243,9 +245,23 @@ class _NewJournal extends State<NewJournal> {
             ElevatedButton(
                 onPressed: () {
                   
+                  
                   setState(() {
                     print("DONEDONEDONE");
-                    this._myEmojiCanvas.currentState.setState(() {});
+                    
+                    
+                    this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
+                    this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
+                    this._previewKey.currentState.setState(() {});
+                    
+                    this._myEmojiCanvas.currentState.setState(() {
+                    //this.impact = EmojiCanvas(key: _myEmojiCanvas, emojis: _myEmojiCanvas.currentState.getStackItems(), color: _myEmojiCanvas.currentState.currentColors);
+                    
+                                          
+                                        });
+                    //this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis
+
+                    
                     /*
                     this._myEmojiCanvasPreview.currentState.setState(() {
                       this._myEmojiCanvasPreview.currentState.currentEmojis = List.from(this._myEmojiCanvas.currentState.currentEmojis);

@@ -17,13 +17,21 @@ import 'dart:convert';
 
 
 class MoveableStackItem extends StatefulWidget { 
-  EmojiMetadata _emojiMetadata;
+  EmojiMetadata emojiMetadata;
   Widget givenWidget;
   
-
+  EmojiMetadata getMetaData(){
+    if(emojiMetadata != null){
+      return emojiMetadata;
+    }
+    else{
+      print("EMOJIMETADATA WAS NULL FOR MOVABLE OBJECT");
+    }
+    
+  }
 
   MoveableStackItem(EmojiMetadata given) {
-    _emojiMetadata = given;
+    emojiMetadata = given;
     givenWidget = FittedBox(
         fit: BoxFit.contain,
         child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
@@ -38,26 +46,27 @@ class MoveableStackItem extends StatefulWidget {
 class _MoveableStackItemState extends State<MoveableStackItem> {
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
 
+  
 
   @override
   void initState() {
     notifier.value = Matrix4(
-      widget._emojiMetadata.matrixArguments[0],
-      widget._emojiMetadata.matrixArguments[1],
-      widget._emojiMetadata.matrixArguments[2],
-      widget._emojiMetadata.matrixArguments[3],
-      widget._emojiMetadata.matrixArguments[4],
-      widget._emojiMetadata.matrixArguments[5],
-      widget._emojiMetadata.matrixArguments[6],
-      widget._emojiMetadata.matrixArguments[7],
-      widget._emojiMetadata.matrixArguments[8],
-      widget._emojiMetadata.matrixArguments[9],
-      widget._emojiMetadata.matrixArguments[10],
-      widget._emojiMetadata.matrixArguments[11],
-      widget._emojiMetadata.matrixArguments[12],
-      widget._emojiMetadata.matrixArguments[13],
-      widget._emojiMetadata.matrixArguments[14],
-      widget._emojiMetadata.matrixArguments[15]
+      widget.emojiMetadata.matrixArguments[0],
+      widget.emojiMetadata.matrixArguments[1],
+      widget.emojiMetadata.matrixArguments[2],
+      widget.emojiMetadata.matrixArguments[3],
+      widget.emojiMetadata.matrixArguments[4],
+      widget.emojiMetadata.matrixArguments[5],
+      widget.emojiMetadata.matrixArguments[6],
+      widget.emojiMetadata.matrixArguments[7],
+      widget.emojiMetadata.matrixArguments[8],
+      widget.emojiMetadata.matrixArguments[9],
+      widget.emojiMetadata.matrixArguments[10],
+      widget.emojiMetadata.matrixArguments[11],
+      widget.emojiMetadata.matrixArguments[12],
+      widget.emojiMetadata.matrixArguments[13],
+      widget.emojiMetadata.matrixArguments[14],
+      widget.emojiMetadata.matrixArguments[15]
     );
     super.initState();
   }
@@ -116,7 +125,7 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
               //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
 
               setState(() {
-                widget._emojiMetadata.matrixArguments = newMatrix;
+                widget.emojiMetadata.matrixArguments = newMatrix;
               });
               
             },
