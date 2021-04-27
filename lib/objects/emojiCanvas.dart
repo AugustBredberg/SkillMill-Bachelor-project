@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:skillmill_demo/journalPost.dart';
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'movableObject.dart';
+import 'dart:async';
 
 class EmojiMetadata{
   String emoji;
@@ -47,7 +48,9 @@ class EmojiCanvasState extends State<EmojiCanvas> {
   List<EmojiMetadata> currentMetaData; 
 
   Color currentColors;
-  RenderBox currentConstraints;
+  RenderBox currentConstraints;  
+  Timer _everySecond;
+
   
   void appendEmoji(MoveableStackItem item){
     EmojiMetadata metadata = item.getMetaData();
@@ -96,6 +99,11 @@ class EmojiCanvasState extends State<EmojiCanvas> {
 
   void appendColor(Color color){
     setState(() {
+      /*_everySecond = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {
+        _now = DateTime.now().second.toString();
+      });
+      });*/
       currentColors = color;      
     });
   }
@@ -124,6 +132,8 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     }
     
     //currentEmojis = widget.emojis;
+    //timer = Timer.periodic(Duration(seconds: 15), (Timer t) => checkForNewSharedLists());
+
     currentColors = widget.color;//.white; 
     super.initState();
   }

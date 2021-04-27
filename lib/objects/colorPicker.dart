@@ -31,7 +31,7 @@ class _SliderIndicatorPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawCircle(
-        Offset(position, size.height / 2), 12, Paint()..color = Colors.grey);
+        Offset(position, size.height / 2), 16, Paint()..color = Colors.grey);
   }
 
   @override
@@ -68,7 +68,6 @@ class _ColorPickerState extends State<ColorPicker> {
   double _shadeSliderPosition;
   Color _currentColor;
   Color _shadedColor;
-  
 
   @override
   initState() {
@@ -76,7 +75,6 @@ class _ColorPickerState extends State<ColorPicker> {
     _currentColor = _calculateSelectedColor(_colorSliderPosition);
     _shadeSliderPosition = widget.width / 2; //center the shader selector
     _shadedColor = _calculateShadedColor(_shadeSliderPosition);
-  
   }
 
   _colorChangeHandler(double position) {
@@ -92,6 +90,10 @@ class _ColorPickerState extends State<ColorPicker> {
       _colorSliderPosition = position;
       _currentColor = _calculateSelectedColor(_colorSliderPosition);
       _shadedColor = _calculateShadedColor(_shadeSliderPosition);
+      widget.callback(_shadedColor);
+      print(_currentColor.toString() + 'CURRENT');
+      print(_shadedColor.toString() + 'SHADED');
+
     });
   }
 
@@ -102,8 +104,10 @@ class _ColorPickerState extends State<ColorPicker> {
     setState(() {
       _shadeSliderPosition = position;
       _shadedColor = _calculateShadedColor(_shadeSliderPosition);
+      widget.callback(_shadedColor);
+
       print(
-          "r: ${_shadedColor.red}, g: ${_shadedColor.green}, b: ${_shadedColor.blue}");
+          "r: ${_shadedColor.red}, g: ${_shadedColor.green}, b: ${_shadedColor.blue} PICKERPICKER");
     });
   }
 
@@ -177,10 +181,7 @@ class _ColorPickerState extends State<ColorPicker> {
     return _currentColor;
   }
 
-  void colorChosen(Color color){
-
-
-  }
+  void colorChosen(Color color) {}
 
   @override
   Widget build(BuildContext context) {
@@ -189,11 +190,10 @@ class _ColorPickerState extends State<ColorPicker> {
       //margin: const EdgeInsets.all(15.0),
       //padding: const EdgeInsets.all(3.0),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.25,
-      decoration: BoxDecoration(
-          color: Colors.white, border: Border.all(color: Colors.black)),
+      height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
         children: <Widget>[
+          SizedBox(height: MediaQuery.of(context).size.height * 0.08),
           Center(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -213,7 +213,7 @@ class _ColorPickerState extends State<ColorPicker> {
                 padding: EdgeInsets.all(15),
                 child: Container(
                   width: widget.width,
-                  height: 15,
+                  height: 25,
                   decoration: BoxDecoration(
                     border: Border.all(width: 2, color: Colors.grey[800]),
                     borderRadius: BorderRadius.circular(15),
@@ -226,6 +226,7 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ),
           ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Center(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -245,7 +246,7 @@ class _ColorPickerState extends State<ColorPicker> {
                 padding: EdgeInsets.all(15),
                 child: Container(
                   width: widget.width,
-                  height: 15,
+                  height: 25,
                   decoration: BoxDecoration(
                     border: Border.all(width: 2, color: Colors.grey[800]),
                     borderRadius: BorderRadius.circular(15),
@@ -259,40 +260,6 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ),
           ),
-          Row(children: [
-            Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                color: _shadedColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            SizedBox(height: 40),
-            ConstrainedBox(
-                constraints: BoxConstraints.tightFor(
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    height: MediaQuery.of(context).size.width * 0.15),
-                child: ElevatedButton(
-                  child: Text(
-                    'Set color',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () {
-                    widget.callback(_shadedColor);
-                    //colorChosen(_shadedColor);
-                    //Change color of canvas and pop
-                    //journalPost();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(),
-                    primary: Colors.white,
-                  ),
-                )),
-          ]),
         ],
       ),
     );
