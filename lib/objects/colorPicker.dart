@@ -31,7 +31,7 @@ class _SliderIndicatorPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.drawCircle(
-        Offset(position, size.height / 2), 12, Paint()..color = Colors.grey);
+        Offset(position, size.height / 2), 16, Paint()..color = Colors.grey);
   }
 
   @override
@@ -190,9 +190,10 @@ class _ColorPickerState extends State<ColorPicker> {
       //margin: const EdgeInsets.all(15.0),
       //padding: const EdgeInsets.all(3.0),
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.25,
+      height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
         children: <Widget>[
+          SizedBox(height: MediaQuery.of(context).size.height * 0.08),
           Center(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -212,7 +213,7 @@ class _ColorPickerState extends State<ColorPicker> {
                 padding: EdgeInsets.all(15),
                 child: Container(
                   width: widget.width,
-                  height: 15,
+                  height: 25,
                   decoration: BoxDecoration(
                     border: Border.all(width: 2, color: Colors.grey[800]),
                     borderRadius: BorderRadius.circular(15),
@@ -225,6 +226,7 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ),
           ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           Center(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -244,7 +246,7 @@ class _ColorPickerState extends State<ColorPicker> {
                 padding: EdgeInsets.all(15),
                 child: Container(
                   width: widget.width,
-                  height: 15,
+                  height: 25,
                   decoration: BoxDecoration(
                     border: Border.all(width: 2, color: Colors.grey[800]),
                     borderRadius: BorderRadius.circular(15),
