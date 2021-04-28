@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_carousel/carousel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
+import 'emojiCanvasPreview.dart';
+import 'globals.dart';
 
 class CardCarousel extends StatefulWidget{
   List<String> cardPictureAdresses;
@@ -19,7 +22,7 @@ class _CardCarousel extends State<CardCarousel>{
   //List<String> cardPics = [];
   String testUrl = "images/king.jpg";
   int _currentIndex;
-  Image a = Image.asset('images/king.jpg');
+  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.75);
   Image b = Image.asset('images/back.png');
   Image c = Image.asset('images/jack.png');
   Image d = Image.asset('images/joker.jpg');
@@ -50,7 +53,7 @@ class _CardCarousel extends State<CardCarousel>{
           autoPlay: false,
           enlargeCenterPage: true,
         ),
-        items: [a,b,c,d,e].map((i) {
+        items: [a,a,a,a,a].map((i) {
           return Builder(
             builder: (BuildContext context) {
               return Container(
@@ -59,7 +62,9 @@ class _CardCarousel extends State<CardCarousel>{
                 decoration: BoxDecoration(
                   color: Colors.amber
                 ),
-                child: Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
+                child: i
+                
+                //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
               );
             },
           );

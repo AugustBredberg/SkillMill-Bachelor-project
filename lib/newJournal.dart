@@ -7,6 +7,8 @@ import 'objects/cardCarousel.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
 
+
+
 class NewJournal extends StatefulWidget {
   NewJournal() {}
   @override
@@ -33,7 +35,7 @@ class _NewJournal extends State<NewJournal> {
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
     
     this.impact  = EmojiCanvas(key: this._myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
-    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: [], color: Colors.white);
+    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: [], color: Colors.white, widthOfScreen: 0.6);
     super.initState();
  
   }
@@ -66,6 +68,7 @@ class _NewJournal extends State<NewJournal> {
                     return;
                   } else {
                     popOverLay(context);
+                    popEditOverlay(context);
                   }
                 } else {
                   Navigator.pop(context);
@@ -94,25 +97,35 @@ class _NewJournal extends State<NewJournal> {
                 ),
               ),
               Container(
-                child: Center(
-                    child: Stack(
-                  children: [
-                    ///// PREVIEW CANVAS WITH EMOJIS THAT CANNOT BE MOVED///
-                    this.preview,
-                    ////////////////////////////////////////////////////////
-
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit
-                      ),
-                      onPressed: () {
-                        showOverlay(context);
-                      },
-                    ),
-                  ],
-                )),
                 width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.width * 0.6,
+                height: MediaQuery.of(context).size.width * 0.6, 
+
+                child: Center(
+                    child: ClipRect(
+                      //clipper: CustomClipper<>
+                      child: Stack(
+                        clipBehavior: Clip.hardEdge,
+                        fit: StackFit.expand,
+                        children: [
+                          ///// PREVIEW CANVAS WITH EMOJIS THAT CANNOT BE MOVED///
+                          this.preview,
+                          ////////////////////////////////////////////////////////
+                        ///
+                          IconButton(
+                            iconSize: 40,
+                            icon: Icon(
+                              Icons.edit
+                            ),
+                            onPressed: () {
+                              showOverlay(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                
+                
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
                 ),
@@ -218,9 +231,10 @@ class _NewJournal extends State<NewJournal> {
                   /// Updates the preview canvas to the edited canvas
                   this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
                   this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
+
                   /// Makes sure that the edit-canvas actually updates
                   this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis;
-                  this.impact.color = this._myEmojiCanvas.currentState.currentColors;
+                  this.impact.color  = this._myEmojiCanvas.currentState.currentColors;
                 });
                 popOverLay(context);
               },
@@ -312,6 +326,7 @@ class _NewJournal extends State<NewJournal> {
 
   void onEmojiSelected(Emoji emoji) {
     controller.text += emoji.text;
+    print(emoji.text);
     MoveableStackItem item = MoveableStackItem(EmojiMetadata(emoji.text, [
       0.6463089079186324,
       0.13423912881164965,

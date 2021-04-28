@@ -29,7 +29,7 @@ class _JournalFeed extends State<JournalFeed>{
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.40,
+      height: MediaQuery.of(context).size.width * 0.750,
       width: MediaQuery.of(context).size.width * 1,
         //padding: EdgeInsets.only(left:50),
       child: CardCarousel(imageAdresses)

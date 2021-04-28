@@ -6,8 +6,9 @@ import 'emojiCanvas.dart';
 class EmojiCanvasPreview extends StatefulWidget { 
   List<EmojiMetadata> emojis;
   Color color;
+  double widthOfScreen;
 
-  EmojiCanvasPreview({Key key, @required this.emojis, @required this.color}) : super(key: key);
+  EmojiCanvasPreview({Key key, @required this.emojis, @required this.color, @required this.widthOfScreen}) : super(key: key);
 
   
   @override 
@@ -35,8 +36,8 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
       _emojiMetadata.matrixArguments[9],
       _emojiMetadata.matrixArguments[10],
       _emojiMetadata.matrixArguments[11],
-      _emojiMetadata.matrixArguments[12],
-      _emojiMetadata.matrixArguments[13],
+      _emojiMetadata.matrixArguments[12]*(widget.widthOfScreen/0.95), // THIS IS THE RATIO BETWEEN THE PREVIEW 
+      _emojiMetadata.matrixArguments[13]*(widget.widthOfScreen/0.95),
       _emojiMetadata.matrixArguments[14],
       _emojiMetadata.matrixArguments[15]
     );

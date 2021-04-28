@@ -29,38 +29,42 @@ class MoveableStackItem extends StatefulWidget {
   }
   
   @override State<StatefulWidget> createState() { 
-   return _MoveableStackItemState(); 
+   return MoveableStackItemState(); 
   } 
 
 }
-class _MoveableStackItemState extends State<MoveableStackItem> {
+class MoveableStackItemState extends State<MoveableStackItem> {
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
-
+  EmojiMetadata emojiMetadata;
+  Widget givenWidget;
   
 
   @override
   void initState() {
+    this.emojiMetadata = widget.emojiMetadata;
+    this.givenWidget = widget.givenWidget;
     notifier.value = Matrix4(
-      widget.emojiMetadata.matrixArguments[0],
-      widget.emojiMetadata.matrixArguments[1],
-      widget.emojiMetadata.matrixArguments[2],
-      widget.emojiMetadata.matrixArguments[3],
-      widget.emojiMetadata.matrixArguments[4],
-      widget.emojiMetadata.matrixArguments[5],
-      widget.emojiMetadata.matrixArguments[6],
-      widget.emojiMetadata.matrixArguments[7],
-      widget.emojiMetadata.matrixArguments[8],
-      widget.emojiMetadata.matrixArguments[9],
-      widget.emojiMetadata.matrixArguments[10],
-      widget.emojiMetadata.matrixArguments[11],
-      widget.emojiMetadata.matrixArguments[12],
-      widget.emojiMetadata.matrixArguments[13],
-      widget.emojiMetadata.matrixArguments[14],
-      widget.emojiMetadata.matrixArguments[15]
+      this.emojiMetadata.matrixArguments[0],
+      this.emojiMetadata.matrixArguments[1],
+      this.emojiMetadata.matrixArguments[2],
+      this.emojiMetadata.matrixArguments[3],
+      this.emojiMetadata.matrixArguments[4],
+      this.emojiMetadata.matrixArguments[5],
+      this.emojiMetadata.matrixArguments[6],
+      this.emojiMetadata.matrixArguments[7],
+      this.emojiMetadata.matrixArguments[8],
+      this.emojiMetadata.matrixArguments[9],
+      this.emojiMetadata.matrixArguments[10],
+      this.emojiMetadata.matrixArguments[11],
+      this.emojiMetadata.matrixArguments[12],
+      this.emojiMetadata.matrixArguments[13],
+      this.emojiMetadata.matrixArguments[14],
+      this.emojiMetadata.matrixArguments[15]
     );
     super.initState();
   }
   
+
 
   var json = { 
     "emoji":"🤗",
@@ -115,7 +119,7 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
               //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
 
               setState(() {
-                widget.emojiMetadata.matrixArguments = newMatrix;
+                this.emojiMetadata.matrixArguments = newMatrix;
               });
               
             },
@@ -125,7 +129,7 @@ class _MoveableStackItemState extends State<MoveableStackItem> {
                 return Transform(
                   //alignment: Alignment.center,
                   transform: notifier.value,
-                  child: widget.givenWidget
+                  child: this.givenWidget,
 
                 );
               },
