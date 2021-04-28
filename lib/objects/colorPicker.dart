@@ -1,29 +1,6 @@
-import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/journalPost.dart';
 
-/*
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Color Picker Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Color Picker Demo"),
-        ),
-        body: SafeArea(
-          child: ColorPicker(300, ),
-        ),
-      ),
-    );
-  }
-}
-*/
+
 
 class _SliderIndicatorPainter extends CustomPainter {
   final double position;

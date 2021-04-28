@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/navigationBar.dart';
-import 'package:skillmill_demo/journalPost.dart';
 import 'package:skillmill_demo/newUserView.dart';
-import 'home.dart';
-import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'loginView.dart';
 import 'navigationBar.dart';
 
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'dart:ui';
 import 'dart:io';
 import 'dart:async';
 
@@ -44,7 +40,6 @@ class MyApp extends StatelessWidget {
         '/home': (BuildContext context) => new NavigationBar(),
         '/login': (BuildContext context) => new LoginView(),
         '/signUp': (BuildContext context) => new NewUserView(),
-        '/post': (BuildContext context) => new JournalPost()
       },
       // Enables switching between widgets without accesess to context
       navigatorKey: navigatorKey,

@@ -2,8 +2,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
-import 'package:skillmill_demo/journalPost.dart';
-
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'emojiCanvas.dart';
 

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/journalPost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
-//import 'package:skillmill_demo/objects/emojiKeyboard.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'objects/cardCarousel.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
-//import 'package:emoji_picker/emoji_picker.dart';
 
 class NewJournal extends StatefulWidget {
   NewJournal() {}
@@ -20,53 +17,37 @@ class _NewJournal extends State<NewJournal> {
   final TextEditingController controller = TextEditingController(); // controller for the keyboard
   GlobalKey<EmojiCanvasState> _myEmojiCanvas;
   GlobalKey<EmojiCanvasPreviewState> _previewKey;
-  //GlobalKey<EmojiCanvasState> _myEmojiCanvasPreview;
 
   EmojiCanvas impact;
   EmojiCanvasPreview preview;
-  //EmojiCanvas impactPreview;
+
   OverlayEntry overlayEntry;
-  OverlayEntry overlayKeyboard;
-  OverlayEntry overlayColorSlider;
-
-  ConnectionState connectionState;
+  OverlayEntry overlayEdit;
 
 
-  List imageAdresses = [
-    "assets/images/log.jpeg",
-    "assets/images/jack.png",
-    "assets/images/back.png",
-    "assets/images/joker.jpg",
-    "assets/images/king.jpg",
-    "assets/images/queen.png"
-  ];
 
   @override
   void initState() {
     /// Completely empty canvas, ready to be filled with emojis
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
-    //_myEmojiCanvasPreview = new GlobalKey<EmojiCanvasState>();
-    this.impact = EmojiCanvas(key: this._myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
+    
+    this.impact  = EmojiCanvas(key: this._myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
     this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: [], color: Colors.white);
     super.initState();
  
   }
 
   void setColorToChosen(Color color){
-    //this._myEmojiCanvas.currentState.currentColors = color;
-    this._myEmojiCanvas.currentState.appendColor(color);
-    //this._editKey.currentState.appendColor(color);
-
+    setState(() {
+      this._myEmojiCanvas.currentState.appendColor(color);
+    });
   }
 
   void _appendEmojiToImpactCanvas(MoveableStackItem item) {
-    //this.impact._appendEmoji(item);
-    this._myEmojiCanvas.currentState.appendEmoji(item);
     setState(() {
-          
-        });
-    //this._editKey.currentState.appendEmoji(item);
+      this._myEmojiCanvas.currentState.appendEmoji(item);      
+    });
   }
 
   @override
@@ -116,24 +97,16 @@ class _NewJournal extends State<NewJournal> {
                 child: Center(
                     child: Stack(
                   children: [
-
-                      /// FUNKAR INTE, TESTA MED MED MAKEPREVIEWCANVAS???? 
-                      //_myEmojiCanvas.currentState == null ?
-                      //EmojiCanvasPreview([],Colors.blue)
+                    ///// PREVIEW CANVAS WITH EMOJIS THAT CANNOT BE MOVED///
                     this.preview,
-                      //TextColors("sfsdf"),
-                      
-
-
+                    ////////////////////////////////////////////////////////
 
                     IconButton(
                       icon: Icon(
-                        Icons.edit//IconData(icon:Icons.edit, fontFamily: 'MaterialIcons'),
+                        Icons.edit
                       ),
                       onPressed: () {
-                        
                         showOverlay(context);
-                        //showAsBottomSheet();
                       },
                     ),
                   ],
@@ -147,11 +120,10 @@ class _NewJournal extends State<NewJournal> {
               Container(
                 width: MediaQuery.of(context).size.width * 1,
                 height: MediaQuery.of(context).size.width * 0.3,
-                child: CardCarousel(imageAdresses),
+                child: CardCarousel([]),
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
-                //height:0.2,
                 padding: EdgeInsets.only(
                     top: (MediaQuery.of(context).size.width * 0.05)),
                 child: TextField(
@@ -180,22 +152,17 @@ class _NewJournal extends State<NewJournal> {
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).size.width * 0.000000001,
-        child: createJournalPost(),
-
-        //JournalPost(),
+        child: editCanvas(),
       ),
     );
     overlayState.insert(overlayEntry);
   }
 
   popOverLay(BuildContext context) {
-    //OverlayState overlayState = Overlay.of(context);
     this.overlayEntry.remove();
   }
 
-  Widget createJournalPost() {
-    print(this.impact.color); 
-    print(this.impact.emojis);
+  Widget editCanvas(){
     return Container(
       color: Colors.white,
       height: MediaQuery.of(context).size.height * 0.93,
@@ -209,7 +176,6 @@ class _NewJournal extends State<NewJournal> {
                 height: MediaQuery.of(context).size.width * 0.95,
                 width: MediaQuery.of(context).size.width * 0.95,
                 child: this.impact,
-              //EmojiCanvas(key: _myEmojiCanvas, emojis: _myEmojiCanvas.currentState,color: _myEmojiCanvas.currentState.currentColors),//impact,
               ),
             ),
             
@@ -221,7 +187,7 @@ class _NewJournal extends State<NewJournal> {
                     color: Colors.white,
                     child: IconButton(
                       iconSize: 50,
-                      icon: Icon(Icons.keyboard),//Icon(IconData(0xe7eb, fontFamily: 'MaterialIcons')),
+                      icon: Icon(Icons.keyboard),
                       onPressed: () {
                         showKeyboard(context);
                       },
@@ -246,44 +212,29 @@ class _NewJournal extends State<NewJournal> {
             ),
 
             ElevatedButton(
-                onPressed: () {
-                  
-                  
-                  setState(() {
-                    print("DONEDONEDONE");
-                    
-                    
-                    this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
-                    this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
-                    this._previewKey.currentState.setState(() {});
-                    
-                    this._myEmojiCanvas.currentState.setState(() {
-                    //this.impact = EmojiCanvas(key: _myEmojiCanvas, emojis: _myEmojiCanvas.currentState.getStackItems(), color: _myEmojiCanvas.currentState.currentColors);
-                    
-                                          
-                                        });
-                    //this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis
-
-                    
-                    /*
-                    this._myEmojiCanvasPreview.currentState.setState(() {
-                      this._myEmojiCanvasPreview.currentState.currentEmojis = List.from(this._myEmojiCanvas.currentState.currentEmojis);
-                      this._myEmojiCanvasPreview.currentState.currentColors = this._myEmojiCanvas.currentState.currentColors;
-                    });
-                    */
-                  });
-                  popOverLay(context);
-                },
-                child: Text("Done")),
+              onPressed: () {
+                setState(() {
+                  print("DONEDONEDONE");
+                  /// Updates the preview canvas to the edited canvas
+                  this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
+                  this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
+                  /// Makes sure that the edit-canvas actually updates
+                  this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis;
+                  this.impact.color = this._myEmojiCanvas.currentState.currentColors;
+                });
+                popOverLay(context);
+              },
+              child: Text("Done")),
           ],
         ),
       ),
     );
   }
+  
 
   showKeyboard(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
-    this.overlayKeyboard = OverlayEntry(
+    this.overlayEdit = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).size.width * 0,
         child: Material(
@@ -300,49 +251,27 @@ class _NewJournal extends State<NewJournal> {
                         color: Colors.green,
                       ),
                       onPressed: () {
-                        popKeyboard(context);
-                        print("poppade keyboard");
+                        popEditOverlay(context);
+                        print("popped keyboard");
                       },
                     ),
-                  
-                  /*
-                  Container(
-                    child: EmojiPicker(
-                      rows: 3,
-                      columns: 7,
-                      buttonMode: ButtonMode.MATERIAL,
-                      recommendKeywords: ["racing", "dog"],
-                      numRecommended: 10,
-                      onEmojiSelected: (emoji, category) {
-                        
-                        onEmojiSelected(emoji.emoji);
-                      },
-                    ),
-                  ),
-                  */
-                  
                   EmojiKeyboard(
-                    //categoryTitles: CategoryTitles(). ,
                     floatingHeader: false,
                     height: MediaQuery.of(context).size.height * 0.29,
                     onEmojiSelected: onEmojiSelected,
                   ),
-                  
-                  //EmojiKeyboardClass(null),
                 ],
               ),
-            )),
-
-        //JournalPost(),
-        //Text("haj")
+            ),
+          ),
       ),
     );
-    overlayState.insert(overlayKeyboard);
+    overlayState.insert(overlayEdit);
   }
 
   showColorSlider(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
-    this.overlayKeyboard = OverlayEntry(
+    this.overlayEdit = OverlayEntry(
       builder: (context) => Positioned(
           bottom: MediaQuery.of(context).size.width * 0,
           child: Material(
@@ -355,8 +284,8 @@ class _NewJournal extends State<NewJournal> {
                         color: Colors.green,
                       ),
                     onPressed: () {
-                      popColorSlider(context);
-                      print("poppade keyboard");
+                      popEditOverlay(context);
+                      print("popped colorslider");
                     },
                   ),
                 
@@ -370,24 +299,16 @@ class _NewJournal extends State<NewJournal> {
                 ),
               ],
             ),
-          )
-          //JournalPost(),
           ),
+        ),
     );
 
-    overlayState.insert(overlayKeyboard);
+    overlayState.insert(overlayEdit);
   }
 
-  popKeyboard(BuildContext context) {
-    //OverlayState overlayState = Overlay.of(context);
-    this.overlayKeyboard.remove();
+  popEditOverlay(BuildContext context) {
+    this.overlayEdit.remove();
   }
-
-  popColorSlider(BuildContext context) {
-    //OverlayState overlayState = Overlay.of(context);
-    this.overlayKeyboard.remove();
-  }
-
 
   void onEmojiSelected(Emoji emoji) {
     controller.text += emoji.text;
@@ -413,3 +334,37 @@ class _NewJournal extends State<NewJournal> {
   }
   
 }
+
+
+
+
+
+
+
+
+/*
+class CreateJournalPost extends StatefulWidget{
+  EmojiCanvas impact;
+
+  CreateJournalPost(EmojiCanvas impact) {
+    this.impact = impact;  
+  }
+  
+  @override State<StatefulWidget> createState() { 
+   return CreateJournalPostState(); 
+  } 
+
+
+}
+
+
+class CreateJournalPostState extends State<CreateJournalPost>{
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return 
+  }
+
+}*/

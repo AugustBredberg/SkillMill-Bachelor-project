@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/newJournal.dart';
 import 'journalFeed.dart';
-import 'journalPost.dart';
-import 'objects/emojiCanvas.dart';
 
 class Home extends StatefulWidget {
   //JournalView({Key key, this.title}) : super(key: key);

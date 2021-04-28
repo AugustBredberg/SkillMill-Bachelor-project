@@ -1,20 +1,9 @@
 
 
 import 'package:flutter/material.dart';
-import 'journalFeed.dart';
-import 'journalPost.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 
-/*
-class SkillPage extends StatefulWidget {
-  //SkillPage({Key key, this.title}) : super(key: key);
-  //final String title;
 
-  @override
-  _SkillPage createState() => _SkillPage();
-}
-*/
-//class _SkillPage extends State<SkillPage> {
 class SkillPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

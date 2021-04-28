@@ -1,49 +1,17 @@
 
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/journalPost.dart';
-import 'package:skillmill_demo/objects/emojiKeyboard.dart';
-import 'movableObject.dart';
 import 'emojiCanvas.dart';
-
-/*
-class EmojiMetadata{
-  String emoji;
-  List<double> matrixArguments;
-  
-  
-
-  EmojiMetadata(String emoji, List<double> args){
-    this.emoji = emoji;
-    this.matrixArguments = args;
-  }
-}*/
 
 
 class EmojiCanvasPreview extends StatefulWidget { 
   List<EmojiMetadata> emojis;
   Color color;
-  //final RenderBox currentConstraints;
-  //final List<MoveableStackItem> currentEmojis;
 
-/*
-  EmojiCanvasPreview(List<EmojiMetadata> emojis, Color color){
-    this.emojis = emojis;
-    this.color = color;
-  }
-*/
-  //EmojiCanvasPreview({@required this.emojis, @required this.color})
   EmojiCanvasPreview({Key key, @required this.emojis, @required this.color}) : super(key: key);
-/*
-  EmojiCanvas(List<MoveableStackItem> emojis, List<Color> colors) {
-    this.emojis = emojis; 
-    this.colors = colors;
-    
-  }*/
+
   
   @override 
   State<StatefulWidget> createState() => EmojiCanvasPreviewState();
-  
-
 }
 
 
@@ -81,42 +49,19 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
         child: Text(_emojiMetadata.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
       ),
     );
-    
-    
-    /*
-    super.initState();
-    setState(() {
-      currentEmojis.add(item);      
-    });
-    */
   }
 
   
 
-  LayoutBuilder createPreviewCanvas(){
-    return  new LayoutBuilder(
-    builder: (BuildContext context, BoxConstraints constraints) {
-      return Container(
-          height: constraints.maxHeight,
-          width: constraints.maxWidth,
-          child: Stack(
-            alignment: Alignment.center,
-            children: currentEmojis,
-          ),
-        );
-      } 
-    );
-  }
-
   void updateEmojis(List<EmojiMetadata> metadata){
     setState(() { 
+      this.currentEmojis = [];
       for(int i=0; i<metadata.length; i++){
         Transform translated = translateMetadataToActualEmoji(metadata[i]);
         currentEmojis.add(translated);
         print(metadata[i].emoji);
       }
     });
-    
   }
 
   void updateColor(Color color){
@@ -127,18 +72,14 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
 
   @override
   void initState() {
-    print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+    print("Initiated preview canvas");
     currentEmojis = [];
     for(int i=0; i< widget.emojis.length; i++){
       Transform translated = translateMetadataToActualEmoji(widget.emojis[i]);
       currentEmojis.add(translated);
     }
-    setState(() {
-          
-        });
-    //currentEmojis = widget.emojis;
-    currentColors = widget.color;//.white; 
-    //super.initState();
+    currentColors = widget.color;
+    super.initState();
   }
 
   @override
@@ -147,22 +88,12 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
     builder: (BuildContext context, BoxConstraints constraints) {
       return Container(
         color: currentColors,
-        /*
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-              colors: currentColors
-            )
-          ),*/
           height: constraints.maxHeight,
           width: constraints.maxWidth,
           child: Stack(
             alignment: Alignment.center,
            
-            children: currentEmojis, 
-            //widget.currentEmojis, 
-            //
+            children: currentEmojis,
           ),
         );
       } 
