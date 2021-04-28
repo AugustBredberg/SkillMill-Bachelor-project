@@ -6,11 +6,17 @@ import 'package:skillmill_demo/objects/movableObject.dart';
 import 'objects/cardCarousel.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
-
+import 'objects/movableObject.dart';
 
 
 class NewJournal extends StatefulWidget {
-  NewJournal() {}
+  List<EmojiMetadata> oldCanvasEmojis;
+  Color oldCanvasColor;
+
+
+  NewJournal({Key key, @required this.oldCanvasEmojis, @required this.oldCanvasColor}) : super(key: key);
+
+  //NewJournal() {}
   @override
   _NewJournal createState() => _NewJournal();
 }
@@ -33,11 +39,17 @@ class _NewJournal extends State<NewJournal> {
     /// Completely empty canvas, ready to be filled with emojis
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
+
+    /// This list is for the editable canvas, it contians movable stack items.
+    List<MoveableStackItem> listOfItems = [];
+    for(var i in widget.oldCanvasEmojis){
+      listOfItems.add( MoveableStackItem(i));
+    }
     
-    this.impact  = EmojiCanvas(key: this._myEmojiCanvas, emojis: [], color: Colors.white); //([], []);
-    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: [], color: Colors.white, widthOfScreen: 0.6);
+
+    this.impact  = EmojiCanvas(key: this._myEmojiCanvas, emojis: listOfItems, color: widget.oldCanvasColor);
+    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: widget.oldCanvasEmojis, color: widget.oldCanvasColor, widthOfScreen: 0.6);
     super.initState();
- 
   }
 
   void setColorToChosen(Color color){
@@ -54,6 +66,7 @@ class _NewJournal extends State<NewJournal> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -101,9 +114,7 @@ class _NewJournal extends State<NewJournal> {
                 height: MediaQuery.of(context).size.width * 0.6, 
 
                 child: Center(
-                    child: ClipRect(
-                      //clipper: CustomClipper<>
-                      child: Stack(
+                    child: Stack(
                         clipBehavior: Clip.hardEdge,
                         fit: StackFit.expand,
                         children: [
@@ -122,7 +133,7 @@ class _NewJournal extends State<NewJournal> {
                           ),
                         ],
                       ),
-                    ),
+                    
                   ),
                 
                 
@@ -131,9 +142,10 @@ class _NewJournal extends State<NewJournal> {
                 ),
               ),
               Container(
-                width: MediaQuery.of(context).size.width * 1,
+                width: MediaQuery.of(context).size.width * 0.40,
                 height: MediaQuery.of(context).size.width * 0.3,
-                child: CardCarousel([]),
+                child: Center(child: Text("Reflection", style: TextStyle(fontSize: 30))), 
+                //CardCarousel([]),
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,

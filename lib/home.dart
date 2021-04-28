@@ -55,7 +55,7 @@ class _Home extends State<Home> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          new NewJournal()),
+                          new NewJournal(oldCanvasEmojis: [], oldCanvasColor: Colors.white)),
                 );
               },
             ),

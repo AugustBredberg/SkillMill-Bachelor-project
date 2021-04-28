@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'emojiCanvasPreview.dart';
 import 'globals.dart';
+import '../newJournal.dart';
 
 class CardCarousel extends StatefulWidget{
   List<String> cardPictureAdresses;
@@ -62,7 +63,17 @@ class _CardCarousel extends State<CardCarousel>{
                 decoration: BoxDecoration(
                   color: Colors.amber
                 ),
-                child: i
+                child: GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                new NewJournal(oldCanvasEmojis: i.emojis, oldCanvasColor: i.color)),
+                      );
+                    },
+                    child: i,
+                  )
                 
                 //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
               );

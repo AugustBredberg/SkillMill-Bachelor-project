@@ -91,10 +91,11 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
         color: currentColors,
           height: constraints.maxHeight,
           width: constraints.maxWidth,
-          child: Stack(
-            alignment: Alignment.center,
-           
-            children: currentEmojis,
+          child: ClipRect(
+            child: Stack(
+              alignment: Alignment.center,
+              children: currentEmojis,
+            ),
           ),
         );
       } 
