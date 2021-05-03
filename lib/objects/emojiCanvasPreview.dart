@@ -1,14 +1,16 @@
 
 import 'package:flutter/material.dart';
+import 'package:skillmill_demo/objects/globals.dart';
 import 'emojiCanvas.dart';
 
 
 class EmojiCanvasPreview extends StatefulWidget { 
   List<EmojiMetadata> emojis;
   Color color;
-  double widthOfScreen;
+  double widthOfScreen; 
+  double heightOfScreen;
 
-  EmojiCanvasPreview({Key key, @required this.emojis, @required this.color, @required this.widthOfScreen}) : super(key: key);
+  EmojiCanvasPreview({Key key, @required this.emojis, @required this.color, @required this.widthOfScreen, @required this.heightOfScreen}) : super(key: key);
 
   
   @override 
@@ -36,8 +38,8 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
       _emojiMetadata.matrixArguments[9],
       _emojiMetadata.matrixArguments[10],
       _emojiMetadata.matrixArguments[11],
-      _emojiMetadata.matrixArguments[12]*(widget.widthOfScreen/0.95), // THIS IS THE RATIO BETWEEN THE PREVIEW 
-      _emojiMetadata.matrixArguments[13]*(widget.widthOfScreen/0.95),
+      _emojiMetadata.matrixArguments[12]*(widget.widthOfScreen/editCanvasWidth), // THIS IS THE RATIO BETWEEN THE PREVIEW canvas and the edit canvas
+      _emojiMetadata.matrixArguments[13]*(widget.heightOfScreen/editCanvasHeight),
       _emojiMetadata.matrixArguments[14],
       _emojiMetadata.matrixArguments[15]
     );

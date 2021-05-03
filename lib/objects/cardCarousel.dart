@@ -23,7 +23,7 @@ class _CardCarousel extends State<CardCarousel>{
   //List<String> cardPics = [];
   String testUrl = "images/king.jpg";
   int _currentIndex;
-  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.75);
+  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.75, heightOfScreen: 0.75,);
   Image b = Image.asset('images/back.png');
   Image c = Image.asset('images/jack.png');
   Image d = Image.asset('images/joker.jpg');

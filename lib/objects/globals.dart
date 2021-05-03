@@ -20,4 +20,6 @@ List<EmojiMetadata> globalEmojiList1 = [
 
 ];
 
+double editCanvasWidth = 1;
+double editCanvasHeight = 1;
 bool isLoggedIn = false;

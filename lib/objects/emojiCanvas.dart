@@ -11,7 +11,7 @@ class EmojiMetadata{
     this.matrixArguments = args;
   }
 }
-
+ 
 
 class EmojiCanvas extends StatefulWidget { 
   List<MoveableStackItem> emojis;

@@ -7,7 +7,7 @@ import 'objects/cardCarousel.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
 import 'objects/movableObject.dart';
-
+import 'objects/globals.dart';
 
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -48,7 +48,7 @@ class _NewJournal extends State<NewJournal> {
     
 
     this.impact  = EmojiCanvas(key: this._myEmojiCanvas, emojis: listOfItems, color: widget.oldCanvasColor);
-    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: widget.oldCanvasEmojis, color: widget.oldCanvasColor, widthOfScreen: 0.6);
+    this.preview = EmojiCanvasPreview(key: this._previewKey, emojis: widget.oldCanvasEmojis, color: widget.oldCanvasColor, widthOfScreen: 0.6, heightOfScreen: 0.6);
     super.initState();
   }
 
@@ -111,7 +111,7 @@ class _NewJournal extends State<NewJournal> {
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.width * 0.6, 
+                height: MediaQuery.of(context).size.height * 0.6, 
 
                 child: Center(
                     child: Stack(
@@ -141,6 +141,7 @@ class _NewJournal extends State<NewJournal> {
                   border: Border.all(color: Colors.black),
                 ),
               ),
+              /*
               Container(
                 width: MediaQuery.of(context).size.width * 0.40,
                 height: MediaQuery.of(context).size.width * 0.3,
@@ -159,7 +160,7 @@ class _NewJournal extends State<NewJournal> {
                     hintText: "Write a short note about your entry",
                   ),
                 ),
-              ),
+              ), */
               ElevatedButton(
                 onPressed: () {},
                 child: Text("Save Entry"),
@@ -175,10 +176,8 @@ class _NewJournal extends State<NewJournal> {
   showOverlay(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
     this.overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).size.width * 0.000000001,
-        child: editCanvas(),
-      ),
+      builder: (context) => editCanvas(),
+      
     );
     overlayState.insert(overlayEntry);
   }
@@ -186,24 +185,24 @@ class _NewJournal extends State<NewJournal> {
   popOverLay(BuildContext context) {
     this.overlayEntry.remove();
   }
-
+ 
   Widget editCanvas(){
     return Container(
       color: Colors.white,
-      height: MediaQuery.of(context).size.height * 0.93,
-      width: MediaQuery.of(context).size.width * 1.0,
+      height: MediaQuery.of(context).size.height * 1,
+      width: MediaQuery.of(context).size.width * 1,
       child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Material(
               child: Container(
-                height: MediaQuery.of(context).size.width * 0.95,
-                width: MediaQuery.of(context).size.width * 0.95,
+                height: MediaQuery.of(context).size.height * editCanvasHeight,
+                width: MediaQuery.of(context).size.width * editCanvasWidth,
                 child: this.impact,
               ),
             ),
-            
+            /*
             Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -235,22 +234,53 @@ class _NewJournal extends State<NewJournal> {
                 
               ),
             ),
+*/
+            Positioned(
+              top: 50,
+              right:0,
+              child: Column(
+                children: [
+                  Material(
+                    type: MaterialType.transparency,
+                    child: IconButton(
+                      iconSize: 50,
+                      icon: Icon(
+                        Icons.color_lens,
+                      ),
+                      onPressed: () {
+                        showColorSlider(context);
+                      },
+                    ),
+                  ),
+                  Material(
+                    type: MaterialType.transparency,
+                    child: IconButton(
+                      iconSize: 50,
+                      icon: Icon(Icons.keyboard),
+                      onPressed: () {
+                        showKeyboard(context);
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        print("DONEDONEDONE");
+                        /// Updates the preview canvas to the edited canvas
+                        this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
+                        this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
 
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  print("DONEDONEDONE");
-                  /// Updates the preview canvas to the edited canvas
-                  this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
-                  this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
-
-                  /// Makes sure that the edit-canvas actually updates
-                  this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis;
-                  this.impact.color  = this._myEmojiCanvas.currentState.currentColors;
-                });
-                popOverLay(context);
-              },
-              child: Text("Done")),
+                        /// Makes sure that the edit-canvas actually updates
+                        this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis;
+                        this.impact.color  = this._myEmojiCanvas.currentState.currentColors;
+                      });
+                      popOverLay(context);
+                    },
+                    child: Text("Done")),
+                ],
+              ),
+            ),
+              
           ],
         ),
       ),
@@ -264,12 +294,13 @@ class _NewJournal extends State<NewJournal> {
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).size.width * 0,
         child: Material(
-            color: Colors.white,
+            color: Colors.transparent,
             child: Container(
-              height: MediaQuery.of(context).size.height * 0.37,
+              height: MediaQuery.of(context).size.height * 1,
               width: MediaQuery.of(context).size.width * 1,
               child: Column(
                 children: [
+                  SizedBox(width: MediaQuery.of(context).size.height * 0.05),
                     IconButton(
                       iconSize: MediaQuery.of(context).size.height * 0.05,
                       icon: Icon(
@@ -282,8 +313,9 @@ class _NewJournal extends State<NewJournal> {
                       },
                     ),
                   EmojiKeyboard(
+                    color: Color.fromRGBO(255, 255, 255, 0.19),
                     floatingHeader: false,
-                    height: MediaQuery.of(context).size.height * 0.29,
+                    height: MediaQuery.of(context).size.height * 0.90,
                     onEmojiSelected: onEmojiSelected,
                   ),
                 ],
@@ -337,26 +369,11 @@ class _NewJournal extends State<NewJournal> {
   }
 
   void onEmojiSelected(Emoji emoji) {
+    popEditOverlay(context);
     controller.text += emoji.text;
     print(emoji.text);
-    MoveableStackItem item = MoveableStackItem(EmojiMetadata(emoji.text, [
-      0.6463089079186324,
-      0.13423912881164965,
-      0.0,
-      0.0,
-      -0.13423912881164965,
-      0.6463089079186324,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      1.0,
-      0.0,
-      58.29945312195869,
-      11.104368977904983,
-      0.0,
-      1.0
-    ]));
+    MoveableStackItem item = MoveableStackItem(EmojiMetadata(emoji.text, [0.4360759627327983, -0.00499969555783915, 0.0, 0.0, 0.00499969555783915, 0.4360759627327983, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 100.90648195061966, 193.65734906587528, 0.0, 1.0]
+));
     _appendEmojiToImpactCanvas(item);
   }
   
