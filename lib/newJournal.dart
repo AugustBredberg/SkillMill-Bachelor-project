@@ -9,6 +9,8 @@ import 'objects/colorPicker.dart';
 import 'objects/movableObject.dart';
 import 'objects/globals.dart';
 
+
+
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
   Color oldCanvasColor;
@@ -112,7 +114,6 @@ class _NewJournal extends State<NewJournal> {
               Container(
                 width: MediaQuery.of(context).size.width * 0.6,
                 height: MediaQuery.of(context).size.height * 0.6, 
-
                 child: Center(
                     child: Stack(
                         clipBehavior: Clip.hardEdge,
@@ -142,6 +143,7 @@ class _NewJournal extends State<NewJournal> {
                 ),
               ),
               /*
+
               Container(
                 width: MediaQuery.of(context).size.width * 0.40,
                 height: MediaQuery.of(context).size.width * 0.3,
@@ -161,6 +163,7 @@ class _NewJournal extends State<NewJournal> {
                   ),
                 ),
               ), */
+
               ElevatedButton(
                 onPressed: () {},
                 child: Text("Save Entry"),
@@ -177,7 +180,7 @@ class _NewJournal extends State<NewJournal> {
     OverlayState overlayState = Overlay.of(context);
     this.overlayEntry = OverlayEntry(
       builder: (context) => editCanvas(),
-      
+
     );
     overlayState.insert(overlayEntry);
   }
@@ -185,7 +188,6 @@ class _NewJournal extends State<NewJournal> {
   popOverLay(BuildContext context) {
     this.overlayEntry.remove();
   }
- 
   Widget editCanvas(){
     return Container(
       color: Colors.white,
@@ -203,6 +205,7 @@ class _NewJournal extends State<NewJournal> {
               ),
             ),
             /*
+
             Center(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -373,7 +376,8 @@ class _NewJournal extends State<NewJournal> {
     controller.text += emoji.text;
     print(emoji.text);
     MoveableStackItem item = MoveableStackItem(EmojiMetadata(emoji.text, [0.4360759627327983, -0.00499969555783915, 0.0, 0.0, 0.00499969555783915, 0.4360759627327983, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 100.90648195061966, 193.65734906587528, 0.0, 1.0]
-));
+    )
+    );
     _appendEmojiToImpactCanvas(item);
   }
   

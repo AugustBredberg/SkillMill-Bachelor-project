@@ -12,6 +12,7 @@ class MoveableStackItem extends StatefulWidget {
   
   EmojiMetadata getMetaData(){
     if(emojiMetadata != null){ 
+
       return emojiMetadata;
     }
     else{
@@ -120,6 +121,7 @@ class MoveableStackItemState extends State<MoveableStackItem> {
               //List<num> newMatrix = m.storage;
               //Matrix4 matrix = Matrix4(, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
               //print(newMatrix);
+
 
               //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
 
