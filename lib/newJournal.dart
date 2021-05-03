@@ -31,6 +31,7 @@ class _NewJournal extends State<NewJournal> {
   EmojiCanvas impact;
   EmojiCanvasPreview preview;
 
+  OverlayState overlayState;
   OverlayEntry overlayEntry;
   OverlayEntry overlayEdit;
 
@@ -38,6 +39,8 @@ class _NewJournal extends State<NewJournal> {
 
   @override
   void initState() {
+    overlayState = Overlay.of(context);
+
     /// Completely empty canvas, ready to be filled with emojis
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
@@ -189,6 +192,8 @@ class _NewJournal extends State<NewJournal> {
     this.overlayEntry.remove();
   }
   Widget editCanvas(){
+    print(MediaQuery.of(context).size.height * editCanvasHeight);
+    print(MediaQuery.of(context).size.width * editCanvasHeight);
     return Container(
       color: Colors.white,
       height: MediaQuery.of(context).size.height * 1,
@@ -292,7 +297,11 @@ class _NewJournal extends State<NewJournal> {
   
 
   showKeyboard(BuildContext context) {
-    OverlayState overlayState = Overlay.of(context);
+    if(overlayEdit != null && overlayEdit.mounted){
+      print("other overlay already up, popping that overlay");
+      popEditOverlay(context);
+    }
+    //OverlayState overlayState = Overlay.of(context);
     this.overlayEdit = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).size.width * 0,
@@ -331,7 +340,10 @@ class _NewJournal extends State<NewJournal> {
   }
 
   showColorSlider(BuildContext context) {
-    OverlayState overlayState = Overlay.of(context);
+    if(overlayEdit != null && overlayEdit.mounted){
+      print("other overlay already up, popping that overlay");
+      popEditOverlay(context);
+    }
     this.overlayEdit = OverlayEntry(
       builder: (context) => Positioned(
           bottom: MediaQuery.of(context).size.width * 0,

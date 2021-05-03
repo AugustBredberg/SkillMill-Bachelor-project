@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  matrix4_transform: ^2.0.0
   carousel_slider: ^3.0.0
   emoji_picker: ^0.1.0
   flutter_svg: ^0.21.0+1

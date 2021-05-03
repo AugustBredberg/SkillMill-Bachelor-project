@@ -1,6 +1,6 @@
 
 
-
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'emojiCanvas.dart';
@@ -77,31 +77,9 @@ class MoveableStackItemState extends State<MoveableStackItem> {
   
   @override
   Widget build(BuildContext context) {
-    /*
-    final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
-    notifier.value = Matrix4(
-      widget._emojiMetadata.matrixArguments[0],
-      widget._emojiMetadata.matrixArguments[1],
-      widget._emojiMetadata.matrixArguments[2],
-      widget._emojiMetadata.matrixArguments[3],
-      widget._emojiMetadata.matrixArguments[4],
-      widget._emojiMetadata.matrixArguments[5],
-      widget._emojiMetadata.matrixArguments[6],
-      widget._emojiMetadata.matrixArguments[7],
-      widget._emojiMetadata.matrixArguments[8],
-      widget._emojiMetadata.matrixArguments[9],
-      widget._emojiMetadata.matrixArguments[10],
-      widget._emojiMetadata.matrixArguments[11],
-      widget._emojiMetadata.matrixArguments[12],
-      widget._emojiMetadata.matrixArguments[13],
-      widget._emojiMetadata.matrixArguments[14],
-      widget._emojiMetadata.matrixArguments[15]
-    );
-    */
-    //print(_attemptOfJsonDecoding());
-    //print(presetTest.getColumn(0));
     return MatrixGestureDetector(
             clipChild: true,
+            focalPointAlignment: Alignment.center,
             //shouldTranslate: false,
             onMatrixUpdate: (m, tm, sm, rm) {
 
@@ -122,16 +100,19 @@ class MoveableStackItemState extends State<MoveableStackItem> {
               //Matrix4 matrix = Matrix4(, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15)
               //print(newMatrix);
 
-
+              
               //newMatrix.addAll(m.copyIntoArray(newMatrix)) (m.getColumn(0)[1]);
 
               setState(() {
-                this.emojiMetadata.matrixArguments[0] *= sm.getColumn(0)[0]; // scale x
-                this.emojiMetadata.matrixArguments[1] += rm.getColumn(0)[1]; // skew y
+                /*
+                this.emojiMetadata.matrixArguments[0] *= sm.getColumn(0)[0] * (rm.getColumn(0)[0]).abs(); // scale x
+                this.emojiMetadata.matrixArguments[1] = rm.getColumn(0)[1]; // skew y SOMETHING WITH tan(skewAngle)
+                print("X SKEW IN MATRIX:::::" + this.emojiMetadata.matrixArguments[1].toString());
                 this.emojiMetadata.matrixArguments[2] = 0; 
                 this.emojiMetadata.matrixArguments[3] = 0;
                 this.emojiMetadata.matrixArguments[4] += rm.getColumn(1)[0]; // skew x
-                this.emojiMetadata.matrixArguments[5] *= sm.getColumn(1)[1];
+                print("X SKEW IN MATRIX:::::" + this.emojiMetadata.matrixArguments[4].toString());
+                this.emojiMetadata.matrixArguments[5] *= sm.getColumn(1)[1] * (rm.getColumn(1)[1]).abs(); // scale y
                 this.emojiMetadata.matrixArguments[6] = 0; 
                 this.emojiMetadata.matrixArguments[7] = 0;
                 this.emojiMetadata.matrixArguments[8] = 0;  
@@ -142,26 +123,13 @@ class MoveableStackItemState extends State<MoveableStackItem> {
                 this.emojiMetadata.matrixArguments[13] += tm.getColumn(3)[1] + sm.getColumn(3)[1] + rm.getColumn(3)[1]; //translate y for all the delta matrixes (every matrix updates translate)
                 this.emojiMetadata.matrixArguments[14] = 0;
                 this.emojiMetadata.matrixArguments[15] = 1;
+                notifier.value.copyFromArray(this.emojiMetadata.matrixArguments);
+                */
 
-                notifier.value = Matrix4(
-                  this.emojiMetadata.matrixArguments[0],
-                  this.emojiMetadata.matrixArguments[1],
-                  this.emojiMetadata.matrixArguments[2],
-                  this.emojiMetadata.matrixArguments[3],
-                  this.emojiMetadata.matrixArguments[4],
-                  this.emojiMetadata.matrixArguments[5],
-                  this.emojiMetadata.matrixArguments[6],
-                  this.emojiMetadata.matrixArguments[7],
-                  this.emojiMetadata.matrixArguments[8],
-                  this.emojiMetadata.matrixArguments[9],
-                  this.emojiMetadata.matrixArguments[10],
-                  this.emojiMetadata.matrixArguments[11],
-                  this.emojiMetadata.matrixArguments[12],
-                  this.emojiMetadata.matrixArguments[13],
-                  this.emojiMetadata.matrixArguments[14],
-                  this.emojiMetadata.matrixArguments[15]
-                );
-                print(notifier.value.storage);
+
+
+                notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
+                this.emojiMetadata.matrixArguments = notifier.value.storage;
               });
               
             },

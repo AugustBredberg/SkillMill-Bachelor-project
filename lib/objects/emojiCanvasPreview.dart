@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/objects/globals.dart';
 import 'emojiCanvas.dart';
+import 'package:matrix4_transform/matrix4_transform.dart';
 
 
 class EmojiCanvasPreview extends StatefulWidget { 
@@ -39,15 +40,26 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
       _emojiMetadata.matrixArguments[9],
       _emojiMetadata.matrixArguments[10],
       _emojiMetadata.matrixArguments[11],
-      _emojiMetadata.matrixArguments[12]*(widget.widthOfScreen/editCanvasWidth), // THIS IS THE RATIO BETWEEN THE PREVIEW canvas and the edit canvas
-      _emojiMetadata.matrixArguments[13]*(widget.heightOfScreen/editCanvasHeight),
+      _emojiMetadata.matrixArguments[12],//*(widget.widthOfScreen/editCanvasWidth), // THIS IS THE RATIO BETWEEN THE PREVIEW canvas and the edit canvas
+      _emojiMetadata.matrixArguments[13],//*(widget.heightOfScreen/editCanvasHeight),  
       _emojiMetadata.matrixArguments[14],
       _emojiMetadata.matrixArguments[15]
     );
+    Matrix4Transform transformed = Matrix4Transform.from(currentMatrix);
+    transformed.scale(widget.heightOfScreen/editCanvasHeight);
+    
+    
+    /////// PROBLEM MED ATT ÖVERSÄTTA MATRIX FRÅN EDIT TILL PREVIEW FORTFARANDE 
+    ///     TESTADE MED ATT IMPORTARE MATRIX4TRANSFORM, KOLLA METODERNA I DETTA PAKET
+    ///
+    ///
+    ///
+    ///
+    ///
     print(_emojiMetadata.emoji);
     return Transform(
       //alignment: Alignment.center,
-      transform: currentMatrix,
+      transform:transformed.matrix4,// currentMatrix,
       child: FittedBox(
         fit: BoxFit.contain,
         child: Text(_emojiMetadata.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
@@ -76,6 +88,7 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
 
   @override
   void initState() {
+    
     print("Initiated preview canvas");
     currentEmojis = [];
     for(int i=0; i< widget.emojis.length; i++){
