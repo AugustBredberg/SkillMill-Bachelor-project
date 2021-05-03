@@ -46,8 +46,9 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
       _emojiMetadata.matrixArguments[15]
     );
     Matrix4Transform transformed = Matrix4Transform.from(currentMatrix);
-    transformed.scale(widget.heightOfScreen/editCanvasHeight);
-    
+    transformed.scaleBy(x:widget.heightOfScreen/editCanvasHeight, y: widget.heightOfScreen/editCanvasHeight);
+    //transformed.scale(widget.heightOfScreen/editCanvasHeight);
+    //transformed.
     
     /////// PROBLEM MED ATT ÖVERSÄTTA MATRIX FRÅN EDIT TILL PREVIEW FORTFARANDE 
     ///     TESTADE MED ATT IMPORTARE MATRIX4TRANSFORM, KOLLA METODERNA I DETTA PAKET
@@ -101,6 +102,7 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.heightOfScreen/editCanvasHeight* MediaQuery.of(context).size.width);
     return new LayoutBuilder(
     builder: (BuildContext context, BoxConstraints constraints) {
       return Container(

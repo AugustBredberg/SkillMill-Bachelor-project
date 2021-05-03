@@ -6,6 +6,7 @@ import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'emojiCanvasPreview.dart';
 import 'globals.dart';
 import '../newJournal.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardCarousel extends StatefulWidget{
   List<String> cardPictureAdresses;
@@ -23,7 +24,7 @@ class _CardCarousel extends State<CardCarousel>{
   //List<String> cardPics = [];
   String testUrl = "images/king.jpg";
   int _currentIndex;
-  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.75, heightOfScreen: 0.75,);
+  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.5, heightOfScreen: 1,);
   Image b = Image.asset('images/back.png');
   Image c = Image.asset('images/jack.png');
   Image d = Image.asset('images/joker.jpg');
@@ -50,15 +51,15 @@ class _CardCarousel extends State<CardCarousel>{
         options: CarouselOptions(
           height:constraints.maxHeight,
           //width:constraints.maxWidth,
-          aspectRatio: 1/1,
+          aspectRatio: constraints.maxWidth/(constraints.maxHeight*2),
           autoPlay: false,
-          enlargeCenterPage: true,
+          enlargeCenterPage: false,
         ),
         items: [a,a,a,a,a].map((i) {
           return Builder(
             builder: (BuildContext context) {
               return Container(
-                width: constraints.maxHeight*1.8,//MediaQuery.of(context).size.width,
+                //width: constraints.maxHeight*1.8,//MediaQuery.of(context).size.width,
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
                 decoration: BoxDecoration(
                   color: Colors.amber

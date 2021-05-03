@@ -88,13 +88,13 @@ class EmojiCanvasState extends State<EmojiCanvas>{
       emojisOnCanvas.add(item);
     }
 
-    return new LayoutBuilder(
-    builder: (BuildContext context, BoxConstraints constraints) {
-      return Container(
+    
+      return Material(
         color: currentColors,
-          height: constraints.maxHeight,
-          width: constraints.maxWidth,
+          //height: constraints.maxHeight,
+          //width: constraints.maxWidth,
           child: Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: emojisOnCanvas,
             
@@ -116,7 +116,7 @@ class EmojiCanvasState extends State<EmojiCanvas>{
             */
           ),
         );
-      } 
-    );
+      
+    
   }
 }

@@ -71,7 +71,7 @@ class _NewJournal extends State<NewJournal> {
 
   @override
   Widget build(BuildContext context) {
-    
+    print(MediaQuery.of(context).size.width * 0.6);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -202,12 +202,10 @@ class _NewJournal extends State<NewJournal> {
         child: Stack(
           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Material(
-              child: Container(
-                height: MediaQuery.of(context).size.height * editCanvasHeight,
-                width: MediaQuery.of(context).size.width * editCanvasWidth,
-                child: this.impact,
-              ),
+              Material(
+                child:this.impact,
+                
+              
             ),
             /*
 
@@ -312,7 +310,7 @@ class _NewJournal extends State<NewJournal> {
               width: MediaQuery.of(context).size.width * 1,
               child: Column(
                 children: [
-                  SizedBox(width: MediaQuery.of(context).size.height * 0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                     IconButton(
                       iconSize: MediaQuery.of(context).size.height * 0.05,
                       icon: Icon(
@@ -325,11 +323,13 @@ class _NewJournal extends State<NewJournal> {
                       },
                     ),
                   EmojiKeyboard(
-                    color: Color.fromRGBO(255, 255, 255, 0.19),
+                    column: 4,
+                    color: Color.fromRGBO(255, 255, 255, 0.5),
                     floatingHeader: false,
-                    height: MediaQuery.of(context).size.height * 0.90,
+                    height: MediaQuery.of(context).size.height * 0.875,
                     onEmojiSelected: onEmojiSelected,
                   ),
+                  
                 ],
               ),
             ),
@@ -348,6 +348,7 @@ class _NewJournal extends State<NewJournal> {
       builder: (context) => Positioned(
           bottom: MediaQuery.of(context).size.width * 0,
           child: Material(
+            color: Colors.transparent,
             child: Column(
               children: [
                 IconButton(
@@ -362,13 +363,11 @@ class _NewJournal extends State<NewJournal> {
                     },
                   ),
                 
-                Material(
-                  color: Colors.white,
-                  child: Container(
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 1,
-                      child: ColorPicker(MediaQuery.of(context).size.width * 0.6, setColorToChosen)
-                  ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: MediaQuery.of(context).size.width * 1,
+                  child: ColorPicker(MediaQuery.of(context).size.width * 0.6, setColorToChosen)
+              
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/newJournal.dart';
 import 'journalFeed.dart';
+import 'objects/cardCarousel.dart';
 
 class Home extends StatefulWidget {
   //JournalView({Key key, this.title}) : super(key: key);
@@ -24,52 +25,54 @@ class _Home extends State<Home> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(top: 20),
-        child: Column(
+      body: Stack(
           children: [
+          
             Container(
-              padding: EdgeInsets.all(20),
-              child: Text("Skill Mill",
-                  style: TextStyle(
-                    fontSize: 80,
-                  )),
+              padding: EdgeInsets.only(top:  MediaQuery.of(context).size.height * 0.08,) ,
+              height: MediaQuery.of(context).size.height * 0.92,
+              width: MediaQuery.of(context).size.width * 1,
+              child: CardCarousel([]),//JournalFeed()
             ),
-            JournalFeed(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(), primary: Colors.red),
+
+
+            Positioned(
+              bottom: 0,
+              left: 85,
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                width: MediaQuery.of(context).size.width * 0.25,
-                height: MediaQuery.of(context).size.width * 0.25,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(shape: BoxShape.circle),
-                child: Text(
-                  'New Situation',
-                  style: TextStyle(fontSize: 20),
+                height: 50.0,
+                margin: EdgeInsets.all(10),
+                child: ElevatedButton(
+                  child: Text('New Situation'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                          new NewJournal(oldCanvasEmojis: [], oldCanvasColor: Colors.white)),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.purple,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    textStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          new NewJournal(oldCanvasEmojis: [], oldCanvasColor: Colors.white)),
-                );
-              },
             ),
+
+           
+
+            Container(
+              padding: EdgeInsets.only(left:MediaQuery.of(context).size.width * 0.10, top: MediaQuery.of(context).size.height * 0.05),
+              child: Image.asset("images/skillmill.png"),
+                    //Text("Skill Mill",style: TextStyle(fontSize: 80,)),
+                ),
           ],
-        ),
       ),
-
-      /*FloatingActionButton(
-        onPressed: (){},
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-
-      */
     );
   }
 }
