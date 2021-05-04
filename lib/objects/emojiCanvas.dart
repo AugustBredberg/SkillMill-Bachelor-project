@@ -89,33 +89,51 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     }
 
     
-      return Material(
-        color: currentColors,
-          //height: constraints.maxHeight,
-          //width: constraints.maxWidth,
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: emojisOnCanvas,
-            
-            /*[  
-              for ( var i in currentEmojis ) GestureDetector(
-                child: i,
-                onLongPress: (){
-                  print("pressing");
-                  
-                  setState(() {
-                    removeEmojiAtLongpress(i);
+      return GestureDetector(
+        /*onScaleStart: (ScaleStartDetails startDetails){
 
-                  
-                   
-                  });
-                },
-              ), 
-            ]
-            */
+        },*/
+        onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
+          if(scaleDetails.pointerCount == 2){
+              print('SCALE' +
+                currentEmojis[0].emojiMetadata.emoji +
+                scaleDetails.toString());
+
+              currentEmojis[0].key.currentState.scaleEmoji(scaleDetails);
+            }
+            },
+        onScaleEnd: (ScaleEndDetails details){
+          currentEmojis[0].key.currentState.endScale();
+
+        },
+            child: Material(
+            color: currentColors,
+            //height: constraints.maxHeight,
+            //width: constraints.maxWidth,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: emojisOnCanvas,
+              
+              /*[  
+                for ( var i in currentEmojis ) GestureDetector(
+                  child: i,
+                  onLongPress: (){
+                    print("pressing");
+                    
+                    setState(() {
+                      removeEmojiAtLongpress(i);
+
+                    
+                     
+                    });
+                  },
+                ), 
+              ]
+              */
+            ),
           ),
-        );
+      );
       
     
   }

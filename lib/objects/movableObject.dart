@@ -9,6 +9,8 @@ import 'emojiCanvas.dart';
 class MoveableStackItem extends StatefulWidget { 
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
+  GlobalKey<MoveableStackItemState> key;
+
   
   EmojiMetadata getMetaData(){
     if(emojiMetadata != null){ 
@@ -19,8 +21,10 @@ class MoveableStackItem extends StatefulWidget {
     }
  }
 
-  MoveableStackItem(EmojiMetadata given) {
+  MoveableStackItem(EmojiMetadata given, GlobalKey givenKey) {
     emojiMetadata = given;
+    key = givenKey;
+
     givenWidget = FittedBox(
         fit: BoxFit.contain,
         child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
@@ -37,6 +41,43 @@ class MoveableStackItemState extends State<MoveableStackItem> {
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
   
+  void scaleEmoji(ScaleUpdateDetails scaleDetails) {
+    setState(() {
+      print('scaleEMojiFUNC');
+      //print(notifier.value.row0[0].toString());
+
+      //List<num> newMatrix = notifier.value.storage;
+      notifier.value = //MatrixGestureDetector.compose(notifier.value, null, null, null);
+      Matrix4(
+        this.emojiMetadata.matrixArguments[0]*scaleDetails.scale,
+        this.emojiMetadata.matrixArguments[1],
+        this.emojiMetadata.matrixArguments[2],
+        this.emojiMetadata.matrixArguments[3],
+        this.emojiMetadata.matrixArguments[4],
+        this.emojiMetadata.matrixArguments[5]*scaleDetails.scale,
+        this.emojiMetadata.matrixArguments[6],
+        this.emojiMetadata.matrixArguments[7],
+        this.emojiMetadata.matrixArguments[8],
+        this.emojiMetadata.matrixArguments[9],
+        this.emojiMetadata.matrixArguments[10],
+        this.emojiMetadata.matrixArguments[11],
+        this.emojiMetadata.matrixArguments[12],
+        this.emojiMetadata.matrixArguments[13],
+        this.emojiMetadata.matrixArguments[14],
+        this.emojiMetadata.matrixArguments[15],
+        );
+
+
+        //this.emojiMetadata.matrixArguments = notifier.value.storage;
+
+        //this.emojiMetadata.matrixArguments[0] = scaleDetails.scale;
+        //this.emojiMetadata.matrixArguments[5] = scaleDetails.scale;
+    });
+  }
+  void endScale(){
+    this.emojiMetadata.matrixArguments = notifier.value.storage;
+
+  }
 
   @override
   void initState() {
