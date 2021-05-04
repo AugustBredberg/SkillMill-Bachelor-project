@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/newJournal.dart';
-import 'journalFeed.dart';
 import 'objects/cardCarousel.dart';
 
 class Home extends StatefulWidget {
@@ -27,12 +26,12 @@ class _Home extends State<Home> {
     return Scaffold(
       body: Stack(
           children: [
-          
+
             Container(
-              padding: EdgeInsets.only(top:  MediaQuery.of(context).size.height * 0.08,) ,
-              height: MediaQuery.of(context).size.height * 0.92,
+              //padding: EdgeInsets.symmetric(vertical:  MediaQuery.of(context).size.height * 0.05) ,
+              height: MediaQuery.of(context).size.height * 1,
               width: MediaQuery.of(context).size.width * 1,
-              child: CardCarousel([]),//JournalFeed()
+              child: CardCarousel(1.0, 0.95),//JournalFeed()
             ),
 
 

@@ -22,9 +22,12 @@ class MoveableStackItem extends StatefulWidget {
   MoveableStackItem(EmojiMetadata given) {
     emojiMetadata = given;
     givenWidget = FittedBox(
-        fit: BoxFit.contain,
-        child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
-      );
+      fit: BoxFit.contain,
+      clipBehavior: Clip.none,
+      child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)
+      
+      //ColoredBox(color:Colors.blue, child:Container(height:50, width:50, child:Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)))
+      ));
   }
   
   @override State<StatefulWidget> createState() { 
@@ -76,63 +79,70 @@ class MoveableStackItemState extends State<MoveableStackItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.height * 1,
-      height: MediaQuery.of(context).size.height * 1,
+      height: MediaQuery.of(context).size.width * 1,
+      width: MediaQuery.of(context).size.width * 1,
       child: MatrixGestureDetector(
-              clipChild: false,
-              focalPointAlignment: Alignment.center,
-              //shouldTranslate: false,
-              onMatrixUpdate: (m, tm, sm, rm) {
+                clipChild: false,
+                
+                //focalPointAlignment: Alignment.,
+                //shouldTranslate: false,
+                onMatrixUpdate: (m, tm, sm, rm) {
 
-                print(rm);
+                  print(rm);
   
-                 
-                setState(() {
-                  /*
-                  this.emojiMetadata.matrixArguments[0] *= sm.getColumn(0)[0] * (rm.getColumn(0)[0]).abs(); // scale x
-                  this.emojiMetadata.matrixArguments[1] = rm.getColumn(0)[1]; // skew y SOMETHING WITH tan(skewAngle)
-                  print("X SKEW IN MATRIX:::::" + this.emojiMetadata.matrixArguments[1].toString());
-                  this.emojiMetadata.matrixArguments[2] = 0; 
-                  this.emojiMetadata.matrixArguments[3] = 0;
-                  this.emojiMetadata.matrixArguments[4] += rm.getColumn(1)[0]; // skew x
-                  print("X SKEW IN MATRIX:::::" + this.emojiMetadata.matrixArguments[4].toString());
-                  this.emojiMetadata.matrixArguments[5] *= sm.getColumn(1)[1] * (rm.getColumn(1)[1]).abs(); // scale y
-                  this.emojiMetadata.matrixArguments[6] = 0; 
-                  this.emojiMetadata.matrixArguments[7] = 0;
-                  this.emojiMetadata.matrixArguments[8] = 0;  
-                  this.emojiMetadata.matrixArguments[9] = 0;
-                  this.emojiMetadata.matrixArguments[10] = 1;
-                  this.emojiMetadata.matrixArguments[11] = 0;
-                  this.emojiMetadata.matrixArguments[12] += tm.getColumn(3)[0] + sm.getColumn(3)[0] + rm.getColumn(3)[0]; //translate x for all the delta matrixes (every matrix updates translate)
-                  this.emojiMetadata.matrixArguments[13] += tm.getColumn(3)[1] + sm.getColumn(3)[1] + rm.getColumn(3)[1]; //translate y for all the delta matrixes (every matrix updates translate)
-                  this.emojiMetadata.matrixArguments[14] = 0;
-                  this.emojiMetadata.matrixArguments[15] = 1;
-                  notifier.value.copyFromArray(this.emojiMetadata.matrixArguments);
-                  */
+                   
+                  setState(() {
+                    /*
+                    this.emojiMetadata.matrixArguments[0] *= sm.getColumn(0)[0] * (rm.getColumn(0)[0]).abs(); // scale x
+                    this.emojiMetadata.matrixArguments[1] = rm.getColumn(0)[1]; // skew y SOMETHING WITH tan(skewAngle)
+                    print("X SKEW IN MATRIX:::::" + this.emojiMetadata.matrixArguments[1].toString());
+                    this.emojiMetadata.matrixArguments[2] = 0; 
+                    this.emojiMetadata.matrixArguments[3] = 0;
+                    this.emojiMetadata.matrixArguments[4] += rm.getColumn(1)[0]; // skew x
+                    print("X SKEW IN MATRIX:::::" + this.emojiMetadata.matrixArguments[4].toString());
+                    this.emojiMetadata.matrixArguments[5] *= sm.getColumn(1)[1] * (rm.getColumn(1)[1]).abs(); // scale y
+                    this.emojiMetadata.matrixArguments[6] = 0; 
+                    this.emojiMetadata.matrixArguments[7] = 0;
+                    this.emojiMetadata.matrixArguments[8] = 0;  
+                    this.emojiMetadata.matrixArguments[9] = 0;
+                    this.emojiMetadata.matrixArguments[10] = 1;
+                    this.emojiMetadata.matrixArguments[11] = 0;
+                    this.emojiMetadata.matrixArguments[12] += tm.getColumn(3)[0] + sm.getColumn(3)[0] + rm.getColumn(3)[0]; //translate x for all the delta matrixes (every matrix updates translate)
+                    this.emojiMetadata.matrixArguments[13] += tm.getColumn(3)[1] + sm.getColumn(3)[1] + rm.getColumn(3)[1]; //translate y for all the delta matrixes (every matrix updates translate)
+                    this.emojiMetadata.matrixArguments[14] = 0;
+                    this.emojiMetadata.matrixArguments[15] = 1;
+                    notifier.value.copyFromArray(this.emojiMetadata.matrixArguments);
+                    */
 
 
 
-                  notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-                  //notifier.value = Matrix4.identity();
-                  this.emojiMetadata.matrixArguments = notifier.value.storage;
-                });
+                    notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
+                    //notifier.value = Matrix4.identity();
+                    this.emojiMetadata.matrixArguments = notifier.value.storage;
+                    print(notifier.value.storage);
+                    print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
+                  });
+                  
+                },
+                child: Transform(
+                        //alignment: Alignment.,
+                        transform: notifier.value,
+                        child:this.givenWidget, // for some reason the translation is wrong when using stackfit.expand in emojicanvas.
+
+                        /*
+                        Container(
+                          child: this.givenWidget,
+                          color: Colors.blue,
+                          width: 100,//MediaQuery.of(context).size.width * 1,
+                          height:100,// MediaQuery.of(context).size.width * 1,
+
+                        ),*/
+
+                      
+                )
+                  
                 
-              },
-              child: Transform(
-                    //alignment: Alignment.center,
-                    transform: notifier.value,
-                    child: 
-                    Container(
-                      child: this.givenWidget,
-                      color: Colors.blue,
-                      width: MediaQuery.of(context).size.width * 1,
-                      height: MediaQuery.of(context).size.width * 1,
-
-                    ),
-
-                  )
-                
-              
+            
           
         
       ),

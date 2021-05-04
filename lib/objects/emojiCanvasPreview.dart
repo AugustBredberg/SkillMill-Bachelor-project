@@ -40,13 +40,14 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
       _emojiMetadata.matrixArguments[9],
       _emojiMetadata.matrixArguments[10],
       _emojiMetadata.matrixArguments[11],
-      _emojiMetadata.matrixArguments[12],//*(widget.widthOfScreen/editCanvasWidth), // THIS IS THE RATIO BETWEEN THE PREVIEW canvas and the edit canvas
-      _emojiMetadata.matrixArguments[13],//*(widget.heightOfScreen/editCanvasHeight),  
+      _emojiMetadata.matrixArguments[12],//(widget.widthOfScreen/editCanvasWidth), // THIS IS THE RATIO BETWEEN THE PREVIEW canvas and the edit canvas
+      _emojiMetadata.matrixArguments[13],//(widget.heightOfScreen/editCanvasHeight),  
       _emojiMetadata.matrixArguments[14],
       _emojiMetadata.matrixArguments[15]
     );
+    print("translate x in preview"+(_emojiMetadata.matrixArguments[12]).toString());
     Matrix4Transform transformed = Matrix4Transform.from(currentMatrix);
-    transformed.scaleBy(x:widget.heightOfScreen/editCanvasHeight, y: widget.heightOfScreen/editCanvasHeight);
+    transformed = transformed.scale(0.6);//By(x:0.6, y:1);
     //transformed.scale(widget.heightOfScreen/editCanvasHeight);
     //transformed.
     
@@ -60,11 +61,10 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
     print(_emojiMetadata.emoji);
     return Transform(
       //alignment: Alignment.center,
-      transform:transformed.matrix4,// currentMatrix,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Text(_emojiMetadata.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
-      ),
+      transform: transformed.matrix4,//currentMatrix,
+      child: Text(_emojiMetadata.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150))
+      //Container(color: Colors.blue, height:100, width:100)//
+      
     );
   }
 
@@ -102,18 +102,22 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.heightOfScreen/editCanvasHeight* MediaQuery.of(context).size.width);
+    print("Height in preview build" + (widget.heightOfScreen/editCanvasHeight* MediaQuery.of(context).size.height).toString());
     return new LayoutBuilder(
     builder: (BuildContext context, BoxConstraints constraints) {
-      return Container(
+      print(constraints);
+      return  ClipRect(
+            child: 
+      Container(
         color: currentColors,
           height: constraints.maxHeight,
           width: constraints.maxWidth,
-          child: ClipRect(
-            child: Stack(
-              alignment: Alignment.center,
-              children: currentEmojis,
-            ),
+          child:Stack(
+                fit: StackFit.expand,
+                //alignment: AlignmentDirectional.topStart,
+                children: currentEmojis,
+              ),
+            
           ),
         );
       } 

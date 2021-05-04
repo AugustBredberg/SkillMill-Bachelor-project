@@ -71,7 +71,8 @@ class _NewJournal extends State<NewJournal> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.width * 0.6);
+    print("60% of width: " + (MediaQuery.of(context).size.width * 0.6).toString());
+    print("60% of height: " + (MediaQuery.of(context).size.height * 0.6).toString());
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -119,8 +120,9 @@ class _NewJournal extends State<NewJournal> {
                 height: MediaQuery.of(context).size.height * 0.6, 
                 child: Center(
                     child: Stack(
+                      alignment: AlignmentDirectional.topStart,
                         clipBehavior: Clip.hardEdge,
-                        fit: StackFit.expand,
+                        //fit: StackFit.expand,
                         children: [
                           ///// PREVIEW CANVAS WITH EMOJIS THAT CANNOT BE MOVED///
                           this.preview,
@@ -262,7 +264,7 @@ class _NewJournal extends State<NewJournal> {
                     type: MaterialType.transparency,
                     child: IconButton(
                       iconSize: 50,
-                      icon: Icon(Icons.keyboard),
+                      icon: Icon(Icons.emoji_emotions),
                       onPressed: () {
                         showKeyboard(context);
                       },
@@ -349,28 +351,21 @@ class _NewJournal extends State<NewJournal> {
           bottom: MediaQuery.of(context).size.width * 0,
           child: Material(
             color: Colors.transparent,
-            child: Column(
-              children: [
-                IconButton(
-                    iconSize: 50,
-                    icon: Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                    onPressed: () {
-                      popEditOverlay(context);
-                      print("popped colorslider");
-                    },
+            child: 
+                GestureDetector(
+                  onTap: (){
+                    popEditOverlay(context);
+                    print("clicketyy");
+                  },
+                  child: Container(
+                    color:Colors.transparent,
+                    height: MediaQuery.of(context).size.height * 1,
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ColorPicker(MediaQuery.of(context).size.width * 0.6, setColorToChosen))
                   ),
-                
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  width: MediaQuery.of(context).size.width * 1,
-                  child: ColorPicker(MediaQuery.of(context).size.width * 0.6, setColorToChosen)
-              
                 ),
-              ],
-            ),
           ),
         ),
     );

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_carousel/carousel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'emojiCanvasPreview.dart';
 import 'globals.dart';
@@ -9,10 +10,12 @@ import '../newJournal.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardCarousel extends StatefulWidget{
-  List<String> cardPictureAdresses;
+  double widthOfScreen;
+  double heightOfScreen;
 
-  CardCarousel(cardPictureAdresses) {
-    cardPictureAdresses = cardPictureAdresses;
+  CardCarousel(width, height) {
+    widthOfScreen = width;
+    heightOfScreen = height;
   }
 
   @override
@@ -24,11 +27,8 @@ class _CardCarousel extends State<CardCarousel>{
   //List<String> cardPics = [];
   String testUrl = "images/king.jpg";
   int _currentIndex;
-  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.5, heightOfScreen: 1,);
-  Image b = Image.asset('images/back.png');
-  Image c = Image.asset('images/jack.png');
-  Image d = Image.asset('images/joker.jpg');
-  Image e = Image.asset('images/queen.png');
+  List<EmojiCanvasPreview> previewCanvases;
+
   //List<Image> lst = [a,a,a,a,a];
   List cardList;
  
@@ -36,9 +36,17 @@ class _CardCarousel extends State<CardCarousel>{
   @override
   void initState() {
     print('init');
+    /// replace this for-loop with API-call that returns all previous canvases.
+    previewCanvases = [];
+    for(int i=0; i<5; i++){
+      EmojiCanvasPreview canvas = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
+      previewCanvases.add(canvas);
+    }
+
+
+    //previewCanvases = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
     _currentIndex = 0;
     super.initState();
-    this.cardList=[a,b,c,d,e];
     //cardPics = widget.cardPictureAdresses;
   }
  
@@ -49,34 +57,34 @@ class _CardCarousel extends State<CardCarousel>{
     builder: (BuildContext context, BoxConstraints constraints) {
       return CarouselSlider(
         options: CarouselOptions(
-          height:constraints.maxHeight,
+          height: MediaQuery.of(context).size.height * widget.heightOfScreen,
           //width:constraints.maxWidth,
-          aspectRatio: constraints.maxWidth/(constraints.maxHeight*2),
+          aspectRatio: (MediaQuery.of(context).size.height*widget.widthOfScreen)/(MediaQuery.of(context).size.height * widget.heightOfScreen),
           autoPlay: false,
           enlargeCenterPage: false,
         ),
-        items: [a,a,a,a,a].map((i) {
+        items: previewCanvases.map((i) {
           return Builder(
             builder: (BuildContext context) {
-              return Container(
-                //width: constraints.maxHeight*1.8,//MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                decoration: BoxDecoration(
-                  color: Colors.amber
+              return Card(
+                elevation: 8,
+                child: Container(
+                  //width: constraints.maxHeight*1.8,//MediaQuery.of(context).size.width,
+                  //margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  new NewJournal(oldCanvasEmojis: i.emojis, oldCanvasColor: i.color)),
+                        );
+                      },
+                      child: i,
+                    )
+                  
+                  //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
                 ),
-                child: GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                new NewJournal(oldCanvasEmojis: i.emojis, oldCanvasColor: i.color)),
-                      );
-                    },
-                    child: i,
-                  )
-                
-                //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
               );
             },
           );

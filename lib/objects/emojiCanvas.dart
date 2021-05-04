@@ -88,14 +88,16 @@ class EmojiCanvasState extends State<EmojiCanvas>{
       emojisOnCanvas.add(item);
     }
 
-    
+    print("width of edit canvas: " +(MediaQuery.of(context).size.width).toString());
+    print("height of edit canvas: " +(MediaQuery.of(context).size.height).toString());
       return Material(
         color: currentColors,
-          //height: constraints.maxHeight,
-          //width: constraints.maxWidth,
+          //height: MediaQuery.of(context).size.width * 0.6,
+          //width: //constraints.maxWidth,
           child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
+            fit: StackFit.expand,
+            clipBehavior: Clip.hardEdge,
+            //alignment: Alignment.center,
             children: emojisOnCanvas,
             
             /*[  
