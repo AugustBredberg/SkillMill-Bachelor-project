@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
-import 'objects/cardCarousel.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
 import 'objects/movableObject.dart';
@@ -18,7 +17,6 @@ class NewJournal extends StatefulWidget {
 
   NewJournal({Key key, @required this.oldCanvasEmojis, @required this.oldCanvasColor}) : super(key: key);
 
-  //NewJournal() {}
   @override
   _NewJournal createState() => _NewJournal();
 }
@@ -115,64 +113,53 @@ class _NewJournal extends State<NewJournal> {
                   ),
                 ),
               ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    //alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: MediaQuery.of(context).size.height * 0.6, 
+                    child: this.preview,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                    ),
+                  ),
+                  IconButton(
+                iconSize: 30,
+                icon: Icon(
+                  Icons.edit
+                ),
+                onPressed: () {
+                  showOverlay(context);
+                },
+              ),
+                ]
+              ),
               Container(
-                width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.height * 0.6, 
-                child: Center(
-                    child: Stack(
-                      alignment: AlignmentDirectional.topStart,
-                        clipBehavior: Clip.hardEdge,
-                        //fit: StackFit.expand,
-                        children: [
-                          ///// PREVIEW CANVAS WITH EMOJIS THAT CANNOT BE MOVED///
-                          this.preview,
-                          ////////////////////////////////////////////////////////
-                        ///
-                          IconButton(
-                            iconSize: 40,
-                            icon: Icon(
-                              Icons.edit
-                            ),
-                            onPressed: () {
-                              showOverlay(context);
-                            },
-                          ),
-                        ],
-                      ),
+                height: 50.0,
+                margin: EdgeInsets.all(10),
+                child: ElevatedButton(
+                  child: Text('Save Entry'),
+                  onPressed: () {
+                    if(_myEmojiCanvas.currentState != null){
+                      print("changed globalrmojilist1");
+                      globalEmojiList1 = _myEmojiCanvas.currentState.currentMetaData;
+                    }
                     
-                  ),
-                
-                
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                ),
-              ),
-              /*
-
-              Container(
-                width: MediaQuery.of(context).size.width * 0.40,
-                height: MediaQuery.of(context).size.width * 0.3,
-                child: Center(child: Text("Reflection", style: TextStyle(fontSize: 30))), 
-                //CardCarousel([]),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                padding: EdgeInsets.only(
-                    top: (MediaQuery.of(context).size.width * 0.05)),
-                child: TextField(
-                  maxLength: 250,
-                  maxLines: 2,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "Write a short note about your entry",
+                    
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.purple,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    textStyle: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ), */
-
-              ElevatedButton(
-                onPressed: () {},
-                child: Text("Save Entry"),
-              )
+              ),
+           
             ],
           ),
         ),
@@ -209,40 +196,6 @@ class _NewJournal extends State<NewJournal> {
                 
               
             ),
-            /*
-
-            Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Material(
-                    color: Colors.white,
-                    child: IconButton(
-                      iconSize: 50,
-                      icon: Icon(Icons.keyboard),
-                      onPressed: () {
-                        showKeyboard(context);
-                      },
-                    ),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.40),
-                  Material(
-                    color: Colors.white,
-                    child: IconButton(
-                      iconSize: 50,
-                      icon: Icon(
-                        Icons.color_lens,
-                      ),
-                      onPressed: () {
-                        showColorSlider(context);
-                      },
-                    ),
-                  ),
-                ],
-                
-              ),
-            ),
-*/
             Positioned(
               top: 50,
               right:0,
@@ -389,36 +342,3 @@ class _NewJournal extends State<NewJournal> {
   
 }
 
-
-
-
-
-
-
-
-/*
-class CreateJournalPost extends StatefulWidget{
-  EmojiCanvas impact;
-
-  CreateJournalPost(EmojiCanvas impact) {
-    this.impact = impact;  
-  }
-  
-  @override State<StatefulWidget> createState() { 
-   return CreateJournalPostState(); 
-  } 
-
-
-}
-
-
-class CreateJournalPostState extends State<CreateJournalPost>{
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return 
-  }
-
-}*/
