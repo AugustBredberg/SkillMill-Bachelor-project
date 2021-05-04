@@ -122,9 +122,8 @@ class MoveableStackItemState extends State<MoveableStackItem> {
                     print(notifier.value.storage);
                     print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
                   });
-                  
                 },
-                child: Transform(
+                child: Transform( 
                         //alignment: Alignment.,
                         transform: notifier.value,
                         child:this.givenWidget, // for some reason the translation is wrong when using stackfit.expand in emojicanvas.
