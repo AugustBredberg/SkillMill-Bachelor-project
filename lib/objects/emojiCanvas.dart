@@ -65,7 +65,9 @@ class EmojiCanvasState extends State<EmojiCanvas>{
       /// multiplicera currentPosition med emojins 1/scale för att fixa offsets när de är stora och små
       if(fingerPosition.dx > MediaQuery.of(context).size.width *0.35 &&
          fingerPosition.dx < MediaQuery.of(context).size.width *0.75 &&
-         fingerPosition.dy > MediaQuery.of(context).size.height*0.90){
+         fingerPosition.dy > MediaQuery.of(context).size.height*0.90 &&
+         currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.5
+         ){
       //if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
         this.hoveringOverTrashCan = true;
         this.hoveringKey = currentEmojis[currentEmojis.length-1].key;
@@ -81,9 +83,9 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     if(this.shouldShowTrashCan){
 
       if(this.hoveringOverTrashCan){
-        return Icon(Icons.restore_from_trash_rounded, size: 80);
+        return Icon(Icons.delete_forever_outlined, size: 80);
       }
-      return Icon(Icons.restore_from_trash_rounded, size: 40);
+      return Icon(Icons.delete_outlined, size: 40);
     }
     else{
       return Icon(Icons.directions_train_sharp, size:0);
