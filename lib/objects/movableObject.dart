@@ -2,6 +2,7 @@
 
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'emojiCanvas.dart';
 
@@ -86,7 +87,10 @@ class MoveableStackItemState extends State<MoveableStackItem> {
             notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
             
             this.emojiMetadata.matrixArguments = notifier.value.storage;
-            this.currentPosition = Offset(this.emojiMetadata.matrixArguments[12] , this.emojiMetadata.matrixArguments[13]);
+            Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
+            transformed.scale(0.01);
+            this.currentPosition = Offset(transformed.matrix4.storage[12] , transformed.matrix4.storage[13]);
+            //this.currentPosition = Offset(this.emojiMetadata.matrixArguments[12] , this.emojiMetadata.matrixArguments[13]*0.5);
             print(this.currentPosition);
             //print(notifier.value.storage);
             //print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
