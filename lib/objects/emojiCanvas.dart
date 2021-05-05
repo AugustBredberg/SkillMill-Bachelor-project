@@ -1,6 +1,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'movableObject.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
@@ -37,6 +38,7 @@ class EmojiCanvasState extends State<EmojiCanvas>{
   bool hoveringOverTrashCan;
   bool shouldShowTrashCan;
   GlobalKey<MoveableStackItemState> hoveringKey;
+  Offset fingerPosition;
 
   Color currentColors;
   RenderBox currentConstraints;  
@@ -61,7 +63,10 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     setState(() {
       /// gör så att så fort man nuddar en emoji hamnar den högst upp i listan ALLTID.
       /// multiplicera currentPosition med emojins 1/scale för att fixa offsets när de är stora och små
-      if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
+      if(fingerPosition.dx > MediaQuery.of(context).size.width *0.35 &&
+         fingerPosition.dx < MediaQuery.of(context).size.width *0.75 &&
+         fingerPosition.dy > MediaQuery.of(context).size.height*0.90){
+      //if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
         this.hoveringOverTrashCan = true;
         this.hoveringKey = currentEmojis[currentEmojis.length-1].key;
       }
@@ -92,6 +97,7 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     currentMetaData = [];
     hoveringOverTrashCan = false;
     shouldShowTrashCan = false;
+    fingerPosition = Offset(0,0);
     for(int i=0; i<widget.emojis.length; i++){
       appendEmoji(widget.emojis[i]);
     }
@@ -137,6 +143,7 @@ class EmojiCanvasState extends State<EmojiCanvas>{
       //// THESE ON_POINTERS WILL DETERMINE WHETHER AN EMOJI IS BEING TRASHED OR NOT
       /////////////////////////////////////////////////////////////////////////////////
         onPointerMove: (details){
+          this.fingerPosition = details.position;
           if(this.currentEmojis.length > 0){
             print("POINTER IS DOWN AND MOVING");
             this.shouldShowTrashCan = true;
