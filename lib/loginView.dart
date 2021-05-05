@@ -15,11 +15,11 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<bool> attemptLogin(String email, String password) async {
-    Map data = {"123": email};
+  Future<bool> attemptLogin(String username, String password) async {
+    Map data = {"123": username};
     http.Response response = await http.post(
       Uri.parse('https://hayashida.se/skillmill/api/test'),
       body: data,
@@ -34,7 +34,7 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Text("SkillMill"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -49,18 +49,18 @@ class _LoginViewState extends State<LoginView> {
                     /*decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('images/don_quixote.jpg')),
+                    child: Image.asset('images/skillmill.png')),
               ),
             ),
             Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: TextField(
-                controller: emailController,
+                controller: usernameController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Enter valid email id as abc@gmail.com'),
+                    labelText: 'Username',
+                    hintText: 'Enter your username'),
               ),
             ),
             Padding(
@@ -96,17 +96,6 @@ class _LoginViewState extends State<LoginView> {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/home');
-                  /*
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      
-                        //builder: (context) => new JournalView("August" ))
-                        builder: (context) => PageViewClass())
-                  );
-                  */
-                  ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
-                  //attemptLogin(emailController.text, passwordController.text);
                 },
                 child: Text(
                   'Login',
