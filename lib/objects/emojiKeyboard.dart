@@ -26,7 +26,8 @@ class EmojiKeyboardClass extends StatelessWidget {
         -0.13423912881164965,0.6463089079186324, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         58.29945312195869, 11.104368977904983, 0.0, 1.0]
-        )
+        ),
+        new GlobalKey<MoveableStackItemState>(),
     );
     //_EmojiCanvas()._appendEmoji(item);
     //_appendEmojiToCanvas(item);

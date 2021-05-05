@@ -9,6 +9,7 @@ import 'emojiCanvas.dart';
 class MoveableStackItem extends StatefulWidget { 
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
+  GlobalKey<MoveableStackItemState> key;
   
   EmojiMetadata getMetaData(){
     if(emojiMetadata != null){ 
@@ -19,9 +20,10 @@ class MoveableStackItem extends StatefulWidget {
     }
  }
 
-  MoveableStackItem(EmojiMetadata given) {
-    emojiMetadata = given;
-    givenWidget = FittedBox(
+  MoveableStackItem(EmojiMetadata given, GlobalKey<MoveableStackItemState> givenKey) {
+    this.emojiMetadata = given;
+    this.key = givenKey;
+    this.givenWidget = FittedBox(
       fit: BoxFit.contain,
       clipBehavior: Clip.none,
       child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)
@@ -37,10 +39,13 @@ class MoveableStackItemState extends State<MoveableStackItem> {
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
+  GlobalKey<MoveableStackItemState> myKey;
+  Offset currentPosition;
   
 
   @override
   void initState() {
+    this.myKey = widget.key;
     this.emojiMetadata = widget.emojiMetadata;
     this.givenWidget = widget.givenWidget;
     notifier.value = Matrix4(
@@ -73,15 +78,17 @@ class MoveableStackItemState extends State<MoveableStackItem> {
       child: MatrixGestureDetector(
         clipChild: false,
         onMatrixUpdate: (m, tm, sm, rm) {
-          print(rm);
+          print("moving moving moving");
 
             
           setState(() {
             notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-
+            
             this.emojiMetadata.matrixArguments = notifier.value.storage;
-            print(notifier.value.storage);
-            print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
+            this.currentPosition = Offset(this.emojiMetadata.matrixArguments[12] , this.emojiMetadata.matrixArguments[13]);
+            print(this.currentPosition);
+            //print(notifier.value.storage);
+            //print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
           });
         },
         child: Transform( 
