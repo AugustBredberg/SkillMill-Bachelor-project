@@ -2,7 +2,6 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:skillmill_demo/journalFeed.dart';
 import 'package:skillmill_demo/home.dart';
 import 'package:skillmill_demo/skillPage.dart';
 

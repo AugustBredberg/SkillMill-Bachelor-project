@@ -88,50 +88,34 @@ class EmojiCanvasState extends State<EmojiCanvas>{
       emojisOnCanvas.add(item);
     }
 
-    
-      return GestureDetector(
-        /*onScaleStart: (ScaleStartDetails startDetails){
+    print("width of edit canvas: " +(MediaQuery.of(context).size.width).toString());
+    print("height of edit canvas: " +(MediaQuery.of(context).size.height).toString());
+      return Material(
+        color: currentColors,
+          //height: MediaQuery.of(context).size.width * 0.6,
+          //width: //constraints.maxWidth,
+          child: Stack(
+            fit: StackFit.expand,
+            clipBehavior: Clip.hardEdge,
+            //alignment: Alignment.center,
+            children: emojisOnCanvas,
+            
+            /*[  
+              for ( var i in currentEmojis ) GestureDetector(
+                child: i,
+                onLongPress: (){
+                  print("pressing");
+                  
+                  setState(() {
+                    removeEmojiAtLongpress(i);
 
-        },*/
-        onScaleUpdate: (ScaleUpdateDetails scaleDetails) {
-          if(scaleDetails.pointerCount == 2){
-              print('SCALE' +
-                currentEmojis[0].emojiMetadata.emoji +
-                scaleDetails.toString());
-
-              currentEmojis[0].key.currentState.scaleEmoji(scaleDetails);
-            }
-            },
-        onScaleEnd: (ScaleEndDetails details){
-          currentEmojis[0].key.currentState.endScale();
-
-        },
-            child: Material(
-            color: currentColors,
-            //height: constraints.maxHeight,
-            //width: constraints.maxWidth,
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: emojisOnCanvas,
-              
-              /*[  
-                for ( var i in currentEmojis ) GestureDetector(
-                  child: i,
-                  onLongPress: (){
-                    print("pressing");
-                    
-                    setState(() {
-                      removeEmojiAtLongpress(i);
-
-                    
-                     
-                    });
-                  },
-                ), 
-              ]
-              */
-            ),
+                  
+                   
+                  });
+                },
+              ), 
+            ]
+            */
           ),
       );
       

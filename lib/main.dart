@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/navigationBar.dart';
+import 'package:skillmill_demo/newJournal.dart';
 import 'package:skillmill_demo/newUserView.dart';
 import 'loginView.dart';
 import 'navigationBar.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         // Set named routes for using the Navigator.
         '/home': (BuildContext context) => new NavigationBar(),
+        '/journal': (BuildContext context) => new NewJournal(oldCanvasEmojis: [], oldCanvasColor: Colors.white),
         '/login': (BuildContext context) => new LoginView(),
         '/signUp': (BuildContext context) => new NewUserView(),
       },

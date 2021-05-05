@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/newJournal.dart';
-import 'journalFeed.dart';
 import 'objects/cardCarousel.dart';
 
 class Home extends StatefulWidget {
-  //JournalView({Key key, this.title}) : super(key: key);
-
   String name;
 
   Home(name) {
@@ -18,21 +15,15 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       body: Stack(
           children: [
-          
+
             Container(
-              padding: EdgeInsets.only(top:  MediaQuery.of(context).size.height * 0.08,) ,
-              height: MediaQuery.of(context).size.height * 0.92,
+              //padding: EdgeInsets.symmetric(vertical:  MediaQuery.of(context).size.height * 0.05),
+              height: MediaQuery.of(context).size.height * 1,
               width: MediaQuery.of(context).size.width * 1,
-              child: CardCarousel([]),//JournalFeed()
+              child: CardCarousel(0.7, 0.7),//JournalFeed()
             ),
 
 

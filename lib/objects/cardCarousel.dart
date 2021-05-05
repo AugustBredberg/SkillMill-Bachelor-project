@@ -1,7 +1,9 @@
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_carousel/carousel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'emojiCanvasPreview.dart';
 import 'globals.dart';
@@ -9,10 +11,12 @@ import '../newJournal.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CardCarousel extends StatefulWidget{
-  List<String> cardPictureAdresses;
+  double widthOfScreen;
+  double heightOfScreen;
 
-  CardCarousel(cardPictureAdresses) {
-    cardPictureAdresses = cardPictureAdresses;
+  CardCarousel(width, height) {
+    widthOfScreen = width;
+    heightOfScreen = height;
   }
 
   @override
@@ -21,111 +25,71 @@ class CardCarousel extends StatefulWidget{
 
 
 class _CardCarousel extends State<CardCarousel>{
-  //List<String> cardPics = [];
-  String testUrl = "images/king.jpg";
-  int _currentIndex;
-  EmojiCanvasPreview a = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: 0.5, heightOfScreen: 1,);
-  Image b = Image.asset('images/back.png');
-  Image c = Image.asset('images/jack.png');
-  Image d = Image.asset('images/joker.jpg');
-  Image e = Image.asset('images/queen.png');
-  //List<Image> lst = [a,a,a,a,a];
+  List<EmojiCanvasPreview> previewCanvases;
   List cardList;
  
 
   @override
   void initState() {
     print('init');
-    _currentIndex = 0;
+    /// replace this for-loop with API-call that returns all previous canvases. 
+    previewCanvases = [];
+    //for(int i=0; i<5; i++){
+      EmojiCanvasPreview canvas1 = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.amber, widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
+      EmojiCanvasPreview canvas2 = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.blue, widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
+      EmojiCanvasPreview canvas3 = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.green, widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
+      EmojiCanvasPreview canvas4 = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.red[800], widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
+      EmojiCanvasPreview canvas5 = EmojiCanvasPreview(emojis: globalEmojiList1, color: Colors.purple, widthOfScreen: widget.widthOfScreen, heightOfScreen: widget.heightOfScreen,);
+
+      previewCanvases.add(canvas1);
+      previewCanvases.add(canvas2);
+      previewCanvases.add(canvas3);
+      previewCanvases.add(canvas4);
+      previewCanvases.add(canvas5);
+    //}
+
+
     super.initState();
-    this.cardList=[a,b,c,d,e];
-    //cardPics = widget.cardPictureAdresses;
   }
  
 
   @override
   Widget build(BuildContext context) {
-    return new LayoutBuilder(
-    builder: (BuildContext context, BoxConstraints constraints) {
-      return CarouselSlider(
+    return CarouselSlider(
         options: CarouselOptions(
-          height:constraints.maxHeight,
+          height: MediaQuery.of(context).size.height * widget.heightOfScreen,
           //width:constraints.maxWidth,
-          aspectRatio: constraints.maxWidth/(constraints.maxHeight*2),
+          aspectRatio: (MediaQuery.of(context).size.height*widget.widthOfScreen)/(MediaQuery.of(context).size.height * widget.heightOfScreen),
           autoPlay: false,
           enlargeCenterPage: false,
         ),
-        items: [a,a,a,a,a].map((i) {
+        items: previewCanvases.map((i) {
           return Builder(
             builder: (BuildContext context) {
-              return Container(
-                //width: constraints.maxHeight*1.8,//MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                decoration: BoxDecoration(
-                  color: Colors.amber
+              return Card(
+                elevation: 8,
+                child: Container(
+                  width: MediaQuery.of(context).size.width*widget.widthOfScreen,
+                  height: MediaQuery.of(context).size.height*widget.heightOfScreen,
+                  //margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  new NewJournal(oldCanvasEmojis: i.emojis, oldCanvasColor: i.color)),
+                        );
+                      },
+                      child: i,
+                    )
+                  
+                  //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
                 ),
-                child: GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                new NewJournal(oldCanvasEmojis: i.emojis, oldCanvasColor: i.color)),
-                      );
-                    },
-                    child: i,
-                  )
-                
-                //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
               );
             },
           );
         }).toList(),
-      );
-      /*Carousel(
-          height: constraints.maxHeight,//MediaQuery.of(context).size.height * 0.50,
-          width: constraints.maxWidth,//MediaQuery.of(context).size.width * 0.50,
-          initialPage: 0,
-          //showArrow: true,
-          showIndicator: true,
-          indicatorType: IndicatorTypes.bar,
-          indicatorBackgroundOpacity: 0,
-          activeIndicatorColor: Colors.red,
-          allowWrap: true,
-          type: Types.slideSwiper,
-          onCarouselTap: (i) {
-            print("onTap $i");
-          },
-          onPageChange: (){},
-          axis: Axis.horizontal,
-          children:[
-            Card(
-              elevation: 10,
-              child: a
-            ),
-            Card(
-              elevation: 10,
-              child: b
-            ),
-            Card(
-              elevation: 10,
-              child: c
-            ),
-            Card(
-              elevation: 10,
-              child: d
-            ),
-            Card(
-              elevation: 10,
-              child: e
-            ),
-
-
-          ] 
-        
-      );
-      */
-    }
   
       );
   }
