@@ -46,7 +46,7 @@ class _NewJournal extends State<NewJournal> {
     /// This list is for the editable canvas, it contians movable stack items.
     List<MoveableStackItem> listOfItems = [];
     for(var i in widget.oldCanvasEmojis){
-      listOfItems.add( MoveableStackItem(i));
+      listOfItems.add( MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
     }
     
 
@@ -335,7 +335,7 @@ class _NewJournal extends State<NewJournal> {
     controller.text += emoji.text;
     print(emoji.text);
     MoveableStackItem item = MoveableStackItem(EmojiMetadata(emoji.text, [0.4360759627327983, -0.00499969555783915, 0.0, 0.0, 0.00499969555783915, 0.4360759627327983, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 100.90648195061966, 193.65734906587528, 0.0, 1.0]
-    )
+    ), new GlobalKey<MoveableStackItemState>()
     );
     _appendEmojiToImpactCanvas(item);
   }
