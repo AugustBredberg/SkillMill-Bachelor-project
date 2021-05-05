@@ -48,6 +48,7 @@ class MoveableStackItemState extends State<MoveableStackItem> {
     this.myKey = widget.key;
     this.emojiMetadata = widget.emojiMetadata;
     this.givenWidget = widget.givenWidget;
+    this.currentPosition = Offset(0,0);
     notifier.value = Matrix4(
       this.emojiMetadata.matrixArguments[0],
       this.emojiMetadata.matrixArguments[1],

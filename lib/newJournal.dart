@@ -307,7 +307,7 @@ class _NewJournal extends State<NewJournal> {
             child: 
                 GestureDetector(
                   onTap: (){
-                    popEditOverlay(context);
+                    popEditOverlay(context);  
                     print("clicketyy");
                   },
                   child: Container(
