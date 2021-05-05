@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'globals.dart' as globals;
 
 void main() => runApp(MyApp());
 
 /*
-Returns Future list of [bool success, int token]
+Call with: await login(String username, String password)
+Returns a map: Map<bool success, String token>
 Token is used for API to find the right user
-Future<bool>
 */
 Future<Map> login(String username, String password) async {
   Map data = {"username": username, "password": password};
@@ -23,9 +24,13 @@ Future<Map> login(String username, String password) async {
   return (returnMessage);
 }
 
+//////////////////////Testar API-funktioner///////////////////////////////////
+
 void testLogin(String username, String password) async {
   Map response = await login(username, password);
   print(response);
+  globals.token = response.values.elementAt(1);
+  print(globals.token + "från globals");
 }
 
 class MyApp extends StatelessWidget {
@@ -115,7 +120,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 testLogin(usernameController.text, passwordController.text);
                 print("login kört");
               },
-              child: Text("Submit"),
+              child: Text("Login"),
+            ),
+          ),
+          Container(
+            child: FloatingActionButton(
+              onPressed: () {
+                print("");
+              },
+              child: Text("Get journals"),
             ),
           )
         ],
