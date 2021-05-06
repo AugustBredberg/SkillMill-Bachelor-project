@@ -112,6 +112,19 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     List<GestureDetector> emojisOnCanvas = [];
     for ( var i in currentEmojis ){
       var item = GestureDetector(
+        onTap: (){
+          setState(() {
+          ///////////////////////            
+          });
+          currentEmojis.removeWhere((item){
+              return item.key == i.key;
+            });
+            currentEmojis.add(i); 
+            currentMetaData.removeWhere((metadata){
+              return metadata.key == i.key;
+            });
+            currentMetaData.add(i.emojiMetadata); 
+        },
         child: Opacity(
           opacity: this.hoveringOverTrashCan && hoveringKey == i.key ? 0.5 : 1,
           child: i
@@ -171,7 +184,7 @@ class EmojiCanvasState extends State<EmojiCanvas>{
               print("IN MATRIX DETECT");
               setState(() {
                 Matrix4 currentMatrix = currentEmojis[currentEmojis.length-1].key.currentState.notifier.value;
-                currentMatrix = MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+                currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, sm, rm);
                 currentEmojis[currentEmojis.length-1].key.currentState.notifier.value = currentMatrix;
                 currentMetaData[currentMetaData.length-1].matrixArguments = currentMatrix.storage;
                 currentEmojis[currentEmojis.length-1].key.currentState.setState(() {});
