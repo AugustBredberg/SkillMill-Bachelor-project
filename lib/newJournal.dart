@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
 import 'objects/movableObject.dart';
 import 'objects/globals.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -33,8 +36,15 @@ class _NewJournal extends State<NewJournal> {
   OverlayEntry overlayEntry;
   OverlayEntry overlayEdit;
 
+  PanelController keyboardController;
+  PanelController colorSliderController;
+  Material editOverlay;
+
   @override
   void initState() {
+    //editOverlay = showColorSlider(context);
+    keyboardController = new PanelController();
+    colorSliderController = new PanelController();
     overlayState = Overlay.of(context);
 
     /// Completely empty canvas, ready to be filled with emojis
@@ -98,100 +108,106 @@ class _NewJournal extends State<NewJournal> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
-          child: Center(
-            child: Column(
-              children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                  Container(
-                  height: MediaQuery.of(context).size.width * 0.25,
-                  //color: Colors.red,
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    onPressed: (){
-                    if (this.overlayEntry != null) {
-                      if (!this.overlayEntry.mounted) {
-                        Navigator.pop(context);
-                        return;
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
+            child: Center(
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                    Container(
+                    height: MediaQuery.of(context).size.width * 0.25,
+                    //color: Colors.red,
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      onPressed: (){
+                      if (this.overlayEntry != null) {
+                        if (!this.overlayEntry.mounted) {
+                          Navigator.pop(context);
+                          return;
+                        } 
+                        else {
+                          popOverLay(context);
+                          popEditOverlay(context);
+                        }
                       } 
                       else {
-                        popOverLay(context);
-                        popEditOverlay(context);
-                      }
-                    } 
-                    else {
-                    Navigator.pop(context);
-                  }
-                  },
-                  icon: Icon(Icons.arrow_back_rounded, color: Colors.grey, size: 40.0,),)),//child: Icon(Icons.arrow_back, color: Colors.red))),
-                  Container(
-                    //color: Colors.green,
-                    height: MediaQuery.of(context).size.width * 0.25,
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    padding: EdgeInsets.only(
-                      top: (MediaQuery.of(context).size.width * 0.05)),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        maxLength: 25,
-                        maxLines: 1,
-                        style: TextStyle(fontSize: 25),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(0),
-                          alignLabelWithHint: true,
-                          disabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          border: InputBorder.none,
-                          hintText: "Enter title",
-                        ),
-                      ),
-                  ),]),
-                  Stack(alignment: Alignment.center, children: [
+                      Navigator.pop(context);
+                    }
+                    },
+                    icon: Icon(Icons.arrow_back_rounded, color: Colors.grey, size: 40.0,),)),//child: Icon(Icons.arrow_back, color: Colors.red))),
                     Container(
-                    //alignment: Alignment.center,
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      child: this.preview,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
+                      //color: Colors.green,
+                      height: MediaQuery.of(context).size.width * 0.25,
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding: EdgeInsets.only(
+                        top: (MediaQuery.of(context).size.width * 0.05)),
+                        child: TextField(
+                          textAlign: TextAlign.center,
+                          maxLength: 25,
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 25),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(0),
+                            alignLabelWithHint: true,
+                            disabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            border: InputBorder.none,
+                            hintText: "Enter title",
+                          ),
+                        ),
+                    ),]),
+                    Stack(alignment: Alignment.center, children: [
+                      Container(
+                      //alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: this.preview,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                        ),
+                      ),
+                      IconButton(
+                        iconSize: 30,
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          showOverlay(context);
+                        },
+                      ),
+                    ]),
+                    Container(
+                      height: 50.0,
+                      margin: EdgeInsets.all(10),
+                      child: ElevatedButton(
+                        child: Text('Save Entry'),
+                          onPressed: () {
+                            if (_myEmojiCanvas.currentState != null) {
+                              print("changed globalrmojilist1");
+                              globalEmojiList1 =
+                              _myEmojiCanvas.currentState.currentMetaData;
+                            }
+                            //setState(() {
+                              //this.keyboardController.close();  
+                                                          
+                              //                          });
+                            
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.purple,
+                            padding:
+                              EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                              textStyle: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                          ),
                       ),
                     ),
-                    IconButton(
-                      iconSize: 30,
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        showOverlay(context);
-                      },
-                    ),
-                  ]),
-                  Container(
-                    height: 50.0,
-                    margin: EdgeInsets.all(10),
-                    child: ElevatedButton(
-                      child: Text('Save Entry'),
-                        onPressed: () {
-                          if (_myEmojiCanvas.currentState != null) {
-                            print("changed globalrmojilist1");
-                            globalEmojiList1 =
-                            _myEmojiCanvas.currentState.currentMetaData;
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.purple,
-                          padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                            textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                        ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
+        
         ),
       );
   }
@@ -209,148 +225,156 @@ class _NewJournal extends State<NewJournal> {
   }
 
   Widget editCanvas() {
+    //editOverlay = showColorSlider(context)
     print(MediaQuery.of(context).size.height * editCanvasHeight);
     print(MediaQuery.of(context).size.width * editCanvasHeight);
-    return Container(
-      color: Colors.white,
-      height: MediaQuery.of(context).size.height * 1,
-      width: MediaQuery.of(context).size.width * 1,
-      child: Center(
-        child: Stack(
-          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Material(
-              child: this.impact,
-            ),
-            Positioned(
-              top: 50,
-              right: 0,
-              child: Column(
-                children: [
-                  Material(
-                    type: MaterialType.transparency,
-                    child: IconButton(
-                      iconSize: 50,
-                      icon: Icon(
-                        Icons.color_lens,
+    
+    return SlidingUpPanel(
+      ///////////////////////////////
+      //// COLOR-SLIDER PANEL
+      ///////////////////////////////
+      color: Colors.transparent,
+      controller: this.colorSliderController,
+      minHeight: 1,
+      maxHeight: MediaQuery.of(context).size.height*0.3,
+      panel: showColorSlider(context),
+      body: SlidingUpPanel(
+        ///////////////////////////////
+        //// KEYBOARD PANEL
+        ///////////////////////////////
+        color: Colors.transparent,
+        controller: this.keyboardController,
+        minHeight: 1,
+        maxHeight: MediaQuery.of(context).size.height*0.8, 
+        panel: showKeyboard(context),//showKeyboard(context), 
+        body:Container(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height * 1,
+          width: MediaQuery.of(context).size.width * 1,
+          child: Center(
+            child: Stack(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Material(
+                  child: this.impact,
+                ),
+                Positioned(
+                  top: 50,
+                  right: 0,
+                  child: Column(
+                    children: [
+                      Material(
+                        type: MaterialType.transparency,
+                        child: IconButton(
+                          iconSize: 50,
+                          icon: Icon(
+                            Icons.color_lens,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                            //  slidingPanelHeight = MediaQuery.of(context).size.height*0.3;
+                            //this.editOverlay = showColorSlider(context);
+                            this.colorSliderController.open();                             
+                                                    });
+                          
+                            //showColorSlider(context);
+                          },
+                        ),
                       ),
-                      onPressed: () {
-                        showColorSlider(context);
-                      },
-                    ),
-                  ),
-                  Material(
-                    type: MaterialType.transparency,
-                    child: IconButton(
-                      iconSize: 50,
-                      icon: Icon(Icons.emoji_emotions),
-                      onPressed: () {
-                        showKeyboard(context);
-                      },
-                    ),
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          print("DONE");
+                      Material(
+                        type: MaterialType.transparency,
+                        child: IconButton(
+                          iconSize: 50,
+                          icon: Icon(Icons.emoji_emotions),
+                          onPressed: () {
+                            setState(() {
+                            //  slidingPanelHeight = MediaQuery.of(context).size.height*1;
+                            //this.editOverlay = showKeyboard(context);
+                            this.keyboardController.open();                             
+                                                    });
+                            //showKeyboard(context);
+                          },
+                        ),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              print("DONE");
 
-                          /// Updates the preview canvas to the edited canvas
-                          this._previewKey.currentState.updateEmojis(
-                              this._myEmojiCanvas.currentState.currentMetaData);
-                          this._previewKey.currentState.updateColor(
-                              this._myEmojiCanvas.currentState.currentColors);
+                              /// Updates the preview canvas to the edited canvas
+                              this._previewKey.currentState.updateEmojis(
+                                  this._myEmojiCanvas.currentState.currentMetaData);
+                              this._previewKey.currentState.updateColor(
+                                  this._myEmojiCanvas.currentState.currentColors);
 
-                          /// Makes sure that the edit-canvas actually updates
-                          this.impact.emojis =
-                              this._myEmojiCanvas.currentState.currentEmojis;
-                          this.impact.color =
-                              this._myEmojiCanvas.currentState.currentColors;
-                        });
-                        popOverLay(context);
-                      },
-                      child: Text("Done")),
-                ],
+                              /// Makes sure that the edit-canvas actually updates
+                              this.impact.emojis =
+                                  this._myEmojiCanvas.currentState.currentEmojis;
+                              this.impact.color =
+                                  this._myEmojiCanvas.currentState.currentColors;
+                            });
+                            popOverLay(context);
+                          },
+                          child: Text("Done")),
+                    ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        ),
+      ),
+    );
+  }
+
+  Material showKeyboard(BuildContext context) {
+        return Material(
+          color: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.only(top:30.0),
+            child: Container(
+               
+              color: Colors.transparent,
+              height: MediaQuery.of(context).size.height * 0.8,
+              width: MediaQuery.of(context).size.width * 1,
+              child:  ClipRect(
+                child: new BackdropFilter(
+                  filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), //.blur(sigmaX: 10.0, sigmaY: 10.0),
+                 
+                  child: EmojiKeyboard(
+                    column: 4,
+                    color: Colors.transparent,//fromRGBO(255, 255, 255, 0.5),
+                    floatingHeader: false,
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    onEmojiSelected: onEmojiSelected,
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  showKeyboard(BuildContext context) {
-    if (overlayEdit != null && overlayEdit.mounted) {
-      //hejhå
-      print("other overlay already up, popping that overlay");
-      popEditOverlay(context);
-    }
-    //OverlayState overlayState = Overlay.of(context);
-    this.overlayEdit = OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).size.width * 0,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            height: MediaQuery.of(context).size.height * 1,
-            width: MediaQuery.of(context).size.width * 1,
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                IconButton(
-                  iconSize: MediaQuery.of(context).size.height * 0.05,
-                  icon: Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                  onPressed: () {
-                    popEditOverlay(context);
-                    print("popped keyboard");
-                  },
-                ),
-                EmojiKeyboard(
-                  column: 4,
-                  color: Color.fromRGBO(255, 255, 255, 0.5),
-                  floatingHeader: false,
-                  height: MediaQuery.of(context).size.height * 0.875,
-                  onEmojiSelected: onEmojiSelected,
-                ),
-              ],
-            ),
           ),
-        ),
-      ),
     );
-    overlayState.insert(overlayEdit);
   }
 
-  showColorSlider(BuildContext context) {
-    if (overlayEdit != null && overlayEdit.mounted) {
-      print("other overlay already up, popping that overlay");
-      popEditOverlay(context);
-    }
-    this.overlayEdit = OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).size.width * 0,
-        child: Material(
-          color: Colors.transparent,
-          child: GestureDetector(
-            onTap: () {
-              popEditOverlay(context);
-              print("clicketyy");
-            },
-            child: Container(
-                color: Colors.transparent,
-                height: MediaQuery.of(context).size.height * 1,
-                width: MediaQuery.of(context).size.width * 1,
-                child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ColorPicker(MediaQuery.of(context).size.width * 0.6,setColorToChosen))),
+  Material showColorSlider(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        color: Colors.transparent,
+        height: MediaQuery.of(context).size.height * 0.3,
+        width: MediaQuery.of(context).size.width * 1,
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), 
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ColorPicker(MediaQuery.of(context).size.width * 0.6,setColorToChosen)
+            )
           ),
         ),
       ),
     );
 
-    overlayState.insert(overlayEdit);
+    //overlayState.insert(overlayEdit);
   }
 
   popEditOverlay(BuildContext context) {
@@ -358,7 +382,8 @@ class _NewJournal extends State<NewJournal> {
   }
 
   void onEmojiSelected(Emoji emoji) {
-    popEditOverlay(context);
+    //popEditOverlay(context);
+    this.keyboardController.close();
     controller.text += emoji.text;
     print(emoji.text);
     MoveableStackItem item = MoveableStackItem(
