@@ -58,10 +58,12 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     setState(() {
       /// gör så att så fort man nuddar en emoji hamnar den högst upp i listan ALLTID.
       /// multiplicera currentPosition med emojins 1/scale för att fixa offsets när de är stora och små
-      if (fingerPosition.dx > MediaQuery.of(context).size.width * 0.35 &&
-          fingerPosition.dx < MediaQuery.of(context).size.width * 0.75 &&
-          fingerPosition.dy > MediaQuery.of(context).size.height * 0.90) {
-        //if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
+      if(fingerPosition.dx > MediaQuery.of(context).size.width *0.35 &&
+         fingerPosition.dx < MediaQuery.of(context).size.width *0.75 &&
+         fingerPosition.dy > MediaQuery.of(context).size.height*0.90 &&
+         currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.5
+         ){
+      //if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
         this.hoveringOverTrashCan = true;
         this.hoveringKey = currentEmojis[currentEmojis.length - 1].key;
       } else {
@@ -70,14 +72,16 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     });
   }
 
-  Icon drawTrashCan() {
-    if (this.shouldShowTrashCan) {
-      if (this.hoveringOverTrashCan) {
-        return Icon(Icons.restore_from_trash_rounded, size: 80);
+  Icon drawTrashCan(){
+    if(this.shouldShowTrashCan){
+
+      if(this.hoveringOverTrashCan){
+        return Icon(Icons.delete_forever_outlined, size: 80);
       }
-      return Icon(Icons.restore_from_trash_rounded, size: 40);
-    } else {
-      return Icon(Icons.directions_train_sharp, size: 0);
+      return Icon(Icons.delete_outlined, size: 40);
+    }
+    else{
+      return Icon(Icons.directions_train_sharp, size:0);
     }
   }
 
@@ -157,6 +161,19 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     List<GestureDetector> emojisOnCanvas = [];
     for (var i in currentEmojis) {
       var item = GestureDetector(
+        onTap: (){
+          setState(() {
+          ///////////////////////            
+          });
+          currentEmojis.removeWhere((item){
+              return item.key == i.key;
+            });
+            currentEmojis.add(i); 
+            currentMetaData.removeWhere((metadata){
+              return metadata.key == i.key;
+            });
+            currentMetaData.add(i.emojiMetadata); 
+        },
         child: Opacity(
             opacity:
                 this.hoveringOverTrashCan && hoveringKey == i.key ? 0.5 : 1,
@@ -255,8 +272,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
               clipBehavior: Clip.hardEdge,
               //alignment: Alignment.center,
               children: emojisOnCanvas,
-
-              /*[  
+                  /*[  
                     for ( var i in currentEmojis ) GestureDetector(
                       child: i,
                       onLongPress: (){
