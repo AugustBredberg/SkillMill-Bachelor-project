@@ -85,7 +85,6 @@ class MoveableStackItemState extends State<MoveableStackItem> {
             
           setState(() {
             notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-            
             this.emojiMetadata.matrixArguments = notifier.value.storage;
             Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
             transformed.  scale(0.01);
@@ -98,7 +97,9 @@ class MoveableStackItemState extends State<MoveableStackItem> {
         },
         child: Transform( 
           transform: notifier.value,
-          child:this.givenWidget,                       
+          //alignment: FractionalOffset.center,
+          //origin: ,
+          child:  this.givenWidget,                      
         )
       ),
     );

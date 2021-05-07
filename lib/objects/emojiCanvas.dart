@@ -34,6 +34,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
   GlobalKey<MoveableStackItemState> hoveringKey;
   Offset fingerPosition;
   List<Offset> fingerPositions = [];
+  MoveableStackItem focusEmoji;
 
   Color currentColors;
   RenderBox currentConstraints;
@@ -94,46 +95,61 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     super.initState();
   }
 
-  int findClosestEmoji() {
+  MoveableStackItem findClosestEmoji() {
     //calculate middle position of fingers
     Offset finger1 = fingerPositions[0];
     Offset finger2 = fingerPositions[1];
 
-    double xMiddlePoint = ((finger1.dx + finger2.dx) / 2).abs() - 70;
-    double yMiddlePoint = ((finger1.dy + finger2.dy) / 2).abs() - 165; // This is so fuckin stupid i will not even try to explain
+    double xMiddlePoint = (((finger1.dx + finger2.dx) / 2)); //72
+    double yMiddlePoint = (((finger1.dy + finger2.dy) / 2));
     Offset middlePointFingers = Offset(xMiddlePoint, (yMiddlePoint));
     double distance;
-    int returnIndex;
+    MoveableStackItem closestEmoji;
     //loop through emojis
 
     for (int i = 0; i < currentEmojis.length; i++) {
       Offset emojiPosition = Offset(
-          currentEmojis[i].emojiMetadata.matrixArguments[12],
-          currentEmojis[i].emojiMetadata.matrixArguments[13]);
+          currentEmojis[i].emojiMetadata.matrixArguments[12] +
+              MediaQuery.of(context).size.width *
+                  0.5 *
+                  currentEmojis[i].emojiMetadata.matrixArguments[0],
+          currentEmojis[i].emojiMetadata.matrixArguments[13] +
+              MediaQuery.of(context).size.height *
+                  0.5 *
+                  currentEmojis[i].emojiMetadata.matrixArguments[0]);
+      print(currentEmojis[i].emojiMetadata.matrixArguments[0].toString() +
+          ' <- 0 ] 5 ->' +
+          currentEmojis[i].emojiMetadata.matrixArguments[5].toString());
       print('  EMOJIPOSITION  ' +
           emojiPosition.toString() +
+          currentEmojis[i].emojiMetadata.emoji.toString() +
           '      ' +
           i.toString());
       print('  MIDDLE POINT FINGERS  ' +
           middlePointFingers.toString() +
           '      ' +
           i.toString());
-
+      //Mathematical comparison to define closest
       if (distance == null) {
         distance = (middlePointFingers - emojiPosition).distance;
-        returnIndex = i;
+        closestEmoji = currentEmojis[i];
       }
+      print((middlePointFingers - emojiPosition).distance.toString() +
+          '  DISTANCE');
+
       if ((middlePointFingers - emojiPosition).distance < distance) {
         distance = (middlePointFingers - emojiPosition).distance;
-        returnIndex = i;
+        closestEmoji = currentEmojis[i];
       }
     }
-
-    //extract position of emojis
-    //mathematical comparison to define closest
-    //return index of closest emoji
-    print(returnIndex.toString() + '');
-    return returnIndex;
+    //Return closest emoji
+    print(closestEmoji.emojiMetadata.emoji.toString() + ' CLOSEST    EMOJI  ');
+    double distanceLimit = (MediaQuery.of(context).size.height * 0.1)+(MediaQuery.of(context).size.width * 0.1)/2;
+    if (distance < distanceLimit) {
+      return closestEmoji;
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -197,22 +213,26 @@ class EmojiCanvasState extends State<EmojiCanvas> {
       },
       onPointerDown: (PointerEvent details) {
         fingerPositions.add(details.position);
+        if (this.fingerPositions.length == 2 &&
+            this.currentEmojis.length != 0) {
+          MoveableStackItem emojiToEdit = findClosestEmoji();
+          if (emojiToEdit != null) this.focusEmoji = emojiToEdit;
+        } else {
+          this.focusEmoji = null;
+        }
       },
       child: MatrixGestureDetector(
         onMatrixUpdate: (m, tm, sm, rm) {
-          if (currentEmojis.length > 0 && this.fingerPositions.length == 2) {
+          if (currentEmojis.length > 0 && this.fingerPositions.length == 2 && this.focusEmoji != null) {
             print("IN MATRIX DETECT");
-            int index = findClosestEmoji();
-
             setState(() {
               Matrix4 currentMatrix =
-                  currentEmojis[index].key.currentState.notifier.value;
+                  focusEmoji.key.currentState.notifier.value;
               currentMatrix =
-                  MatrixGestureDetector.compose(currentMatrix, null, sm, rm);
-              currentEmojis[index].key.currentState.notifier.value =
-                  currentMatrix;
-              currentMetaData[index].matrixArguments = currentMatrix.storage;
-              currentEmojis[index].key.currentState.setState(() {});
+                  MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+              focusEmoji.key.currentState.notifier.value = currentMatrix;
+              focusEmoji.emojiMetadata.matrixArguments = currentMatrix.storage;
+              focusEmoji.emojiMetadata.key.currentState.setState(() {});
             });
           }
         },
