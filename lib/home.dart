@@ -19,11 +19,12 @@ class _Home extends State<Home> {
       body: Stack(
           children: [
 
-            Container(
-              //padding: EdgeInsets.symmetric(vertical:  MediaQuery.of(context).size.height * 0.05),
-              height: MediaQuery.of(context).size.height * 1,
-              width: MediaQuery.of(context).size.width * 1,
-              child: CardCarousel(0.7, 0.7),//JournalFeed()
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
+                child: CardCarousel(0.7, 0.7),
+              ),//JournalFeed()
             ),
 
 
@@ -56,11 +57,14 @@ class _Home extends State<Home> {
 
            
 
-            Container(
-              padding: EdgeInsets.only(left:MediaQuery.of(context).size.width * 0.10, top: MediaQuery.of(context).size.height * 0.05),
-              child: Image.asset("images/skillmill.png"),
-                    //Text("Skill Mill",style: TextStyle(fontSize: 80,)),
-                ),
+            IgnorePointer(
+              ignoring: true,
+              child: Container(
+                padding: EdgeInsets.only(left:MediaQuery.of(context).size.width * 0.10, top: MediaQuery.of(context).size.height * 0.05),
+                child: Image.asset("images/skillmill.png"),
+                      //Text("Skill Mill",style: TextStyle(fontSize: 80,)),
+                  ),
+            ),
           ],
       ),
     );

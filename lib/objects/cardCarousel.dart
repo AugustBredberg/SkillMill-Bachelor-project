@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_carousel/carousel.dart';
@@ -33,7 +35,17 @@ class _CardCarousel extends State<CardCarousel> {
 
     /// replace this for-loop with API-call that returns all previous canvases.
     previewCanvases = [];
-    //for(int i=0; i<5; i++){
+    /// IF THE AMOUNT OF CANVASES EXCEED ~ 29 THE BUBBLE INDICATOR WILL OVERFLOW
+    for(int i=0; i<10; i++){
+      previewCanvases.add(
+        EmojiCanvasPreview(
+          emojis: globalEmojiList1,
+          color: Colors.blue[i*100],
+          widthOfScreen: widget.widthOfScreen,
+          heightOfScreen: widget.heightOfScreen,
+        )
+      );
+    }
     /*EmojiCanvasPreview canvas1 = EmojiCanvasPreview(
       emojis: globalEmojiList1,
       color: Colors.amber,
@@ -84,6 +96,7 @@ class _CardCarousel extends State<CardCarousel> {
 
   @override
   Widget build(BuildContext context) {
+   
     return Column(
       children: [
         (previewCanvases.length != 0)
@@ -110,12 +123,10 @@ class _CardCarousel extends State<CardCarousel> {
                       return Card(
                         elevation: 8,
                         child: Container(
-                            width: MediaQuery.of(context).size.width *
-                                widget.widthOfScreen,
-                            height: MediaQuery.of(context).size.height *
-                                widget.heightOfScreen,
-                            //margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            width: MediaQuery.of(context).size.width * widget.widthOfScreen,
+                            height: MediaQuery.of(context).size.height *widget.heightOfScreen,
                             child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -125,21 +136,72 @@ class _CardCarousel extends State<CardCarousel> {
                                           oldCanvasColor: i.color)),
                                 );
                               },
-                              child: i,
+                              child: Container(
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
+                                    i,
+                                    Container(
+                                      //decoration: BoxDecoration( border: Border.all(color: Colors.blue)),
+                                      color: Colors.white38,
+                                      width: MediaQuery.of(context).size.width * widget.widthOfScreen,
+                                      height: MediaQuery.of(context).size.height *widget.heightOfScreen*0.35,
+                                      child: ClipRect(
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                Text("Golfing with Dad", 
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                            fontSize: 25,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                ),
+                                                Text("Järn-nian är sne, råttinvasion. Huset brinner och pizzabudet tackade nej till dricks. Akta dogleg", 
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                            fontSize: 18,
+                                                            //fontWeight: FontWeight.bold,
+                                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]
+                                ),
+                              ),
                             )
-
-                            //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
-                            ),
+                        ),
                       );
                     },
                   );
                 }).toList(),
               )
-            : Container(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                      'You do not have journaled any situations, create a new one below!'),
+            : Card(
+                elevation: 8,
+                child: Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height *0.1),
+                  width: MediaQuery.of(context).size.width * widget.widthOfScreen,
+                  height: MediaQuery.of(context).size.height * widget.heightOfScreen,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'You do not have journaled any situations, create a new one below!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20),
+
+                    ),
+                    ) ,
+                    
+
+                    //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
                 ),
               ),
         (previewCanvases.length != 0)

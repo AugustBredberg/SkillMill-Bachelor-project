@@ -11,7 +11,7 @@ import 'objects/movableObject.dart';
 import 'objects/globals.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:icon_shadow/icon_shadow.dart';
-import 'package:overlay_container/overlay_container.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -40,7 +40,6 @@ class _NewJournal extends State<NewJournal> {
   PanelController keyboardController;
   PanelController colorSliderController;
   Material editOverlay;
-  bool _showBackbuttonDialog = false;
 
 
   @override
@@ -210,11 +209,29 @@ class _NewJournal extends State<NewJournal> {
                       child: ElevatedButton(
                         child: Text('Save Entry'),
                           onPressed: () {
-                            if (_myEmojiCanvas.currentState != null) {
+                            if (_previewKey.currentState != null) {
                               print("changed globalrmojilist1");
-                              globalEmojiList1 =
-                              _myEmojiCanvas.currentState.currentMetaData;
+                              globalEmojiList1 =_previewKey.currentState.currentMetadata;
                             }
+                            AwesomeDialog(
+                              context: context,
+                              animType: AnimType.LEFTSLIDE,
+                              headerAnimationLoop: false,
+                              dialogType: DialogType.SUCCES,
+                              title: 'Success',
+                              desc:
+                                  'Successfully saved journal entry',
+                              btnOkOnPress: () {
+                                debugPrint('');
+                              },
+                              btnOkIcon: Icons.check_circle,
+                              onDissmissCallback: () {
+                                debugPrint('Dialog Dissmiss from callback');
+                                Navigator.of(context).pushReplacementNamed('/home');
+                              }
+                            )..show();
+                            
+                            //Navigator.pop(context);
                             //setState(() {
                               //this.keyboardController.close();  
                                                           
@@ -259,13 +276,14 @@ class _NewJournal extends State<NewJournal> {
     //editOverlay = showColorSlider(context)
     print(MediaQuery.of(context).size.height * editCanvasHeight);
     //print(MediaQuery.of(context).size.width * editCanvasHeight);
+   /*
     List<MoveableStackItem> listOfItems = [];
     for (var i in List.from(this.preview.emojis)) {
       //this.preview.
       listOfItems.add(MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
-    }
+    }*/
     //this.impact.emojis = listOfItems;
-    this._myEmojiCanvas = GlobalKey<EmojiCanvasState>();
+    //this._myEmojiCanvas = GlobalKey<EmojiCanvasState>();
     return SlidingUpPanel(
       ///////////////////////////////
       //// COLOR-SLIDER PANEL
@@ -299,7 +317,7 @@ class _NewJournal extends State<NewJournal> {
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Material(
-                  child: EmojiCanvas(key: this._myEmojiCanvas, emojis: listOfItems, color: this.preview.color ),
+                  child: this.impact,//EmojiCanvas(key: this._myEmojiCanvas, emojis: listOfItems, color: this.preview.color ),
                   //this.impact,
                 ),
                 Positioned(
@@ -312,7 +330,6 @@ class _NewJournal extends State<NewJournal> {
                         print("pressing toggle");
                         showBackbuttonOverlay();
                         //_toggleBackbuttonDialog();
-                        print(_showBackbuttonDialog);
                        
                          },
 
@@ -504,7 +521,7 @@ class _NewJournal extends State<NewJournal> {
     this.backbuttonOverlay = OverlayEntry(
       builder: (context) {
         return Material(
-          color:Color.fromRGBO(0, 0, 0, 0.3),
+          color:Colors.transparent, //fromRGBO(0, 0, 0, 0.3),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -563,7 +580,6 @@ class _NewJournal extends State<NewJournal> {
     );
     overlayState.insert(backbuttonOverlay);
     return Future.value(false);
-    
   }
 
   popBackbuttonOverlay(BuildContext context) {

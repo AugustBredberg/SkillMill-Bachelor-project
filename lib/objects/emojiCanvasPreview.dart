@@ -58,6 +58,7 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
   void updateEmojis(List<EmojiMetadata> metadata){
     setState(() { 
       this.currentEmojis = [];
+      this.currentMetadata = [];
       for(int i=0; i<metadata.length; i++){
         Transform translated = translateMetadataToActualEmoji(metadata[i]);
         currentEmojis.add(translated);
