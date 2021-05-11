@@ -25,7 +25,6 @@ class CardCarousel extends StatefulWidget {
 
 class _CardCarousel extends State<CardCarousel> {
   List<EmojiCanvasPreview> previewCanvases;
-  List cardList;
   int _currentPosition = 0;
 
   @override
@@ -35,7 +34,7 @@ class _CardCarousel extends State<CardCarousel> {
     /// replace this for-loop with API-call that returns all previous canvases.
     previewCanvases = [];
     //for(int i=0; i<5; i++){
-    EmojiCanvasPreview canvas1 = EmojiCanvasPreview(
+    /*EmojiCanvasPreview canvas1 = EmojiCanvasPreview(
       emojis: globalEmojiList1,
       color: Colors.amber,
       widthOfScreen: widget.widthOfScreen,
@@ -65,12 +64,19 @@ class _CardCarousel extends State<CardCarousel> {
       widthOfScreen: widget.widthOfScreen,
       heightOfScreen: widget.heightOfScreen,
     );
+    EmojiCanvasPreview canvas6 = EmojiCanvasPreview(
+      emojis: globalEmojiList1,
+      color: Colors.black26,
+      widthOfScreen: widget.widthOfScreen,
+      heightOfScreen: widget.heightOfScreen,
+    );
 
     previewCanvases.add(canvas1);
     previewCanvases.add(canvas2);
     previewCanvases.add(canvas3);
     previewCanvases.add(canvas4);
     previewCanvases.add(canvas5);
+    previewCanvases.add(canvas6);*/
     //}
 
     super.initState();
@@ -80,69 +86,82 @@ class _CardCarousel extends State<CardCarousel> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CarouselSlider(
-          options: CarouselOptions(
-            height: MediaQuery.of(context).size.height * widget.heightOfScreen,
-            //width:constraints.maxWidth,
-            aspectRatio: (MediaQuery.of(context).size.height *
-                    widget.widthOfScreen) /
-                (MediaQuery.of(context).size.height * widget.heightOfScreen),
-            autoPlay: false,
-            enlargeCenterPage: false,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentPosition = index;
-              });
-            },
-          ),
-          items: previewCanvases.map((i) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Card(
-                  elevation: 8,
-                  child: Container(
-                      width: MediaQuery.of(context).size.width *
-                          widget.widthOfScreen,
-                      height: MediaQuery.of(context).size.height *
-                          widget.heightOfScreen,
-                      //margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => new NewJournal(
-                                    oldCanvasEmojis: i.emojis,
-                                    oldCanvasColor: i.color)),
-                          );
-                        },
-                        child: i,
-                      )
+        (previewCanvases.length != 0)
+            ? CarouselSlider(
+                options: CarouselOptions(
+                  height: MediaQuery.of(context).size.height *
+                      widget.heightOfScreen,
+                  //width:constraints.maxWidth,
+                  aspectRatio: (MediaQuery.of(context).size.height *
+                          widget.widthOfScreen) /
+                      (MediaQuery.of(context).size.height *
+                          widget.heightOfScreen),
+                  autoPlay: false,
+                  enlargeCenterPage: false,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentPosition = index;
+                    });
+                  },
+                ),
+                items: previewCanvases.map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Card(
+                        elevation: 8,
+                        child: Container(
+                            width: MediaQuery.of(context).size.width *
+                                widget.widthOfScreen,
+                            height: MediaQuery.of(context).size.height *
+                                widget.heightOfScreen,
+                            //margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => new NewJournal(
+                                          oldCanvasEmojis: i.emojis,
+                                          oldCanvasColor: i.color)),
+                                );
+                              },
+                              child: i,
+                            )
 
-                      //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
-                      ),
-                );
-              },
-            );
-          }).toList(),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: previewCanvases.map((i) {
-            int index = previewCanvases.indexOf(i);
-            return Container(
-              width: 8.0,
-              height: 8.0,
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _currentPosition == index
-                    ? Color.fromRGBO(0, 0, 0, 0.9)
-                    : Color.fromRGBO(0, 0, 0, 0.4),
+                            //Image.asset("images/log.jpeg"), //Text('text $i', style: TextStyle(fontSize: 16.0),)
+                            ),
+                      );
+                    },
+                  );
+                }).toList(),
+              )
+            : Container(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                      'You do not have journaled any situations, create a new one below!'),
+                ),
               ),
-            );
-          }).toList(),
-        ),
+        (previewCanvases.length != 0)
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: previewCanvases.map((i) {
+                  int index = previewCanvases.indexOf(i);
+                  return Container(
+                    width: 8.0,
+                    height: 8.0,
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentPosition == index
+                          ? Color.fromRGBO(0, 0, 0, 0.9)
+                          : Color.fromRGBO(0, 0, 0, 0.4),
+                    ),
+                  );
+                }).toList(),
+              )
+            : Text(' '),
       ],
     );
   }
