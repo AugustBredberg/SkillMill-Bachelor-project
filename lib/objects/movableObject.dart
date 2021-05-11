@@ -82,10 +82,14 @@ class MoveableStackItemState extends State<MoveableStackItem> {
         onMatrixUpdate: (m, tm, sm, rm) {
           print("moving moving moving");
 
-            
+          
           setState(() {
-            notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-            
+            if(sm.storage[0]+notifier.value.storage[0] < 0.2){
+              notifier.value = MatrixGestureDetector.compose(notifier.value, tm, null, rm);
+            }
+            else{
+              notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
+            }
             this.emojiMetadata.matrixArguments = notifier.value.storage;
             Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
             transformed = transformed.scale(0.01);

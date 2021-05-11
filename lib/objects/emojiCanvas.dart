@@ -59,6 +59,27 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     });
   }
 
+  void updateEmojis(List<EmojiMetadata> metadata){
+    this.currentEmojis = [];
+    for(var data in metadata){
+      this.currentEmojis.add(
+        MoveableStackItem(data, new GlobalKey<MoveableStackItemState>())
+      );
+    }
+  }
+
+  void setCanvasToPreviousState(List<MoveableStackItem> items, Color color){
+    setState(() {
+      currentEmojis = [];
+      currentMetaData = [];
+      currentColors = color;
+
+      for(var item in items){
+        appendEmoji(item);
+      }
+    });
+  }
+
   void trashcan(){
     setState(() {
       /// gör så att så fort man nuddar en emoji hamnar den högst upp i listan ALLTID.
@@ -184,6 +205,21 @@ class EmojiCanvasState extends State<EmojiCanvas>{
               print("IN MATRIX DETECT");
               setState(() {
                 Matrix4 currentMatrix = currentEmojis[currentEmojis.length-1].key.currentState.notifier.value;
+                /* //////////////////////////////
+                //// ATTEMPT AT MAKING EMOJIS STOP GETTING SMALLER AT A CERTAIN SCALE
+                ////////////////////////////////////////////
+                print(currentEmojis[currentEmojis.length-1].key.currentState.notifier.value.storage[0]);
+                if(currentEmojis[currentEmojis.length-1].key.currentState.notifier.value.storage[0] < 0){
+                  if(sm.storage[0] < 1){
+                    currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, null, rm);
+                  }
+                  else{
+                    currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, sm, rm);
+                  }
+                }
+                else{
+                  
+                }*/
                 currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, sm, rm);
                 currentEmojis[currentEmojis.length-1].key.currentState.notifier.value = currentMatrix;
                 currentMetaData[currentMetaData.length-1].matrixArguments = currentMatrix.storage;

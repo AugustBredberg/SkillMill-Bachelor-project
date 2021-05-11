@@ -21,6 +21,8 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  overlay_container: ^0.0.5+1
+  icon_shadow: ^1.0.1
   sliding_up_panel: ^2.0.0+1
   flutter_swiper: ^1.1.6
   matrix4_transform: ^2.0.0

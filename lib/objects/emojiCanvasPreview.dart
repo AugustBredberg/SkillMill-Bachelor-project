@@ -20,6 +20,8 @@ class EmojiCanvasPreview extends StatefulWidget {
 
 class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> { 
   List<Transform> currentEmojis;
+
+  List<EmojiMetadata> currentMetadata;
   Color currentColors;
   
   Transform translateMetadataToActualEmoji(EmojiMetadata _emojiMetadata){
@@ -59,6 +61,7 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
       for(int i=0; i<metadata.length; i++){
         Transform translated = translateMetadataToActualEmoji(metadata[i]);
         currentEmojis.add(translated);
+        currentMetadata.add(metadata[i]);
         print(metadata[i].emoji);
       }
     });
@@ -73,9 +76,11 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
   @override
   void initState() {
     currentEmojis = [];
+    currentMetadata = [];
     for(int i=0; i< widget.emojis.length; i++){
       Transform translated = translateMetadataToActualEmoji(widget.emojis[i]);
       currentEmojis.add(translated);
+      currentMetadata.add(widget.emojis[i]);
     }
     currentColors = widget.color;
     super.initState();

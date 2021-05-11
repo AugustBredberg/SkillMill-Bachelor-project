@@ -10,6 +10,8 @@ import 'objects/colorPicker.dart';
 import 'objects/movableObject.dart';
 import 'objects/globals.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:icon_shadow/icon_shadow.dart';
+import 'package:overlay_container/overlay_container.dart';
 
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -32,69 +34,93 @@ class _NewJournal extends State<NewJournal> {
   EmojiCanvas impact;
   EmojiCanvasPreview preview;
 
-  OverlayState overlayState;
   OverlayEntry overlayEntry;
-  OverlayEntry overlayEdit;
+  OverlayEntry backbuttonOverlay;
 
   PanelController keyboardController;
   PanelController colorSliderController;
   Material editOverlay;
+  bool _showBackbuttonDialog = false;
+
 
   @override
   void initState() {
     //editOverlay = showColorSlider(context);
     keyboardController = new PanelController();
     colorSliderController = new PanelController();
-    overlayState = Overlay.of(context);
-
+   
     /// Completely empty canvas, ready to be filled with emojis
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
 
     /// This list is for the editable canvas, it contians movable stack items.
+    /// 
+    
     List<MoveableStackItem> listOfItems = [];
     for (var i in widget.oldCanvasEmojis) {
-      listOfItems
-          .add(MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
+      listOfItems.add(MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
     }
 
     this.impact = EmojiCanvas(
         key: this._myEmojiCanvas,
         emojis: listOfItems,
         color: widget.oldCanvasColor);
+
+    //initiateEditCanvasEmojis(widget.oldCanvasEmojis);
     this.preview = EmojiCanvasPreview(
         key: this._previewKey,
-        emojis: widget.oldCanvasEmojis,
+        emojis: List.from(widget.oldCanvasEmojis),
         color: widget.oldCanvasColor,
         widthOfScreen: 0.6,
         heightOfScreen: 0.6);
+    ////////////////////////
+    /// EDIT CANVAS REMEMBERS WHERE THE EMOJIS WERE AFTER PRESSING DISCARD CHANGES
+    ////////////////////////
     super.initState();
   }
 
+
+
+  
   void setColorToChosen(Color color) {
-    setState(() {
+    //setState(() {
       this._myEmojiCanvas.currentState.appendColor(color);
-    });
+    //});
   }
 
   void _appendEmojiToImpactCanvas(MoveableStackItem item) {
-    setState(() {
+    //setState(() {
       this._myEmojiCanvas.currentState.appendEmoji(item);
-    });
+    //});
   }
 
-  Future<bool> onBackPressed() async { //rewrite
-    if (overlayEdit != null && overlayEdit.mounted) {
-      //Keyboard active
-      print("other overlay already up, popping that overlay");
-      popEditOverlay(context);
-      return Future.value(false);
-    } else if (overlayEntry != null && overlayEntry.mounted) {
-      //No Keyboard active
-      popOverLay(context);
-    } else {
-      return Future.value(true);
-    }
+  Future<bool> onDiscardAllChanges() async { 
+/*
+    setState(() {
+      print("calling setCanvasToPreviousState");
+      List<MoveableStackItem> listofItems = [];
+      for(var metadata in this._previewKey.currentState.currentMetadata){
+        MoveableStackItem item = MoveableStackItem(metadata, new GlobalKey<MoveableStackItemState>());
+        listofItems.add(item);
+      }
+      this._myEmojiCanvas.currentState.setCanvasToPreviousState(listofItems,_previewKey.currentState.currentColors);
+      
+      //this._myEmojiCanvas.currentState.currentColors = Colors.red;
+      //this._myEmojiCanvas.currentState.currentEmojis = List.from(this.emojisBeforeEdit);
+      //initiateEditCanvasEmojis(_myEmojiCanvas.currentState.currentMetaData);
+      //this.impact.color = this.colorBeforeEdit;
+    });*/
+    //this._myEmojiCanvas.currentState.updateEmojis(this._previewKey.currentState.currentMetadata);
+    this._previewKey.currentState.setState(() {
+          
+        });
+        setState(() {
+                  
+                });
+    popBackbuttonOverlay(context);
+    popOverLay(context);
+
+    return Future.value(false);
   }
 
   @override
@@ -104,7 +130,7 @@ class _NewJournal extends State<NewJournal> {
     print("60% of height: " +
         (MediaQuery.of(context).size.height * 0.6).toString());
     return WillPopScope(
-      onWillPop: onBackPressed,
+      onWillPop: showBackbuttonOverlay,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
@@ -128,13 +154,13 @@ class _NewJournal extends State<NewJournal> {
                         } 
                         else {
                           popOverLay(context);
-                          popEditOverlay(context);
+                          popBackbuttonOverlay(context);
                         }
                       } 
                       else {
-                      Navigator.pop(context);
-                    }
-                    },
+                        Navigator.pop(context);
+                      }
+                      },
                     icon: Icon(Icons.arrow_back_rounded, color: Colors.grey, size: 40.0,),)),//child: Icon(Icons.arrow_back, color: Colors.red))),
                     Container(
                       //color: Colors.green,
@@ -171,6 +197,9 @@ class _NewJournal extends State<NewJournal> {
                         iconSize: 30,
                         icon: Icon(Icons.edit),
                         onPressed: () {
+                          //this._myEmojiCanvas.currentState.dispose();
+                          
+
                           showOverlay(context);
                         },
                       ),
@@ -215,7 +244,7 @@ class _NewJournal extends State<NewJournal> {
   showOverlay(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
     this.overlayEntry = OverlayEntry(
-      builder: (context) => editCanvas(),
+      builder: (context) => editCanvas(overlayState),
     );
     overlayState.insert(overlayEntry);
   }
@@ -224,28 +253,42 @@ class _NewJournal extends State<NewJournal> {
     this.overlayEntry.remove();
   }
 
-  Widget editCanvas() {
+  Widget editCanvas(OverlayState state) {
+    //OverlayState overlayState =state;
+    //BuildContext contextYES = overlayState.context;
     //editOverlay = showColorSlider(context)
     print(MediaQuery.of(context).size.height * editCanvasHeight);
-    print(MediaQuery.of(context).size.width * editCanvasHeight);
-    
+    //print(MediaQuery.of(context).size.width * editCanvasHeight);
+    List<MoveableStackItem> listOfItems = [];
+    for (var i in List.from(this.preview.emojis)) {
+      //this.preview.
+      listOfItems.add(MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
+    }
+    //this.impact.emojis = listOfItems;
+    this._myEmojiCanvas = GlobalKey<EmojiCanvasState>();
     return SlidingUpPanel(
       ///////////////////////////////
       //// COLOR-SLIDER PANEL
       ///////////////////////////////
+      backdropEnabled: true,
+      backdropOpacity: 0,
+      boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
       color: Colors.transparent,
       controller: this.colorSliderController,
       minHeight: 1,
-      maxHeight: MediaQuery.of(context).size.height*0.3,
+      maxHeight: MediaQuery.of(context).size.height*0.42,
       panel: showColorSlider(context),
       body: SlidingUpPanel(
         ///////////////////////////////
         //// KEYBOARD PANEL
         ///////////////////////////////
+        backdropEnabled: true,
+        backdropOpacity: 0,
+        boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],//Color.fromRGBO(255, 255, 255, 0.1))],
         color: Colors.transparent,
         controller: this.keyboardController,
         minHeight: 1,
-        maxHeight: MediaQuery.of(context).size.height*0.8, 
+        maxHeight: MediaQuery.of(context).size.height*0.87, 
         panel: showKeyboard(context),//showKeyboard(context), 
         body:Container(
           color: Colors.white,
@@ -256,8 +299,35 @@ class _NewJournal extends State<NewJournal> {
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Material(
-                  child: this.impact,
+                  child: EmojiCanvas(key: this._myEmojiCanvas, emojis: listOfItems, color: this.preview.color ),
+                  //this.impact,
                 ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.05,
+                  child: Material(
+                    color:Colors.transparent,
+                    child: IconButton(
+                      iconSize: MediaQuery.of(context).size.width*0.15,
+                      onPressed:  (){
+                        print("pressing toggle");
+                        showBackbuttonOverlay();
+                        //_toggleBackbuttonDialog();
+                        print(_showBackbuttonDialog);
+                       
+                         },
+
+                        icon: IconShadowWidget(
+                        Icon(Icons.arrow_back_rounded, 
+                          color: Colors.black, 
+                          size: MediaQuery.of(context).size.width*0.15,
+                        ),
+                        shadowColor: Colors.white54,
+                      ),
+                    ),
+                  ),
+                ),
+
+
                 Positioned(
                   top: 50,
                   right: 0,
@@ -266,59 +336,74 @@ class _NewJournal extends State<NewJournal> {
                       Material(
                         type: MaterialType.transparency,
                         child: IconButton(
-                          iconSize: 50,
-                          icon: Icon(
-                            Icons.color_lens,
+                          iconSize: MediaQuery.of(context).size.width*0.15,
+                          icon: IconShadowWidget(
+                            Icon(
+                              Icons.color_lens,
+                              size: MediaQuery.of(context).size.width*0.15,
+                            ),
+                            shadowColor: Colors.white54,
                           ),
                           onPressed: () {
-                            setState(() {
-                            //  slidingPanelHeight = MediaQuery.of(context).size.height*0.3;
-                            //this.editOverlay = showColorSlider(context);
-                            this.colorSliderController.open();                             
-                                                    });
-                          
-                            //showColorSlider(context);
+                            //setState(() {
+                              this.colorSliderController.open();                             
+                            //});
                           },
                         ),
                       ),
                       Material(
                         type: MaterialType.transparency,
                         child: IconButton(
-                          iconSize: 50,
-                          icon: Icon(Icons.emoji_emotions),
+                          iconSize: MediaQuery.of(context).size.width*0.15,
+                          icon: IconShadowWidget(
+                            Icon(Icons.emoji_emotions, size: MediaQuery.of(context).size.width*0.15,),
+                            shadowColor: Colors.white54,
+                          ),
                           onPressed: () {
-                            setState(() {
-                            //  slidingPanelHeight = MediaQuery.of(context).size.height*1;
-                            //this.editOverlay = showKeyboard(context);
-                            this.keyboardController.open();                             
-                                                    });
-                            //showKeyboard(context);
+                            //setState(() {
+                              this.keyboardController.open();                             
+                            //});
                           },
                         ),
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              print("DONE");
-
-                              /// Updates the preview canvas to the edited canvas
-                              this._previewKey.currentState.updateEmojis(
-                                  this._myEmojiCanvas.currentState.currentMetaData);
-                              this._previewKey.currentState.updateColor(
-                                  this._myEmojiCanvas.currentState.currentColors);
-
-                              /// Makes sure that the edit-canvas actually updates
-                              this.impact.emojis =
-                                  this._myEmojiCanvas.currentState.currentEmojis;
-                              this.impact.color =
-                                  this._myEmojiCanvas.currentState.currentColors;
-                            });
-                            popOverLay(context);
-                          },
-                          child: Text("Done")),
+                      
                     ],
                 ),
               ),
+              Positioned(
+                bottom:30,
+                right:30,
+                child: Material(
+                  color: Colors.transparent,
+                  child: IconButton(
+                    iconSize: MediaQuery.of(context).size.width*0.15,
+                    padding: EdgeInsets.all(0),
+                    color: Colors.green,
+                    icon: IconShadowWidget(
+                            Icon(
+                              Icons.done_sharp,
+                              size: MediaQuery.of(context).size.width*0.15,
+                              color: Colors.black,
+                            ),
+                            shadowColor: Colors.white54, 
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        print("DONE");
+                        /// Updates the preview canvas to the edited canvas
+                        this._previewKey.currentState.updateEmojis(this._myEmojiCanvas.currentState.currentMetaData);
+                        this._previewKey.currentState.updateColor(this._myEmojiCanvas.currentState.currentColors);
+                        /// Makes sure that the edit-canvas actually updates
+                        this.impact.emojis = this._myEmojiCanvas.currentState.currentEmojis;
+                        this.impact.color =  this._myEmojiCanvas.currentState.currentColors;
+                        
+                        print("SETTING EMOJISBEFOREEDIT");
+                      });
+                      popOverLay(context);
+                    },
+                  ),
+                ),
+              ),              
             ],
           ),
         ),
@@ -327,58 +412,162 @@ class _NewJournal extends State<NewJournal> {
     );
   }
 
-  Material showKeyboard(BuildContext context) {
-        return Material(
-          color: Colors.transparent,
-          child: Padding(
-            padding: const EdgeInsets.only(top:30.0),
-            child: Container(
-               
+  Container showKeyboard(BuildContext context) {
+    
+    return Container(
+        //padding: const EdgeInsets.only(top:60.0),
+        child: Column(
+          children: [
+            Material(
               color: Colors.transparent,
-              height: MediaQuery.of(context).size.height * 0.8,
-              width: MediaQuery.of(context).size.width * 1,
-              child:  ClipRect(
-                child: new BackdropFilter(
-                  filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), //.blur(sigmaX: 10.0, sigmaY: 10.0),
-                 
-                  child: EmojiKeyboard(
-                    column: 4,
-                    color: Colors.transparent,//fromRGBO(255, 255, 255, 0.5),
-                    floatingHeader: false,
-                    height: MediaQuery.of(context).size.height * 0.9,
-                    onEmojiSelected: onEmojiSelected,
+              child: IconButton(
+                padding: EdgeInsets.all(0),
+                iconSize: MediaQuery.of(context).size.height*0.05,
+                icon: Icon(Icons.keyboard_arrow_down_sharp, size:MediaQuery.of(context).size.height*0.05 ),
+                onPressed: (){ this.keyboardController.close(); },
+              ),
+            ), 
+            Material(
+              color: Color.fromRGBO(0, 0,0, 0.15),//Colors.transparent,
+              child: Container(
+                   
+                  color: Colors.transparent,
+                  height: MediaQuery.of(context).size.height * 0.80,
+                  width: MediaQuery.of(context).size.width * 1,
+                  child:  ClipRect(
+                    child: new BackdropFilter(
+                      filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), //.blur(sigmaX: 10.0, sigmaY: 10.0),
+                     
+                      child: EmojiKeyboard(
+                        column: 4,
+                        color: Colors.transparent,//fromRGBO(255, 255, 255, 0.5),
+                        floatingHeader: false,
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        onEmojiSelected: onEmojiSelected,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+          ],
+        ),
     );
   }
 
-  Material showColorSlider(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        color: Colors.transparent,
-        height: MediaQuery.of(context).size.height * 0.3,
-        width: MediaQuery.of(context).size.width * 1,
-        child: ClipRect(
-          child: BackdropFilter(
-            filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), 
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ColorPicker(MediaQuery.of(context).size.width * 0.6,setColorToChosen)
-            )
+  Column showColorSlider(BuildContext context) {
+    return Column(
+      //mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: IconButton(
+            padding: EdgeInsets.all(0),
+            iconSize: MediaQuery.of(context).size.height*0.05,
+            icon: Icon(Icons.keyboard_arrow_down_sharp, size:MediaQuery.of(context).size.height*0.05 ),
+            onPressed: (){ this.colorSliderController.close(); },
+          ),
+        ), 
+        Material(
+          color: Color.fromRGBO(0, 0, 0, 0.15),//Colors.transparent,
+          child: Container(
+            alignment: Alignment.topCenter,
+            color: Colors.transparent,
+            height: MediaQuery.of(context).size.height * 0.35,
+            width: MediaQuery.of(context).size.width * 1,
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), 
+                child: ColorPicker(MediaQuery.of(context).size.width * 0.6,setColorToChosen)
+                
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
 
     //overlayState.insert(overlayEdit);
   }
 
-  popEditOverlay(BuildContext context) {
-    this.overlayEdit.remove();
+  Future<bool> showBackbuttonOverlay() async {
+    if(this.overlayEntry != null){
+      if(!this.overlayEntry.mounted){
+        return Future.value(true);
+      }
+    }
+    else{
+      return Future.value(true);
+    }
+   
+    
+    OverlayState overlayState = Overlay.of(context);
+    this.backbuttonOverlay = OverlayEntry(
+      builder: (context) {
+        return Material(
+          color:Color.fromRGBO(0, 0, 0, 0.3),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+                //mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.15)),
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                    child: Center(
+                      child: new Text("Are you sure you want to discard your changes?", 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ),
+                  ),
+                  
+
+                  ElevatedButton(
+                    child: Text('Abandon work'),
+                    onPressed: () {
+                      onDiscardAllChanges();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.purple,
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      textStyle: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      )
+                    ),
+                  ),
+                  ElevatedButton(
+                    child: Text('Cancel', style: TextStyle(color: Colors.black)),
+                    onPressed: () {
+                      popBackbuttonOverlay(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        );
+      }
+    );
+    overlayState.insert(backbuttonOverlay);
+    return Future.value(false);
+    
+  }
+
+  popBackbuttonOverlay(BuildContext context) {
+    this.backbuttonOverlay.remove();
   }
 
   void onEmojiSelected(Emoji emoji) {
