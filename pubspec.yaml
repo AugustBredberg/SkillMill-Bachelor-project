@@ -21,6 +21,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  overlay_container: ^0.0.5+1
+  icon_shadow: ^1.0.1
+  sliding_up_panel: ^2.0.0+1
   flutter_swiper: ^1.1.6
   matrix4_transform: ^2.0.0
   carousel_slider: ^3.0.0
@@ -28,6 +31,7 @@ dependencies:
   flutter_svg: ^0.21.0+1
   sliding_sheet: ^0.5.0
   flex_color_picker: ^2.0.1
+  dots_indicator: ^2.0.0
   http: "^0.13.1"
   matrix_gesture_detector: ^0.1.0
   flutter_emoji_keyboard: ^0.1.3

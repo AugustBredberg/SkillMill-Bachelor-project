@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
@@ -8,6 +7,8 @@ import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
 import 'home.dart';
+import 'objects/API-communication.dart';
+import 'objects/globals.dart' as globals;
 
 class LoginView extends StatefulWidget {
   @override
@@ -15,11 +16,12 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool loginFail = false;
 
-  Future<bool> attemptLogin(String email, String password) async {
-    Map data = {"123": email};
+  Future<bool> attemptLogin(String username, String password) async {
+    Map data = {"123": username};
     http.Response response = await http.post(
       Uri.parse('https://hayashida.se/skillmill/api/test'),
       body: data,
@@ -34,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Login Page"),
+        title: Text("SkillMill"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -49,18 +51,19 @@ class _LoginViewState extends State<LoginView> {
                     /*decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('images/don_quixote.jpg')),
+                    child: Image.asset('images/skillmill.png')),
               ),
             ),
             Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: TextField(
-                controller: emailController,
+                controller: usernameController,
                 decoration: InputDecoration(
+                    errorText: loginFail ? "" : null,
                     border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Enter valid email id as abc@gmail.com'),
+                    labelText: 'Username',
+                    hintText: 'Enter your username'),
               ),
             ),
             Padding(
@@ -71,6 +74,9 @@ class _LoginViewState extends State<LoginView> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
+                    errorText: loginFail
+                        ? "No account matches those credentials"
+                        : null,
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter secure password'),
@@ -94,19 +100,18 @@ class _LoginViewState extends State<LoginView> {
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/home');
-                  /*
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      
-                        //builder: (context) => new JournalView("August" ))
-                        builder: (context) => PageViewClass())
-                  );
-                  */
-                  ///// KOD FÖR ATT KALLA PÅ TOALETT HTP
-                  //attemptLogin(emailController.text, passwordController.text);
+                onPressed: () async {
+                  Map response = await login(
+                      usernameController.text, passwordController.text);
+                  if (response.values.elementAt(0)) {
+                    globals.token = response.values.elementAt(1);
+                    //Check for succesful login
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  } else {
+                    setState(() {
+                      loginFail = true;
+                    });
+                  }
                 },
                 child: Text(
                   'Login',
@@ -121,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
               alignment: Alignment.bottomCenter,
               child: TextButton(
                 child: Text('New User? Create Account'),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NewUserView()),

@@ -2,6 +2,7 @@
 
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'emojiCanvas.dart';
 
@@ -10,7 +11,6 @@ class MoveableStackItem extends StatefulWidget {
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
   GlobalKey<MoveableStackItemState> key;
-
   
   EmojiMetadata getMetaData(){
     if(emojiMetadata != null){ 
@@ -21,11 +21,10 @@ class MoveableStackItem extends StatefulWidget {
     }
  }
 
-  MoveableStackItem(EmojiMetadata given, GlobalKey givenKey) {
-    emojiMetadata = given;
-    key = givenKey;
-
-    givenWidget = FittedBox(
+  MoveableStackItem(EmojiMetadata given, GlobalKey<MoveableStackItemState> givenKey) {
+    this.emojiMetadata = given;
+    this.key = givenKey;
+    this.givenWidget = FittedBox(
       fit: BoxFit.contain,
       clipBehavior: Clip.none,
       child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)
@@ -41,6 +40,8 @@ class MoveableStackItemState extends State<MoveableStackItem> {
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
+  GlobalKey<MoveableStackItemState> myKey;
+  Offset currentPosition;
   
   void scaleEmoji(ScaleUpdateDetails scaleDetails) {
     setState(() {
@@ -82,8 +83,10 @@ class MoveableStackItemState extends State<MoveableStackItem> {
 
   @override
   void initState() {
+    this.myKey = widget.key;
     this.emojiMetadata = widget.emojiMetadata;
     this.givenWidget = widget.givenWidget;
+    this.currentPosition = Offset(0,0);
     notifier.value = Matrix4(
       this.emojiMetadata.matrixArguments[0],
       this.emojiMetadata.matrixArguments[1],
@@ -114,20 +117,31 @@ class MoveableStackItemState extends State<MoveableStackItem> {
       child: MatrixGestureDetector(
         clipChild: false,
         onMatrixUpdate: (m, tm, sm, rm) {
-          print(rm);
+          //print("moving moving moving");
 
-            
+          
           setState(() {
-            notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-
+            if(sm.storage[0]+notifier.value.storage[0] < 0.2){
+              notifier.value = MatrixGestureDetector.compose(notifier.value, tm, null, rm);
+            }
+            else{
+              notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
+            }
             this.emojiMetadata.matrixArguments = notifier.value.storage;
-            print(notifier.value.storage);
-            print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
+            Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
+            transformed = transformed.scale(0.01);
+            this.currentPosition = Offset(transformed.matrix4.storage[12] , transformed.matrix4.storage[13]);
+            //this.currentPosition = Offset(this.emojiMetadata.matrixArguments[12] , this.emojiMetadata.matrixArguments[13]*0.5);
+            print(this.currentPosition.dx);
+            //print(notifier.value.storage);
+            //print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
           });
         },
         child: Transform( 
           transform: notifier.value,
-          child:this.givenWidget,                       
+          //alignment: FractionalOffset.center,
+          //origin: ,
+          child:  this.givenWidget,                      
         )
       ),
     );
