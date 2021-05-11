@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
@@ -8,6 +7,8 @@ import 'forgotPasswordView.dart';
 import 'newUserView.dart';
 import 'dart:convert';
 import 'home.dart';
+import 'objects/API-communication.dart';
+import 'objects/globals.dart' as globals;
 
 class LoginView extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool loginFail = false;
 
   Future<bool> attemptLogin(String username, String password) async {
     Map data = {"123": username};
@@ -58,6 +60,7 @@ class _LoginViewState extends State<LoginView> {
               child: TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
+                    errorText: loginFail ? "" : null,
                     border: OutlineInputBorder(),
                     labelText: 'Username',
                     hintText: 'Enter your username'),
@@ -71,6 +74,9 @@ class _LoginViewState extends State<LoginView> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
+                    errorText: loginFail
+                        ? "No account matches those credentials"
+                        : null,
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter secure password'),
@@ -94,8 +100,18 @@ class _LoginViewState extends State<LoginView> {
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/home');
+                onPressed: () async {
+                  Map response = await login(
+                      usernameController.text, passwordController.text);
+                  if (response.values.elementAt(0)) {
+                    globals.token = response.values.elementAt(0);
+                    //Check for succesful login
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  } else {
+                    setState(() {
+                      loginFail = true;
+                    });
+                  }
                 },
                 child: Text(
                   'Login',
@@ -110,7 +126,7 @@ class _LoginViewState extends State<LoginView> {
               alignment: Alignment.bottomCenter,
               child: TextButton(
                 child: Text('New User? Create Account'),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NewUserView()),
