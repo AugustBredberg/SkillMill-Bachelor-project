@@ -27,9 +27,8 @@ class _Home extends State<Home> {
             ),
 
 
-            Positioned(
-              bottom: 0,
-              left: 85,
+            Align(
+              alignment: Alignment.bottomCenter,
               child: Container(
                 height: 50.0,
                 margin: EdgeInsets.all(10),
