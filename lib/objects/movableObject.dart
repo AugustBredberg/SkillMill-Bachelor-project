@@ -80,7 +80,7 @@ class MoveableStackItemState extends State<MoveableStackItem> {
       child: MatrixGestureDetector(
         clipChild: false,
         onMatrixUpdate: (m, tm, sm, rm) {
-          print("moving moving moving");
+          //print("moving moving moving");
 
           
           setState(() {
@@ -95,14 +95,16 @@ class MoveableStackItemState extends State<MoveableStackItem> {
             transformed = transformed.scale(0.01);
             this.currentPosition = Offset(transformed.matrix4.storage[12] , transformed.matrix4.storage[13]);
             //this.currentPosition = Offset(this.emojiMetadata.matrixArguments[12] , this.emojiMetadata.matrixArguments[13]*0.5);
-            print(this.currentPosition);
+            print(this.currentPosition.dx);
             //print(notifier.value.storage);
             //print("translate x in preview"+(this.emojiMetadata.matrixArguments[12]).toString());
           });
         },
         child: Transform( 
           transform: notifier.value,
-          child:this.givenWidget,                       
+          //alignment: FractionalOffset.center,
+          //origin: ,
+          child:  this.givenWidget,                      
         )
       ),
     );

@@ -69,9 +69,11 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
 
   void updateColor(Color color){
     setState(() {
-      this.currentColors = color;      
+      this.currentColors = color;   
+      widget.color = color;   
     });
   }
+
 
   @override
   void initState() {

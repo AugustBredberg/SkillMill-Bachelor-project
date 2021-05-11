@@ -1,86 +1,60 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'movableObject.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
-class EmojiMetadata{
+class EmojiMetadata {
   String emoji;
   List<double> matrixArguments;
   GlobalKey<MoveableStackItemState> key;
 
-  EmojiMetadata(String emoji, List<double> args){
+  EmojiMetadata(String emoji, List<double> args) {
     this.emoji = emoji;
     this.matrixArguments = args;
   }
 }
 
-class EmojiCanvas extends StatefulWidget { 
+class EmojiCanvas extends StatefulWidget {
   List<MoveableStackItem> emojis;
   Color color;
 
-  EmojiCanvas({Key key, @required this.emojis, @required this.color}) : super(key: key);
+  EmojiCanvas({Key key, @required this.emojis, @required this.color})
+      : super(key: key);
 
-
-  
-  @override State<StatefulWidget> createState() => EmojiCanvasState(); 
-  
-
+  @override
+  State<StatefulWidget> createState() => EmojiCanvasState();
 }
 
-
-
-class EmojiCanvasState extends State<EmojiCanvas>{ 
-  
+class EmojiCanvasState extends State<EmojiCanvas> {
   List<MoveableStackItem> currentEmojis;
-  List<EmojiMetadata> currentMetaData; 
+  List<EmojiMetadata> currentMetaData;
   bool hoveringOverTrashCan;
   bool shouldShowTrashCan;
   GlobalKey<MoveableStackItemState> hoveringKey;
   Offset fingerPosition;
+  List<Offset> fingerPositions = [];
+  MoveableStackItem focusEmoji;
 
   Color currentColors;
-  RenderBox currentConstraints;  
+  RenderBox currentConstraints;
 
-  
-  void appendEmoji(MoveableStackItem item){
+  void appendEmoji(MoveableStackItem item) {
     EmojiMetadata metadata = item.getMetaData();
     metadata.key = item.key;
     setState(() {
-      currentEmojis.add(item); 
-      currentMetaData.add(metadata);    
+      currentEmojis.add(item);
+      currentMetaData.add(metadata);
     });
   }
 
-  void appendColor(Color color){
+  void appendColor(Color color) {
     setState(() {
-      currentColors = color;    
-    });
-  }
-
-  void updateEmojis(List<EmojiMetadata> metadata){
-    this.currentEmojis = [];
-    for(var data in metadata){
-      this.currentEmojis.add(
-        MoveableStackItem(data, new GlobalKey<MoveableStackItemState>())
-      );
-    }
-  }
-
-  void setCanvasToPreviousState(List<MoveableStackItem> items, Color color){
-    setState(() {
-      currentEmojis = [];
-      currentMetaData = [];
       currentColors = color;
-
-      for(var item in items){
-        appendEmoji(item);
-      }
     });
   }
 
-  void trashcan(){
+  void trashcan() {
     setState(() {
       /// gör så att så fort man nuddar en emoji hamnar den högst upp i listan ALLTID.
       /// multiplicera currentPosition med emojins 1/scale för att fixa offsets när de är stora och små
@@ -91,13 +65,11 @@ class EmojiCanvasState extends State<EmojiCanvas>{
          ){
       //if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
         this.hoveringOverTrashCan = true;
-        this.hoveringKey = currentEmojis[currentEmojis.length-1].key;
-      }
-      else{
+        this.hoveringKey = currentEmojis[currentEmojis.length - 1].key;
+      } else {
         this.hoveringOverTrashCan = false;
       }
     });
-    
   }
 
   Icon drawTrashCan(){
@@ -113,25 +85,82 @@ class EmojiCanvasState extends State<EmojiCanvas>{
     }
   }
 
-
   @override
   void initState() {
     currentEmojis = [];
     currentMetaData = [];
     hoveringOverTrashCan = false;
     shouldShowTrashCan = false;
-    fingerPosition = Offset(0,0);
-    for(int i=0; i<widget.emojis.length; i++){
+    fingerPosition = Offset(0, 0);
+    for (int i = 0; i < widget.emojis.length; i++) {
       appendEmoji(widget.emojis[i]);
     }
     currentColors = widget.color;
     super.initState();
   }
 
+  MoveableStackItem findClosestEmoji() {
+    //calculate middle position of fingers
+    Offset finger1 = fingerPositions[0];
+    Offset finger2 = fingerPositions[1];
+
+    double xMiddlePoint = (((finger1.dx + finger2.dx) / 2)); //72
+    double yMiddlePoint = (((finger1.dy + finger2.dy) / 2));
+    Offset middlePointFingers = Offset(xMiddlePoint, (yMiddlePoint));
+    double distance;
+    MoveableStackItem closestEmoji;
+    //loop through emojis
+
+    for (int i = 0; i < currentEmojis.length; i++) {
+      Offset emojiPosition = Offset(
+          currentEmojis[i].emojiMetadata.matrixArguments[12] +
+              MediaQuery.of(context).size.width *
+                  0.5 *
+                  currentEmojis[i].emojiMetadata.matrixArguments[0],
+          currentEmojis[i].emojiMetadata.matrixArguments[13] +
+              MediaQuery.of(context).size.height *
+                  0.5 *
+                  currentEmojis[i].emojiMetadata.matrixArguments[0]);
+      print(currentEmojis[i].emojiMetadata.matrixArguments[0].toString() +
+          ' <- 0 ] 5 ->' +
+          currentEmojis[i].emojiMetadata.matrixArguments[5].toString());
+      print('  EMOJIPOSITION  ' +
+          emojiPosition.toString() +
+          currentEmojis[i].emojiMetadata.emoji.toString() +
+          '      ' +
+          i.toString());
+      print('  MIDDLE POINT FINGERS  ' +
+          middlePointFingers.toString() +
+          '      ' +
+          i.toString());
+      //Mathematical comparison to define closest
+      
+      if (distance == null) {
+        distance = (middlePointFingers - emojiPosition).distance;
+        closestEmoji = currentEmojis[i];
+      }
+      print((middlePointFingers - emojiPosition).distance.toString() +
+          '  DISTANCE');
+
+      if ((middlePointFingers - emojiPosition).distance < distance) {
+        distance = (middlePointFingers - emojiPosition).distance;
+        closestEmoji = currentEmojis[i];
+      }
+    }
+    //Return closest emoji
+    print(closestEmoji.emojiMetadata.emoji.toString() + ' CLOSEST    EMOJI  ');
+    double distanceLimit = 10000000000000000;//(MediaQuery.of(context).size.height * 0.1)+(MediaQuery.of(context).size.width * 0.1)/2;
+    if (distance < distanceLimit) {
+      return closestEmoji;
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<GestureDetector> emojisOnCanvas = [];
-    for ( var i in currentEmojis ){
+    for (var i in currentEmojis) {
       var item = GestureDetector(
         onTap: (){
           setState(() {
@@ -147,109 +176,103 @@ class EmojiCanvasState extends State<EmojiCanvas>{
             currentMetaData.add(i.emojiMetadata); 
         },
         child: Opacity(
-          opacity: this.hoveringOverTrashCan && hoveringKey == i.key ? 0.5 : 1,
-          child: i
-        ),
+            opacity:
+                this.hoveringOverTrashCan && hoveringKey == i.key ? 0.5 : 1,
+            child: i),
       );
       /////////////////////////////////////////////////////////////////////////////////
       //// THIS LISTENER WILL PLACE THE MOST RECENTLY MOVED EMOJI ON TOP OF THE STACK
       /////////////////////////////////////////////////////////////////////////////////
-      if(i != null && i.key.currentState != null){
+      if (i != null && i.key.currentState != null) {
         i.key.currentState.notifier.addListener(() {
-          if(currentEmojis[currentEmojis.length-1].key != i.key ){
-            currentEmojis.removeWhere((item){
+          if (currentEmojis[currentEmojis.length - 1].key != i.key) {
+            currentEmojis.removeWhere((item) {
               return item.key == i.key;
             });
-            currentEmojis.add(i); 
-            currentMetaData.removeWhere((metadata){
+            currentEmojis.add(i);
+            currentMetaData.removeWhere((metadata) {
               return metadata.key == i.key;
             });
-            currentMetaData.add(i.emojiMetadata); 
+            currentMetaData.add(i.emojiMetadata);
           }
         });
       }
       emojisOnCanvas.add(item);
     }
 
-    print("width of edit canvas: " +(MediaQuery.of(context).size.width).toString());
-    print("height of edit canvas: " +(MediaQuery.of(context).size.height).toString());
-      return 
-      Listener(
+    /*print("width of edit canvas: " +
+        (MediaQuery.of(context).size.width).toString());
+    print("height of edit canvas: " +
+        (MediaQuery.of(context).size.height).toString());*/
+    return Listener(
       /////////////////////////////////////////////////////////////////////////////////
       //// THESE ON_POINTERS WILL DETERMINE WHETHER AN EMOJI IS BEING TRASHED OR NOT
       /////////////////////////////////////////////////////////////////////////////////
-        onPointerMove: (details){
-          this.fingerPosition = details.position;
-          if(this.currentEmojis.length > 0){
-            print("POINTER IS DOWN AND MOVING");
-            this.shouldShowTrashCan = true;
-            trashcan();
-          }  
-        },
-        onPointerUp: (details){
-          if(this.currentEmojis.length > 0){
+      onPointerMove: (details) {
+        this.fingerPosition = details.position;
+        if (this.currentEmojis.length > 0) {
+          //print("POINTER IS DOWN AND MOVING");
+          this.shouldShowTrashCan = true;
+          trashcan();
+        }
+      },
+      onPointerUp: (details) {
+        //we dont know which pointer is which
+        fingerPositions.removeAt(0);
+        if (this.currentEmojis.length > 0) {
+          setState(() {
+            this.shouldShowTrashCan = false;
+            if (this.hoveringOverTrashCan) {
+              this.currentEmojis.removeLast();
+              this.currentMetaData.removeLast();
+            }
+          });
+        }
+      },
+      onPointerDown: (PointerEvent details) {
+        fingerPositions.add(details.position);
+        if (this.fingerPositions.length == 2 &&
+            this.currentEmojis.length != 0) {
+          MoveableStackItem emojiToEdit = findClosestEmoji();
+          if (emojiToEdit != null) this.focusEmoji = emojiToEdit;
+        } else {
+          this.focusEmoji = null;
+        }
+      },
+      child: MatrixGestureDetector(
+        onMatrixUpdate: (m, tm, sm, rm) {
+          if (currentEmojis.length > 0 && this.fingerPositions.length == 2 && this.focusEmoji != null) {
+            print("IN MATRIX DETECT");
             setState(() {
-              this.shouldShowTrashCan = false;
-              if(this.hoveringOverTrashCan){
-                this.currentEmojis.removeLast();
-                this.currentMetaData.removeLast();
-              }
+              Matrix4 currentMatrix =
+                  focusEmoji.key.currentState.notifier.value;
+              currentMatrix =
+                  MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+              focusEmoji.key.currentState.notifier.value = currentMatrix;
+              focusEmoji.emojiMetadata.matrixArguments = currentMatrix.storage;
+              focusEmoji.emojiMetadata.key.currentState.setState(() {});
             });
           }
-          
         },
-        child: MatrixGestureDetector(
-          onMatrixUpdate: (m, tm, sm, rm) {
-            
-            if(currentEmojis.length > 0){
-              print("IN MATRIX DETECT");
-              setState(() {
-                Matrix4 currentMatrix = currentEmojis[currentEmojis.length-1].key.currentState.notifier.value;
-                /* //////////////////////////////
-                //// ATTEMPT AT MAKING EMOJIS STOP GETTING SMALLER AT A CERTAIN SCALE
-                ////////////////////////////////////////////
-                print(currentEmojis[currentEmojis.length-1].key.currentState.notifier.value.storage[0]);
-                if(currentEmojis[currentEmojis.length-1].key.currentState.notifier.value.storage[0] < 0){
-                  if(sm.storage[0] < 1){
-                    currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, null, rm);
-                  }
-                  else{
-                    currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, sm, rm);
-                  }
-                }
-                else{
-                  
-                }*/
-                currentMatrix = MatrixGestureDetector.compose(currentMatrix, null, sm, rm);
-                currentEmojis[currentEmojis.length-1].key.currentState.notifier.value = currentMatrix;
-                currentMetaData[currentMetaData.length-1].matrixArguments = currentMatrix.storage;
-                currentEmojis[currentEmojis.length-1].key.currentState.setState(() {});
-              });
-            }
-          },
-
-
-          child: Material(
-            color: currentColors,
-              //height: MediaQuery.of(context).size.width * 0.6,
-              //width: //constraints.maxWidth,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      child: drawTrashCan(),//this.hoveringOverTrashCan ? Colors.green : Colors.red,
-                      height:100,
-                      width:100,
-                    ),//trashcan(),
-                  ),
-                    
-                  Stack(
-                  fit: StackFit.expand,
-                  clipBehavior: Clip.hardEdge,
-                  //alignment: Alignment.center,
-                  children:  emojisOnCanvas,
-                  
+        child: Material(
+          color: currentColors,
+          //height: MediaQuery.of(context).size.width * 0.6,
+          //width: //constraints.maxWidth,
+          child: Stack(children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                child:
+                    drawTrashCan(), //this.hoveringOverTrashCan ? Colors.green : Colors.red,
+                height: 100,
+                width: 100,
+              ), //trashcan(),
+            ),
+            Stack(
+              fit: StackFit.expand,
+              clipBehavior: Clip.hardEdge,
+              //alignment: Alignment.center,
+              children: emojisOnCanvas,
                   /*[  
                     for ( var i in currentEmojis ) GestureDetector(
                       child: i,
@@ -266,14 +289,10 @@ class EmojiCanvasState extends State<EmojiCanvas>{
                     ), 
                   ]
                   */
-                ),
-                ]
-              ),
-                
             ),
+          ]),
         ),
-      );
-      
-    
+      ),
+    );
   }
 }

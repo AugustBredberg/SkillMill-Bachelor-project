@@ -104,7 +104,7 @@ class _LoginViewState extends State<LoginView> {
                   Map response = await login(
                       usernameController.text, passwordController.text);
                   if (response.values.elementAt(0)) {
-                    globals.token = response.values.elementAt(0);
+                    globals.token = response.values.elementAt(1);
                     //Check for succesful login
                     Navigator.of(context).pushReplacementNamed('/home');
                   } else {
