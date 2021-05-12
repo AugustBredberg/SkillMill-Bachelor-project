@@ -232,6 +232,8 @@ Future<Map> getEmojiData(String token, int situationId) async {
 
 /*
 Sets the background color of a canvas
+Call with: await getCanvasColor(String token, int situationId)
+Returns bool success
 */
 Future<bool> setCanvasColor(String token, int situationId, Color color) async {
   String colorString = colorToString(color);
