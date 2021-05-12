@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:matrix4_transform/matrix4_transform.dart';
 import 'movableObject.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 
@@ -110,31 +113,11 @@ class EmojiCanvasState extends State<EmojiCanvas> {
     double distance;
     MoveableStackItem closestEmoji;
     //loop through emojis
-
     for (int i = 0; i < currentEmojis.length; i++) {
+      Matrix4Transform transformed = Matrix4Transform.from(currentEmojis[i].key.currentState.notifier.value); 
+      transformed = transformed.translateOriginalCoordinates(x: MediaQuery.of(context).size.width*0.5, y: MediaQuery.of(context).size.height*0.5);
       Offset emojiPosition = Offset(
-          currentEmojis[i].emojiMetadata.matrixArguments[12] +
-              MediaQuery.of(context).size.width *
-                  0.5 *
-                  currentEmojis[i].emojiMetadata.matrixArguments[0],
-          currentEmojis[i].emojiMetadata.matrixArguments[13] +
-              MediaQuery.of(context).size.height *
-                  0.5 *
-                  currentEmojis[i].emojiMetadata.matrixArguments[0]);
-      print(currentEmojis[i].emojiMetadata.matrixArguments[0].toString() +
-          ' <- 0 ] 5 ->' +
-          currentEmojis[i].emojiMetadata.matrixArguments[5].toString());
-      print('  EMOJIPOSITION  ' +
-          emojiPosition.toString() +
-          currentEmojis[i].emojiMetadata.emoji.toString() +
-          '      ' +
-          i.toString());
-      print('  MIDDLE POINT FINGERS  ' +
-          middlePointFingers.toString() +
-          '      ' +
-          i.toString());
-      //Mathematical comparison to define closest
-      
+        transformed.matrix4.storage[12], transformed.matrix4.storage[13]);
       if (distance == null) {
         distance = (middlePointFingers - emojiPosition).distance;
         closestEmoji = currentEmojis[i];
@@ -147,9 +130,8 @@ class EmojiCanvasState extends State<EmojiCanvas> {
         closestEmoji = currentEmojis[i];
       }
     }
-    //Return closest emoji
     print(closestEmoji.emojiMetadata.emoji.toString() + ' CLOSEST    EMOJI  ');
-    double distanceLimit = 10000000000000000;//(MediaQuery.of(context).size.height * 0.1)+(MediaQuery.of(context).size.width * 0.1)/2;
+    double distanceLimit = (MediaQuery.of(context).size.height * 0.1)+(MediaQuery.of(context).size.width * 0.1)/2;
     if (distance < distanceLimit) {
       return closestEmoji;
     } else {

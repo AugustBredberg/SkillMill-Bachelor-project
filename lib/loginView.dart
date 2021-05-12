@@ -119,6 +119,21 @@ class _LoginViewState extends State<LoginView> {
                 ),
               ),
             ),
+            Container(
+              height: 50,
+              width: 250,
+              decoration: BoxDecoration(
+                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+              child: ElevatedButton(
+                onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/home');
+                },
+                child: Text(
+                  'Force Login',
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+              ),
+            ),
             /*SizedBox(
               height: 70,
             ), */

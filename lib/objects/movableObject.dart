@@ -121,12 +121,13 @@ class MoveableStackItemState extends State<MoveableStackItem> {
 
           
           setState(() {
+            /*
             if(sm.storage[0]+notifier.value.storage[0] < 0.2){
               notifier.value = MatrixGestureDetector.compose(notifier.value, tm, null, rm);
             }
-            else{
+            else{*/
               notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-            }
+            //}
             this.emojiMetadata.matrixArguments = notifier.value.storage;
             Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
             transformed = transformed.scale(0.01);

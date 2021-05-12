@@ -110,11 +110,10 @@ class _NewJournal extends State<NewJournal> {
       //this.impact.color = this.colorBeforeEdit;
     });*/
     //this._myEmojiCanvas.currentState.updateEmojis(this._previewKey.currentState.currentMetadata);
-    this._previewKey.currentState.setState(() {
-          
-        });
+    
+    //this._previewKey.currentState.setState(() {});
         setState(() {
-                  
+                  globalEmojiList1 = this._previewKey.currentState.currentMetadata;
                 });
     popBackbuttonOverlay(context);
     popOverLay(context);
