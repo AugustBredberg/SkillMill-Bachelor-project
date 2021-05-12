@@ -16,6 +16,8 @@ class EmojiMetadata {
     this.emoji = emoji;
     this.matrixArguments = args;
   }
+
+  EmojiMetadata.clone(EmojiMetadata metadata): this(metadata.emoji, metadata.matrixArguments);
 }
 
 class EmojiCanvas extends StatefulWidget {
