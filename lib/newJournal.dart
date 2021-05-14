@@ -64,15 +64,7 @@ class _NewJournal extends State<NewJournal> {
   }
 
 
-  Future<bool> onDiscardAllChanges() async { 
-        setState(() {
-                  globalEmojiList1 = this._previewKey.currentState.currentMetadata;
-                });
-    popBackbuttonOverlay(context);
-    //popOverLay(context);
-
-    return Future.value(false);
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -218,17 +210,10 @@ class _NewJournal extends State<NewJournal> {
 
 
   Future<bool> showBackbuttonOverlay() async {
-    if(this.overlayEntry != null){
-      if(!this.overlayEntry.mounted){
-        return Future.value(true);
-      }
-    }
-    else{
-      return Future.value(true);
-    }
+   
    
     
-    OverlayState overlayState = Overlay.of(context);
+    OverlayState overlayState = Overlay.of(this.context);
     this.backbuttonOverlay = OverlayEntry(
       builder: (context) {
         return Material(
@@ -257,7 +242,9 @@ class _NewJournal extends State<NewJournal> {
                   ElevatedButton(
                     child: Text('Abandon work'),
                     onPressed: () {
-                      onDiscardAllChanges();
+                      print("BACKBACKBACK");
+                      //Navigator.pop(context);
+                      return Future.value(true);
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.purple,

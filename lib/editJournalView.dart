@@ -1,5 +1,6 @@
 
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'objects/colorPicker.dart';
 import 'objects/globals.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:icon_shadow/icon_shadow.dart';
+import  'package:keyboard_actions/keyboard_actions.dart';
 
 class EditJournalView extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -29,9 +31,10 @@ class EditJournalView extends StatefulWidget {
   _EditJournalView createState() => _EditJournalView();
 }
 
-class _EditJournalView extends State<EditJournalView> {
+class _EditJournalView extends State<EditJournalView> with SingleTickerProviderStateMixin{
   final TextEditingController controller = TextEditingController();
-  PanelController keyboardController;
+  PanelController normalKeyboardController;
+  PanelController emojiKeyboardController;
   PanelController colorSliderController;
   EmojiCanvas impact;
   GlobalKey<EmojiCanvasState> _myEmojiCanvas;
@@ -40,6 +43,34 @@ class _EditJournalView extends State<EditJournalView> {
   OverlayEntry backbuttonOverlay;
 
   List<EmojiMetadata> copyOfEmojisBeforeEditing;
+  TextField textField; 
+  FocusNode keyboardFocusNode;
+
+  bool creatingNewText;
+
+  AnimationController _controller;
+  Animation _animation;
+
+  KeyboardActionsConfig _buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey[200],
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: this.keyboardFocusNode,
+          onTapAction: () {
+            print("CALLING ONtEXTdONE");
+            onTextDone(controller.text);
+            controller.text = '';
+            //Navigator.of(context).pop();
+            this.normalKeyboardController.close();
+          },
+        ),
+      ],
+    );
+  }
+
 
   void setColorToChosen(Color color) {
       this._myEmojiCanvas.currentState.appendColor(color);
@@ -51,12 +82,30 @@ class _EditJournalView extends State<EditJournalView> {
 
   @override
   void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animation = Tween(begin: 300.0, end: 50.0).animate(_controller)
+    ..addListener(() {
+      setState(() {});
+    });
+    
+    creatingNewText = false;
+    this.keyboardFocusNode = FocusNode(); 
+    keyboardFocusNode.addListener(() {
+      if (keyboardFocusNode.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+    
     this.copyOfEmojisBeforeEditing = [];
 
     for(var emoji in widget.oldCanvasEmojis) {
       this.copyOfEmojisBeforeEditing.add(EmojiMetadata.clone(emoji));
     }
-    keyboardController = new PanelController();
+    normalKeyboardController = new PanelController();
+    emojiKeyboardController = new PanelController();
     colorSliderController = new PanelController();
     _myEmojiCanvas = new GlobalKey<EmojiCanvasState>();
 
@@ -70,15 +119,23 @@ class _EditJournalView extends State<EditJournalView> {
         emojis: listOfItems,
         color: widget.oldCanvasColor);
 
-    super.initState();
+    
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    this.keyboardFocusNode.dispose();
 
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.height * editCanvasHeight);
-    return SlidingUpPanel(
+    return WillPopScope(
+      onWillPop: showBackbuttonOverlay,
+      child: SlidingUpPanel(
       ///////////////////////////////
       //// COLOR-SLIDER PANEL
       ///////////////////////////////
@@ -92,124 +149,192 @@ class _EditJournalView extends State<EditJournalView> {
       panel: showColorSlider(context),
       body: SlidingUpPanel(
         ///////////////////////////////
-        //// KEYBOARD PANEL
+        //// EMOJI KEYBOARD PANEL
         ///////////////////////////////
         backdropEnabled: true,
         backdropOpacity: 0,
         boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
         color: Colors.transparent,
-        controller: this.keyboardController,
+        controller: this.emojiKeyboardController,
         minHeight: 1,
         maxHeight: MediaQuery.of(context).size.height*0.87, 
-        panel: showKeyboard(context),
-        body:Container(
-          color: Colors.white,
-          height: MediaQuery.of(context).size.height * 1,
-          width: MediaQuery.of(context).size.width * 1,
-          child: Center(
-            child: Stack(
-              children: [
-                Material(
-                  child: this.impact,
+        panel: showEmojiKeyboard(context),
+        body: SlidingUpPanel(
+          ///////////////////////////////
+          //// NORMAL KEYBOARD PANEL
+          ///////////////////////////////
+          isDraggable: false,
+          backdropEnabled: true,
+          backdropOpacity: 0,
+          boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
+          color: Colors.transparent,
+          controller: this.normalKeyboardController,
+          minHeight: 1,
+          maxHeight: MediaQuery.of(context).size.height* 0.7, 
+          panel: showNormalKeyboard(context),
+          body:Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height * 1,
+            width: MediaQuery.of(context).size.width * 1,
+            child: Center(
+              child: Stack(
+                children: [
+                  Material(
+                    child: this.impact,
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height * 0.05,
+                    child: Material(
+                      color:Colors.transparent,
+                      child: IconButton(
+                        iconSize: MediaQuery.of(context).size.width*0.15,
+                        onPressed:  (){
+                          print("pressing toggle");
+                          showBackbuttonOverlay();
+                          },
+
+                          icon: IconShadowWidget(
+                          Icon(Icons.arrow_back_rounded, 
+                            color: Colors.black, 
+                            size: MediaQuery.of(context).size.width*0.15,
+                          ),
+                          shadowColor: Colors.white54,
+                        ),
+                      ),
+                    ),
+                  ),
+
+
+                  Positioned(
+                    top: 50,
+                    right: 0,
+                    child: Column(
+                      children: [
+                        Material(
+                          type: MaterialType.transparency,
+                          child: IconButton(
+                            iconSize: MediaQuery.of(context).size.width*0.15,
+                            icon: IconShadowWidget(
+                              Icon(
+                                Icons.color_lens,
+                                size: MediaQuery.of(context).size.width*0.15,
+                              ),
+                              shadowColor: Colors.white54,
+                            ),
+                            onPressed: () {
+                              this.colorSliderController.open();   
+                            },
+                          ),
+                        ),
+                        Material(
+                          type: MaterialType.transparency,
+                          child: IconButton(
+                            iconSize: MediaQuery.of(context).size.width*0.15,
+                            icon: IconShadowWidget(
+                              Icon(Icons.emoji_emotions, size: MediaQuery.of(context).size.width*0.15,),
+                              shadowColor: Colors.white54,
+                            ),
+                            onPressed: () {
+                              this.emojiKeyboardController.open();                             
+                            },
+                          ),
+                        ),
+                        Material(
+                          type: MaterialType.transparency,
+                          child: IconButton(
+                            iconSize: MediaQuery.of(context).size.width*0.15,
+                            icon: IconShadowWidget(
+                              Icon(Icons.keyboard, size: MediaQuery.of(context).size.width*0.15,),
+                              shadowColor: Colors.white54,
+                            ),
+                            onPressed: () {
+                              this.keyboardFocusNode.requestFocus();
+                              normalKeyboardController.open();                           
+                            },
+                          ),
+                        ),
+                        
+                      ],
+                  ),
                 ),
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.05,
+                  bottom:30,
+                  right:30,
                   child: Material(
-                    color:Colors.transparent,
+                    color: Colors.transparent,
                     child: IconButton(
                       iconSize: MediaQuery.of(context).size.width*0.15,
-                      onPressed:  (){
-                        print("pressing toggle");
-                        showBackbuttonOverlay();
-                         },
-
-                        icon: IconShadowWidget(
-                        Icon(Icons.arrow_back_rounded, 
-                          color: Colors.black, 
-                          size: MediaQuery.of(context).size.width*0.15,
-                        ),
-                        shadowColor: Colors.white54,
+                      padding: EdgeInsets.all(0),
+                      color: Colors.green,
+                      icon: IconShadowWidget(
+                              Icon(
+                                Icons.done_sharp,
+                                size: MediaQuery.of(context).size.width*0.15,
+                                color: Colors.black,
+                              ),
+                              shadowColor: Colors.white54, 
                       ),
+                      onPressed: () {
+                        setState(() {
+                          print("DONE");
+                          widget.callback(this._myEmojiCanvas.currentState.currentMetaData, this._myEmojiCanvas.currentState.currentColors);
+                          Navigator.pop(context);
+                        });
+                      },
                     ),
                   ),
                 ),
-
-
-                Positioned(
-                  top: 50,
-                  right: 0,
-                  child: Column(
-                    children: [
-                      Material(
-                        type: MaterialType.transparency,
-                        child: IconButton(
-                          iconSize: MediaQuery.of(context).size.width*0.15,
-                          icon: IconShadowWidget(
-                            Icon(
-                              Icons.color_lens,
-                              size: MediaQuery.of(context).size.width*0.15,
-                            ),
-                            shadowColor: Colors.white54,
-                          ),
-                          onPressed: () {
-                            this.colorSliderController.open();   
-                          },
-                        ),
-                      ),
-                      Material(
-                        type: MaterialType.transparency,
-                        child: IconButton(
-                          iconSize: MediaQuery.of(context).size.width*0.15,
-                          icon: IconShadowWidget(
-                            Icon(Icons.emoji_emotions, size: MediaQuery.of(context).size.width*0.15,),
-                            shadowColor: Colors.white54,
-                          ),
-                          onPressed: () {
-                            this.keyboardController.open();                             
-                          },
-                        ),
-                      ),
-                      
-                    ],
-                ),
-              ),
-              Positioned(
-                bottom:30,
-                right:30,
-                child: Material(
-                  color: Colors.transparent,
-                  child: IconButton(
-                    iconSize: MediaQuery.of(context).size.width*0.15,
-                    padding: EdgeInsets.all(0),
-                    color: Colors.green,
-                    icon: IconShadowWidget(
-                            Icon(
-                              Icons.done_sharp,
-                              size: MediaQuery.of(context).size.width*0.15,
-                              color: Colors.black,
-                            ),
-                            shadowColor: Colors.white54, 
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        print("DONE");
-                        widget.callback(this._myEmojiCanvas.currentState.currentMetaData, this._myEmojiCanvas.currentState.currentColors);
-                        Navigator.pop(context);
-                      });
-                    },
-                  ),
-                ),
-              ),              
-            ],
+                
+              ],
+            ),
+          ),
           ),
         ),
-        ),
+      ),
       ),
     );
   }
 
-  Container showKeyboard(BuildContext context) {
-    
+  Material showNormalKeyboard(BuildContext context) {
+    return Material(
+      color: Colors.white54,
+      child:  Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              //SizedBox(height: _animation.value),
+               KeyboardActions(
+              autoScroll: false,
+              config: _buildConfig(context),
+              child: TextField(
+                style: TextStyle(fontSize: 20),
+                controller: this.controller,
+                keyboardType: TextInputType.multiline,
+                maxLines: 3,
+                maxLength: 50,
+                focusNode: this.keyboardFocusNode,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "",
+                 
+                ),
+                onChanged: (input){
+                  print("ändraddd " + input);
+                  print(input.length);
+                  int moden = input.length;
+                  if(moden % 10 == 0){
+                    print("MOD 10 ÄR TRUE ");
+                  }
+                }
+              ),
+            ),
+            ],
+          ),
+        ),
+    );
+  }
+
+  Container showEmojiKeyboard(BuildContext context) {
     return Container(
         child: Column(
           children: [
@@ -219,7 +344,7 @@ class _EditJournalView extends State<EditJournalView> {
                 padding: EdgeInsets.all(0),
                 iconSize: MediaQuery.of(context).size.height*0.05,
                 icon: Icon(Icons.keyboard_arrow_down_sharp, size:MediaQuery.of(context).size.height*0.05 ),
-                onPressed: (){ this.keyboardController.close(); },
+                onPressed: (){ this.emojiKeyboardController.close(); },
               ),
             ), 
             Material(
@@ -281,6 +406,7 @@ class _EditJournalView extends State<EditJournalView> {
   }
 
   Future<bool> showBackbuttonOverlay() async {
+    print("showing overlay");
     OverlayState overlayState = Overlay.of(context);
     this.backbuttonOverlay = OverlayEntry(
       builder: (context) {
@@ -353,11 +479,39 @@ class _EditJournalView extends State<EditJournalView> {
 
   void onEmojiSelected(Emoji emoji) {
     //popEditOverlay(context);
-    this.keyboardController.close();
+    this.emojiKeyboardController.close();
     controller.text += emoji.text;
     print(emoji.text);
     MoveableStackItem item = MoveableStackItem(
         EmojiMetadata(emoji.text, [
+          0.4360759627327983,
+          -0.00499969555783915,
+          0.0,
+          0.0,
+          0.00499969555783915,
+          0.4360759627327983,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          100.90648195061966,
+          193.65734906587528,
+          0.0,
+          1.0
+        ]),
+        new GlobalKey<MoveableStackItemState>());
+    _appendEmojiToImpactCanvas(item);
+  }
+
+  void onTextDone(String text) {
+    //popEditOverlay(context);
+    //this..close();
+    controller.text += text;
+    print(text);
+    MoveableStackItem item = MoveableStackItem(
+        EmojiMetadata(text, [
           0.4360759627327983,
           -0.00499969555783915,
           0.0,

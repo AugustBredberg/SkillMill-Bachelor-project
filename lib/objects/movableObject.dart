@@ -1,6 +1,7 @@
 
 
 import 'dart:core';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
@@ -27,21 +28,22 @@ class MoveableStackItem extends StatefulWidget {
     this.givenWidget = FittedBox(
       fit: BoxFit.contain,
       clipBehavior: Clip.none,
-      child: Text(given.emoji, textScaleFactor:2, style: TextStyle(fontSize: 150)
-    ));
+      child: //CupertinoTextField(placeholder: "hajhaj",)
+      
+      Text(given.emoji, textScaleFactor:2, textAlign: TextAlign.center, style: TextStyle(fontSize: 150))
+      );
   }
   
   @override State<StatefulWidget> createState() { 
    return MoveableStackItemState(); 
   } 
-
 }
 class MoveableStackItemState extends State<MoveableStackItem> {
   final ValueNotifier<Matrix4> notifier = ValueNotifier(Matrix4.identity());
   EmojiMetadata emojiMetadata;
   Widget givenWidget;
   GlobalKey<MoveableStackItemState> myKey;
-  Offset currentPosition;
+  Offset currentPosition; //// make it so that the positins are inthe middle of the emoji 
   
   void scaleEmoji(ScaleUpdateDetails scaleDetails) {
     setState(() {

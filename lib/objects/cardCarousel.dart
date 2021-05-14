@@ -36,7 +36,7 @@ class _CardCarousel extends State<CardCarousel> {
     /// replace this for-loop with API-call that returns all previous canvases.
     previewCanvases = [];
     /// IF THE AMOUNT OF CANVASES EXCEED ~ 29 THE BUBBLE INDICATOR WILL OVERFLOW
-    for(int i=0; i<10; i++){
+    for(int i=0; i<0; i++){
       previewCanvases.add(
         EmojiCanvasPreview(
           emojis: globalEmojiList1,
