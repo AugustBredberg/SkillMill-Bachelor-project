@@ -13,6 +13,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'editJournalView.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -91,6 +92,8 @@ class _NewJournal extends State<NewJournal> {
                     alignment: Alignment.topLeft,
                     child: IconButton(
                       onPressed: (){
+                        showBackbuttonOverlay();
+                        /*
                       if (this.overlayEntry != null) {
                         if (!this.overlayEntry.mounted) {
                           Navigator.pop(context);
@@ -103,7 +106,7 @@ class _NewJournal extends State<NewJournal> {
                       } 
                       else {
                         Navigator.pop(context);
-                      }
+                      }*/
                       },
                     icon: Icon(Icons.arrow_back_rounded, color: Colors.grey, size: 40.0,),)),//child: Icon(Icons.arrow_back, color: Colors.red))),
                     Container(
@@ -168,6 +171,18 @@ class _NewJournal extends State<NewJournal> {
                               print("changed globalrmojilist1");
                               globalEmojiList1 = this.preview.emojis;//_previewKey.currentState.currentMetadata;
                             }
+                            Alert(
+      context: context,
+      title: "ACHIEVEMENT UNLOCKED",
+      desc: "You have successfully created your first journal entry",
+      content: Column(
+        children: [
+          Text("test"),
+          Image.asset('images/achievement.jpg')
+        ],
+      )
+    ).show();
+                            /*
                             AwesomeDialog(
                               context: context,
                               animType: AnimType.LEFTSLIDE,
@@ -184,7 +199,7 @@ class _NewJournal extends State<NewJournal> {
                                 debugPrint('Dialog Dissmiss from callback');
                                 Navigator.of(context).pushReplacementNamed('/home');
                               }
-                            )..show();
+                            )..show();*/
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.purple,
@@ -212,7 +227,7 @@ class _NewJournal extends State<NewJournal> {
    
    print("showing overlay");
     AwesomeDialog(
-      context: context,
+      context: this.context,
       dialogType: DialogType.WARNING,
       headerAnimationLoop: false,
       animType: AnimType.TOPSLIDE,
@@ -226,79 +241,12 @@ class _NewJournal extends State<NewJournal> {
         return Future.value(false);
       },
       btnOkOnPress: () {
-        Navigator.pop(context);
+        Navigator.pop(this.context);
         return Future.value(true);
         
       })
     ..show();
-
-    //return Future.value(false);
-    /*
-    OverlayState overlayState = Overlay.of(this.context);
-    this.backbuttonOverlay = OverlayEntry(
-      builder: (context) {
-        return Material(
-          color:Colors.transparent, //fromRGBO(0, 0, 0, 0.3),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-                //mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.15)),
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                    child: Center(
-                      child: new Text("Are you sure you want to discard your changes?", 
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                    ),
-                  ),
-                  
-
-                  ElevatedButton(
-                    child: Text('Abandon work'),
-                    onPressed: () {
-                      print("BACKBACKBACK");
-                      //Navigator.pop(context);
-                      return Future.value(true);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.purple,
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  ),
-                  ElevatedButton(
-                    child: Text('Cancel', style: TextStyle(color: Colors.black)),
-                    onPressed: () {
-                      popBackbuttonOverlay(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                      textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        );
-      }
-    );
-    overlayState.insert(backbuttonOverlay);
-    return Future.value(false);*/
+    return Future.value(false);
   }
 
   popBackbuttonOverlay(BuildContext context) {

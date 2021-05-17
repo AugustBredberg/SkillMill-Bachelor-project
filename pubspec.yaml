@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  rflutter_alert: ^2.0.2
   keyboard_actions: "^3.3.1+1"
   awesome_dialog: ^2.0.0
   icon_shadow: ^1.0.1
@@ -70,6 +71,7 @@ flutter:
     - images/king.jpg
     - images/queen.png
     - images/don_quixote.jpg
+    - images/achievement.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -211,7 +211,7 @@ class _CardCarousel extends State<CardCarousel> {
                 shape: BoxShape.circle,
                 color: index != carouselCanvases.length-1 
                     ? Color.fromRGBO(0, 0, 0, 0.9)
-                    : previewCanvases.length == 5 ? Color.fromRGBO(0, 0, 0, 0.9) : Color.fromRGBO(0, 0, 0, 0.4),
+                    : previewCanvases.length == 5 ? Color.fromRGBO(0, 0, 0, 0.9) : Color.fromRGBO(0, 0, 0, 0.3),
               ),
             );
           }).toList(),
