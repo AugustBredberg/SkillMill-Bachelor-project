@@ -5,6 +5,7 @@ import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'emojiCanvasPreview.dart';
 import 'globals.dart';
 import '../newJournal.dart';
+import 'package:icon_shadow/icon_shadow.dart';
 
 class CardCarousel extends StatefulWidget {
   double widthOfScreen;
@@ -75,14 +76,22 @@ class _CardCarousel extends State<CardCarousel> {
     );
     previewCanvases.add(
       EmojiCanvasPreview(
-        title: "Dading with golf",
+        title: "Rat Invasion",
         emojis: globalEmojiList1,
         color: Colors.red,
         widthOfScreen: widget.widthOfScreen,
         heightOfScreen: widget.heightOfScreen,
       )
     );
-  
+    previewCanvases.add(
+      EmojiCanvasPreview(
+        title: "Project presentation",
+        emojis: globalEmojiList1,
+        color: Colors.yellow,
+        widthOfScreen: widget.widthOfScreen,
+        heightOfScreen: widget.heightOfScreen,
+      )
+    );
     super.initState();
   }
 
@@ -98,38 +107,45 @@ class _CardCarousel extends State<CardCarousel> {
               padding: const EdgeInsets.only(bottom:15.0),
               child: Card(
                 elevation: 8,
-                child: 
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => new NewJournal(
-                              oldCanvasEmojis: [],
-                              oldCanvasColor: Colors.white)),
-                        );
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: Text("Add a new Situation", 
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                            ),
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => new NewJournal(
+                          oldCanvasEmojis: [],
+                          oldCanvasColor: Colors.white)),
+                    );
+                  },
+                  child:Container(
+                    height: MediaQuery.of(context).size.height *widget.heightOfScreen,
+                    width: MediaQuery.of(context).size.width * widget.widthOfScreen,
+                    child:  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text("Add a new Situation", 
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
-                          Icon(
-                            Icons.add_circle_outline,
-                            size: 80,
-                          )
-                          
-                        ],
-                      ),
+                        ),
+                        IconShadowWidget(
+                        Icon(
+                          Icons.add_circle_outline,
+                          size: 80,
+                        ),
+                        shadowColor: Colors.grey[200],
+
+                        ),
+                        
+                      ],
                     ),
+                  ),
+                ),
               ),
             );
           }
@@ -185,13 +201,13 @@ class _CardCarousel extends State<CardCarousel> {
           children: carouselCanvases.map((i) {
             int index = carouselCanvases.indexOf(i);
             return Container(
-              width: 8.0,
-              height: 8.0,
+              width: _currentPosition == index ? 20 : 15.0,
+              height: _currentPosition == index ? 20 : 15.0,
               margin:
                   EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _currentPosition == index
+                color: index != carouselCanvases.length-1
                     ? Color.fromRGBO(0, 0, 0, 0.9)
                     : Color.fromRGBO(0, 0, 0, 0.4),
               ),

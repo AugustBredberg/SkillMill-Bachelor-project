@@ -127,39 +127,37 @@ class _NewJournal extends State<NewJournal> {
                           ),
                         ),
                     ),]),
-                    Stack(alignment: Alignment.center, children: [
-                      Container(
-                      //alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: this.preview,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                        ),
-                      ),
-                      IconButton(
-                        iconSize: 30,
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditJournalView(
-                                this._previewKey.currentState.currentMetadata, this._previewKey.currentState.currentColors,
-                                (returnedEmojis, returnedColors){
-                                  setState(() {
-                                    this._previewKey.currentState.updateEmojis(returnedEmojis);
-                                    this._previewKey.currentState.currentColors = returnedColors;
-                                  });
-                                  
-                                }
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditJournalView(
+                                  this._previewKey.currentState.currentMetadata, this._previewKey.currentState.currentColors,
+                                  (returnedEmojis, returnedColors){
+                                    setState(() {
+                                      this._previewKey.currentState.updateEmojis(returnedEmojis);
+                                      this._previewKey.currentState.currentColors = returnedColors;
+                                    });
+                                  }
+                                )
                               )
-                            )
-                          );
-                          setState(() {});
-                        },
-                      ),
-                    ]),
+                            );
+                            setState(() {});
+                      },
+                      child: Stack(alignment: Alignment.center, children: [
+                        Container(
+                        //alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: this.preview,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                          ),
+                        ),
+                       Icon(Icons.edit),
+                      ]),
+                    ),
                     Container(
                       height: 50.0,
                       margin: EdgeInsets.all(10),
