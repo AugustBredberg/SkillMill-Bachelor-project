@@ -132,7 +132,9 @@ class MoveableStackItemState extends State<MoveableStackItem> {
             //}
             this.emojiMetadata.matrixArguments = notifier.value.storage;
             Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
-            transformed = transformed.scale(0.01);
+            //transformed = transformed.scale(0.01);
+
+            transformed = transformed.translateOriginalCoordinates(x: MediaQuery.of(context).size.width*0.5, y: MediaQuery.of(context).size.height*0.5);
             
             this.currentPosition = Offset(transformed.matrix4.storage[12] , transformed.matrix4.storage[13]);
             //this.currentPosition = Offset(this.emojiMetadata.matrixArguments[12] , this.emojiMetadata.matrixArguments[13]*0.5);

@@ -14,7 +14,11 @@ class NavigationBar extends StatelessWidget {
           child: DefaultTabController(
             length: 3,
             child: new Scaffold(
-              body: TabBarView(
+              body: Home("haj"),
+              /*
+              
+              
+              TabBarView(
                 children: [
                   TabContent(new Home("haj")),
                   TabContent(
@@ -54,6 +58,7 @@ class NavigationBar extends StatelessWidget {
                 indicatorColor: Colors.redAccent,
               ),
               backgroundColor: Colors.black,
+              */
             ),
           ),
         ),

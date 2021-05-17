@@ -52,6 +52,7 @@ class _NewJournal extends State<NewJournal> {
 
     //initiateEditCanvasEmojis(widget.oldCanvasEmojis);
     this.preview = EmojiCanvasPreview(
+        title: "NewJournal",
         key: this._previewKey,
         emojis: List.from(widget.oldCanvasEmojis),
         color: widget.oldCanvasColor,
@@ -211,8 +212,30 @@ class _NewJournal extends State<NewJournal> {
 
   Future<bool> showBackbuttonOverlay() async {
    
-   
-    
+   print("showing overlay");
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.WARNING,
+      headerAnimationLoop: false,
+      animType: AnimType.TOPSLIDE,
+      btnOkText: "Yes",
+      //showCloseIcon: true,
+      //closeIcon: Icon(Icons.close_fullscreen_outlined),
+      title: 'Abandon journal?',
+      desc:
+          'Are you sure you want to abandon your journal?',
+      btnCancelOnPress: () {
+        return Future.value(false);
+      },
+      btnOkOnPress: () {
+        Navigator.pop(context);
+        return Future.value(true);
+        
+      })
+    ..show();
+
+    //return Future.value(false);
+    /*
     OverlayState overlayState = Overlay.of(this.context);
     this.backbuttonOverlay = OverlayEntry(
       builder: (context) {
@@ -277,7 +300,7 @@ class _NewJournal extends State<NewJournal> {
       }
     );
     overlayState.insert(backbuttonOverlay);
-    return Future.value(false);
+    return Future.value(false);*/
   }
 
   popBackbuttonOverlay(BuildContext context) {

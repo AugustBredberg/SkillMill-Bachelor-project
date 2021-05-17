@@ -14,6 +14,7 @@ import 'objects/globals.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class EditJournalView extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -407,69 +408,27 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
 
   Future<bool> showBackbuttonOverlay() async {
     print("showing overlay");
-    OverlayState overlayState = Overlay.of(context);
-    this.backbuttonOverlay = OverlayEntry(
-      builder: (context) {
-        return Material(
-          color:Colors.transparent, 
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Padding(padding: EdgeInsets.only(top:MediaQuery.of(context).size.height*0.15)),
-                  BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                    child: Center(
-                      child: new Text("Are you sure you want to discard your changes?", 
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                    ),
-                  ),
-                  
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.WARNING,
+      headerAnimationLoop: false,
+      animType: AnimType.TOPSLIDE,
+      btnOkText: "Yes",
+      //showCloseIcon: true,
+      //closeIcon: Icon(Icons.close_fullscreen_outlined),
+      title: 'Warning',
+      desc:
+          'Are you sure you want to discard your changes?',
+      btnCancelOnPress: () {
 
-                  ElevatedButton(
-                    child: Text('Abandon work'),
-                    onPressed: () {
-                      widget.callback(copyOfEmojisBeforeEditing, widget.oldCanvasColor);
-                      popBackbuttonOverlay(context);
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.purple,
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                      textStyle: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  ),
-                  ElevatedButton(
-                    child: Text('Cancel', style: TextStyle(color: Colors.black)),
-                    onPressed: () {
-                      popBackbuttonOverlay(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                      textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        );
-      }
-    );
-    overlayState.insert(backbuttonOverlay);
+      },
+      btnOkOnPress: () {
+        widget.callback(copyOfEmojisBeforeEditing, widget.oldCanvasColor);
+        //popBackbuttonOverlay(context);
+        Navigator.pop(context);
+      })
+    ..show();
+
     return Future.value(false);
   }
 

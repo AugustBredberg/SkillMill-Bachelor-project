@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'emojiCanvas.dart';
 
 
+
+
 class EmojiCanvasPreview extends StatefulWidget { 
+  String title;
   List<EmojiMetadata> emojis;
   Color color;
   double widthOfScreen; 
   double heightOfScreen;
 
-  EmojiCanvasPreview({Key key, @required this.emojis, @required this.color, @required this.widthOfScreen, @required this.heightOfScreen}) : super(key: key);
+  EmojiCanvasPreview({Key key, @required this.title, @required this.emojis, @required this.color, @required this.widthOfScreen, @required this.heightOfScreen}) : super(key: key);
   
   @override 
   State<StatefulWidget> createState() => EmojiCanvasPreviewState();
@@ -19,6 +22,7 @@ class EmojiCanvasPreview extends StatefulWidget {
 
 
 class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> { 
+  String title;
   List<Transform> currentEmojis;
 
   List<EmojiMetadata> currentMetadata;
@@ -78,6 +82,7 @@ class EmojiCanvasPreviewState extends State<EmojiCanvasPreview> {
 
   @override
   void initState() {
+    title = widget.title;
     currentEmojis = [];
     currentMetadata = [];
     for(int i=0; i< widget.emojis.length; i++){

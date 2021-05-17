@@ -22,12 +22,12 @@ class _Home extends State<Home> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.10),
                 child: CardCarousel(0.7, 0.7),
               ),//JournalFeed()
             ),
 
-
+/*
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -53,10 +53,10 @@ class _Home extends State<Home> {
                   ),
                 ),
               ),
-            ),
+            ),*/
 
            
-
+/*
             IgnorePointer(
               ignoring: true,
               child: Container(
@@ -64,7 +64,7 @@ class _Home extends State<Home> {
                 child: Image.asset("images/skillmill.png"),
                       //Text("Skill Mill",style: TextStyle(fontSize: 80,)),
                   ),
-            ),
+            ),*/
           ],
       ),
     );
