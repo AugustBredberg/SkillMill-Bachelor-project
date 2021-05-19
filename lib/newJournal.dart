@@ -122,12 +122,13 @@ class _NewJournal extends State<NewJournal> {
                     ),]),
                     GestureDetector(
                       onTap: (){
+                        globals.editStateKey = GlobalKey<EditJournalViewState>();
                         Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                builder: (context) => EditJournalView(
-                                  this._previewKey.currentState.currentMetadata, this._previewKey.currentState.currentColors,
-                                  (returnedEmojis, returnedColors){
+                                builder: (context) => EditJournalView(key: globals.editStateKey,
+                                  oldCanvasEmojis: this._previewKey.currentState.currentMetadata, oldCanvasColor: this._previewKey.currentState.currentColors,
+                                  callback: (returnedEmojis, returnedColors){
                                     setState(() {
                                       this._previewKey.currentState.updateEmojis(returnedEmojis);
                                       this._previewKey.currentState.currentColors = returnedColors;

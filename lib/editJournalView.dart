@@ -10,7 +10,7 @@ import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
 import 'objects/colorPicker.dart';
-import 'objects/globals.dart';
+import 'objects/globals.dart' as globals;
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
@@ -21,18 +21,24 @@ class EditJournalView extends StatefulWidget {
   Color oldCanvasColor;
   Function callback;
 
-  EditJournalView(emojiList, color, callback) {
+  EditJournalView({Key key, @required this.oldCanvasEmojis, @required this.oldCanvasColor, @required this.callback})
+  : super(key: key);
+    
+    
+    /*
+    emojiList, color, callback) {
     this.oldCanvasEmojis = List.from(emojiList);
     this.oldCanvasColor = color;
     this.callback = callback;
-  }
+  }*/
   
   
   @override
-  _EditJournalView createState() => _EditJournalView();
+  EditJournalViewState createState() => EditJournalViewState();
+  
 }
 
-class _EditJournalView extends State<EditJournalView> with SingleTickerProviderStateMixin{
+class EditJournalViewState extends State<EditJournalView> with SingleTickerProviderStateMixin{
   final TextEditingController controller = TextEditingController();
   PanelController normalKeyboardController;
   PanelController emojiKeyboardController;
@@ -52,6 +58,14 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
   AnimationController _controller;
   Animation _animation;
 
+  void finishedEditingText(){
+    print("CALLING ONtEXTdONE");
+    onTextDone(controller.text);
+    controller.text = '';
+    //Navigator.of(context).pop();
+    this.normalKeyboardController.close();
+  }
+
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
       keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
@@ -61,11 +75,7 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
         KeyboardActionsItem(
           focusNode: this.keyboardFocusNode,
           onTapAction: () {
-            print("CALLING ONtEXTdONE");
-            onTextDone(controller.text);
-            controller.text = '';
-            //Navigator.of(context).pop();
-            this.normalKeyboardController.close();
+            finishedEditingText();
           },
         ),
       ],
@@ -84,6 +94,7 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
   @override
   void initState() {
     super.initState();
+    
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = Tween(begin: 300.0, end: 50.0).animate(_controller)
     ..addListener(() {
@@ -133,7 +144,7 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).size.height * editCanvasHeight);
+    print(MediaQuery.of(context).size.height * globals.editCanvasHeight);
     return WillPopScope(
       onWillPop: showBackbuttonOverlay,
       child: SlidingUpPanel(
@@ -164,6 +175,10 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
           ///////////////////////////////
           //// NORMAL KEYBOARD PANEL
           ///////////////////////////////
+          onPanelClosed: (){
+            this.keyboardFocusNode.unfocus();
+            this.controller.text = "";
+          },
           isDraggable: false,
           backdropEnabled: true,
           backdropOpacity: 0,
@@ -297,6 +312,7 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
   }
 
   Material showNormalKeyboard(BuildContext context) {
+    //this.controller.text = "";
     return Material(
       color: Colors.white54,
       child:  Container(
@@ -327,16 +343,18 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
                       print("ändraddd " + input);
                       print(input.length);
                       int moden = input.length;
-                      if(moden % 15 == 0){
-                        setState(() {
+                      
+                      //if(moden % 15 == 0){
+                        //setState(() {
                           /// Den radbryter mitt i ord
-                          //this.controller.text = this.controller.text + '\n';                           
+                          //this.controller.text = this.controller.text + '\n';   
+                          //controller.                        
                           print("controller: "+ controller.text);
                           controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
-                        });
+                        //});
                         
                         print("MOD 10 ÄR TRUE ");
-                      }
+                      
                     }
                   ),
                 ),
@@ -478,8 +496,11 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
   }
 
   void onTextDone(String text) {
-    //popEditOverlay(context);
-    //this..close();
+
+    if(text.length == 0){
+      print("returnning");
+      return;
+    }
     controller.text += text;
     print(text);
     MoveableStackItem item = MoveableStackItem(

@@ -1,6 +1,7 @@
 library my_prj.globals;
 
 import 'package:flutter/material.dart';
+import 'package:skillmill_demo/editJournalView.dart';
 import 'emojiCanvas.dart';
 /*
  👨
@@ -34,3 +35,5 @@ double editCanvasHeight = 1;
 bool isLoggedIn = false;
 
 String token;
+
+GlobalKey<EditJournalViewState> editStateKey;

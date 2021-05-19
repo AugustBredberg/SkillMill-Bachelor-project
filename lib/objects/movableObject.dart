@@ -118,21 +118,15 @@ class MoveableStackItemState extends State<MoveableStackItem> {
       width: MediaQuery.of(context).size.width * 1,
       child: MatrixGestureDetector(
         clipChild: false,
+        //////////// matrix, translation matrix, scale matrix, rotation matrix,
         onMatrixUpdate: (m, tm, sm, rm) {
           //print("moving moving moving");
 
           
           setState(() {
-            /*
-            if(sm.storage[0]+notifier.value.storage[0] < 0.2){
-              notifier.value = MatrixGestureDetector.compose(notifier.value, tm, null, rm);
-            }
-            else{*/
-              notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
-            //}
+            notifier.value = MatrixGestureDetector.compose(notifier.value, tm, sm, rm);
             this.emojiMetadata.matrixArguments = notifier.value.storage;
             Matrix4Transform transformed =Matrix4Transform.from(notifier.value);
-            //transformed = transformed.scale(0.01);
 
             transformed = transformed.translateOriginalCoordinates(x: MediaQuery.of(context).size.width*0.5, y: MediaQuery.of(context).size.height*0.5);
             

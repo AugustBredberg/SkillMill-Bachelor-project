@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:matrix4_transform/matrix4_transform.dart';
 import 'movableObject.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
+import 'globals.dart' as globals;
 
 class EmojiMetadata {
   String emoji;
@@ -133,7 +134,8 @@ class EmojiCanvasState extends State<EmojiCanvas> {
       }
     }
     print(closestEmoji.emojiMetadata.emoji.toString() + ' CLOSEST    EMOJI  ');
-    double distanceLimit = (MediaQuery.of(context).size.height * 1111.11)+(MediaQuery.of(context).size.width * 0.1)/2;
+    
+    double distanceLimit = (MediaQuery.of(context).size.height * 0.11)+(MediaQuery.of(context).size.width * 0.1)/2;
     if (distance < distanceLimit) {
       return closestEmoji;
     } else {
@@ -158,6 +160,22 @@ class EmojiCanvasState extends State<EmojiCanvas> {
               return metadata.key == i.key;
             });
             currentMetaData.add(i.emojiMetadata); 
+        },
+        onLongPress: (){
+          final RegExp REGEX_EMOJI = RegExp(r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
+          Iterable<RegExpMatch> matches = REGEX_EMOJI.allMatches(i.emojiMetadata.emoji);
+          print("matches: " + matches.toString());
+
+          globals.editStateKey.currentState.normalKeyboardController.open();
+          globals.editStateKey.currentState.controller.text = i.emojiMetadata.emoji;
+          globals.editStateKey.currentState.keyboardFocusNode.requestFocus();
+          globals.editStateKey.currentState.controller.addListener(() {
+            setState(() {
+              print("something happened on the keyboard " + globals.editStateKey.currentState.controller.text);
+              i.emojiMetadata.emoji = globals.editStateKey.currentState.controller.text;
+
+            });
+          });
         },
         child: Opacity(
             opacity:
