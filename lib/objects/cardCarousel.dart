@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
@@ -6,6 +7,7 @@ import 'emojiCanvasPreview.dart';
 import 'globals.dart';
 import '../newJournal.dart';
 import 'package:icon_shadow/icon_shadow.dart';
+import 'emojiCanvas.dart';
 
 class CardCarousel extends StatefulWidget {
   double widthOfScreen;
@@ -25,7 +27,6 @@ class _CardCarousel extends State<CardCarousel> {
   int _currentPosition = 0;
 
 
-
   List<Widget> buildCarouselCanvases(){
     return previewCanvases.map((i) {
       return Builder(
@@ -42,7 +43,7 @@ class _CardCarousel extends State<CardCarousel> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                           builder: (context) => new NewJournal(
                               oldCanvasEmojis: i.emojis,
                               oldCanvasColor: i.color)),
@@ -107,18 +108,18 @@ class _CardCarousel extends State<CardCarousel> {
           builder: (BuildContext context) {
             return Padding(
               padding: const EdgeInsets.only(bottom:15.0),
-              child: Card(
-                elevation: 8,
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => new NewJournal(
-                          oldCanvasEmojis: [],
-                          oldCanvasColor: Colors.white)),
-                    );
-                  },
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => new NewJournal(
+                        oldCanvasEmojis: [],
+                        oldCanvasColor: Colors.white)),
+                  );
+                }, 
+                child: Card(
+                  elevation: 8,
                   child:Container(
                     height: MediaQuery.of(context).size.height *widget.heightOfScreen,
                     width: MediaQuery.of(context).size.width * widget.widthOfScreen,
@@ -210,8 +211,8 @@ class _CardCarousel extends State<CardCarousel> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: index != carouselCanvases.length-1 
-                    ? Color.fromRGBO(0, 0, 0, 0.9)
-                    : previewCanvases.length == 5 ? Color.fromRGBO(0, 0, 0, 0.9) : Color.fromRGBO(0, 0, 0, 0.3),
+                    ? Color.fromRGBO(0, 0, 0, 1.9)
+                    : previewCanvases.length == 5 ? Color.fromRGBO(0, 0, 0, 0.6) : Color.fromRGBO(0, 0, 0, 0.3),
               ),
             );
           }).toList(),

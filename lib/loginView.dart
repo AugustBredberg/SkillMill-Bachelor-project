@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiKeyboard.dart';
@@ -86,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ForgotPasswordView()),
+                  CupertinoPageRoute(builder: (context) => ForgotPasswordView()),
                 );
               },
               child: Text(
@@ -144,7 +145,7 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () async {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => NewUserView()),
+                    CupertinoPageRoute(builder: (context) => NewUserView()),
                   );
                 },
               ),

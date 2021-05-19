@@ -5,12 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
-import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
-import 'objects/colorPicker.dart';
 import 'objects/movableObject.dart';
 import 'objects/globals.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:icon_shadow/icon_shadow.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'editJournalView.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -41,17 +37,13 @@ class _NewJournal extends State<NewJournal> {
 
   @override
   void initState() {
-   
-    /// Completely empty canvas, ready to be filled with emojis
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
 
-    
     List<MoveableStackItem> listOfItems = [];
     for (var i in widget.oldCanvasEmojis) {
       listOfItems.add(MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
     }
 
-    //initiateEditCanvasEmojis(widget.oldCanvasEmojis);
     this.preview = EmojiCanvasPreview(
         title: "NewJournal",
         key: this._previewKey,
@@ -59,9 +51,6 @@ class _NewJournal extends State<NewJournal> {
         color: widget.oldCanvasColor,
         widthOfScreen: 0.6,
         heightOfScreen: 0.6);
-    ////////////////////////
-    /// EDIT CANVAS REMEMBERS WHERE THE EMOJIS WERE AFTER PRESSING DISCARD CHANGES
-    ////////////////////////
     super.initState();
   }
 
@@ -93,20 +82,6 @@ class _NewJournal extends State<NewJournal> {
                     child: IconButton(
                       onPressed: (){
                         showBackbuttonOverlay();
-                        /*
-                      if (this.overlayEntry != null) {
-                        if (!this.overlayEntry.mounted) {
-                          Navigator.pop(context);
-                          return;
-                        } 
-                        else {
-                          //popOverLay(context);
-                          popBackbuttonOverlay(context);
-                        }
-                      } 
-                      else {
-                        Navigator.pop(context);
-                      }*/
                       },
                     icon: Icon(Icons.arrow_back_rounded, color: Colors.grey, size: 40.0,),)),//child: Icon(Icons.arrow_back, color: Colors.red))),
                     Container(
@@ -134,7 +109,7 @@ class _NewJournal extends State<NewJournal> {
                       onTap: (){
                         Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              CupertinoPageRoute(
                                 builder: (context) => EditJournalView(
                                   this._previewKey.currentState.currentMetadata, this._previewKey.currentState.currentColors,
                                   (returnedEmojis, returnedColors){
@@ -172,16 +147,16 @@ class _NewJournal extends State<NewJournal> {
                               globalEmojiList1 = this.preview.emojis;//_previewKey.currentState.currentMetadata;
                             }
                             Alert(
-      context: context,
-      title: "ACHIEVEMENT UNLOCKED",
-      desc: "You have successfully created your first journal entry",
-      content: Column(
-        children: [
-          Text("test"),
-          Image.asset('images/achievement.jpg')
-        ],
-      )
-    ).show();
+                              context: context,
+                              title: "ACHIEVEMENT UNLOCKED",
+                              desc: "You have successfully created your first journal entry",
+                              content: Column(
+                                children: [
+                                  Text("test"),
+                                  Image.asset('images/achievement.jpg')
+                                ],
+                              )
+                            ).show();
                             /*
                             AwesomeDialog(
                               context: context,
@@ -247,9 +222,5 @@ class _NewJournal extends State<NewJournal> {
       })
     ..show();
     return Future.value(false);
-  }
-
-  popBackbuttonOverlay(BuildContext context) {
-    this.backbuttonOverlay.remove();
   }
 }

@@ -300,33 +300,46 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
     return Material(
       color: Colors.white54,
       child:  Container(
-          padding: const EdgeInsets.all(20.0),
+          //padding: const EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
               //SizedBox(height: _animation.value),
                KeyboardActions(
               autoScroll: false,
               config: _buildConfig(context),
-              child: TextField(
-                style: TextStyle(fontSize: 20),
-                controller: this.controller,
-                keyboardType: TextInputType.multiline,
-                maxLines: 3,
-                maxLength: 50,
-                focusNode: this.keyboardFocusNode,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "",
-                 
+              child: Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: TextField(
+                    style: TextStyle(fontSize: 25),
+                    controller: this.controller,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    //maxLength: 50,
+                    focusNode: this.keyboardFocusNode,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "",
+                     
+                    ),
+                    //te
+                    onChanged: (input){
+                      print("ändraddd " + input);
+                      print(input.length);
+                      int moden = input.length;
+                      if(moden % 15 == 0){
+                        setState(() {
+                          /// Den radbryter mitt i ord
+                          //this.controller.text = this.controller.text + '\n';                           
+                          print("controller: "+ controller.text);
+                          controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+                        });
+                        
+                        print("MOD 10 ÄR TRUE ");
+                      }
+                    }
+                  ),
                 ),
-                onChanged: (input){
-                  print("ändraddd " + input);
-                  print(input.length);
-                  int moden = input.length;
-                  if(moden % 10 == 0){
-                    print("MOD 10 ÄR TRUE ");
-                  }
-                }
               ),
             ),
             ],
@@ -470,7 +483,7 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
     controller.text += text;
     print(text);
     MoveableStackItem item = MoveableStackItem(
-        EmojiMetadata(text, [
+        EmojiMetadata(text, Matrix4.identity().storage/*[
           0.4360759627327983,
           -0.00499969555783915,
           0.0,
@@ -487,7 +500,7 @@ class _EditJournalView extends State<EditJournalView> with SingleTickerProviderS
           193.65734906587528,
           0.0,
           1.0
-        ]),
+        ]*/),
         new GlobalKey<MoveableStackItemState>());
     _appendEmojiToImpactCanvas(item);
   }

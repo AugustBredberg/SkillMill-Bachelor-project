@@ -133,7 +133,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
       }
     }
     print(closestEmoji.emojiMetadata.emoji.toString() + ' CLOSEST    EMOJI  ');
-    double distanceLimit = (MediaQuery.of(context).size.height * 0.1)+(MediaQuery.of(context).size.width * 0.1)/2;
+    double distanceLimit = (MediaQuery.of(context).size.height * 1111.11)+(MediaQuery.of(context).size.width * 0.1)/2;
     if (distance < distanceLimit) {
       return closestEmoji;
     } else {
