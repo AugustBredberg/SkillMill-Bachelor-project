@@ -47,6 +47,13 @@ Future<Map> login(String username, String password) async {
   }
 }
 
+/*
+Call with: await register(String username, String password)
+Returns a Map:
+  if success: {"success": true, "token": String}
+  else      : {"success": false}
+Token is used for API to find the right user
+*/
 Future<Map> register(String username, String password) async {
   Map data = {"username": username, "password": password};
   http.Response response = await http.post(
