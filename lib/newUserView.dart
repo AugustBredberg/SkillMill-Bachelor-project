@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 //import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/loginView.dart';
+import 'package:skillmill_demo/objects/API-communication.dart';
+import 'objects/globals.dart' as globals;
 
 class NewUserView extends StatefulWidget {
   @override
@@ -9,9 +11,10 @@ class NewUserView extends StatefulWidget {
 }
 
 class _NewUserViewState extends State<NewUserView> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool error = false;
   /*
   Future<bool> attemptRegisterAccount(
       String name, String email, String password) async {
@@ -28,88 +31,144 @@ class _NewUserViewState extends State<NewUserView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text("New User"),
+        centerTitle: true,
+        backgroundColor: globals.themeColor,
+        title: Text("Create an account"),
       ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Text(
-              "Welcome to SkillMill",
-              style: TextStyle(color: Colors.black, fontSize: 25),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Padding(
-            //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-            padding: EdgeInsets.only(
-                left: 15.0, right: 15.0, top: 15.0, bottom: 7.5),
-            child: TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Full Name',
-                  hintText: 'Enter your full name'),
-            ),
-          ),
-          Padding(
-            //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
-            padding:
-                EdgeInsets.only(left: 15.0, right: 15.0, top: 7.5, bottom: 7.5),
-            child: TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                  hintText: 'Enter valid email id as abc@gmail.com'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-                left: 15.0, right: 15.0, top: 7.5, bottom: 15.0),
-            //padding: EdgeInsets.symmetric(horizontal: 15),
-            child: TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  hintText: 'Enter secure password'),
-            ),
-          ),
-          Container(
-            height: 50,
-            width: 250,
-            decoration: BoxDecoration(
-                color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-            child: ElevatedButton(
-              onPressed: () {
-                //attemptRegisterAccount(nameController.text,
-                    //emailController.text, passwordController.text);
-              },
-              child: Text(
-                'Register New User',
-                style: TextStyle(color: Colors.white, fontSize: 25),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 60.0),
+              child: Center(
+                child: Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: MediaQuery.of(context).size.width * 0.60,
+                    /*decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(50.0)),*/
+                    child: Image.asset('images/skillmill_logo.png')),
               ),
             ),
-          ),
-          /*SizedBox(
-              height: 70,
-            ), */
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: TextButton(
-              child: Text('Already have an account? Sign in'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginView()),
-                );
-              },
+            /*Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Text(
+                "Welcome to SkillMill",
+                style: TextStyle(color: Colors.black, fontSize: 25),
+                textAlign: TextAlign.center,
+              ),
+            ),*/
+            Padding(
+              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+              padding: EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15.0, bottom: 7.5),
+              child: TextField(
+                onChanged: (String s) {
+                  setState(() {
+                  error = false;
+
+                  });
+                },
+                cursorColor: globals.themeColor,
+                controller: usernameController,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: globals.themeColor, width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
+                    ),
+                    errorBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 0.5),),
+                    labelText: 'Username',
+                    labelStyle: TextStyle(color: globals.themeColor),
+                    hintText: 'Enter your new username'),
+              ),
             ),
-          ),
-        ],
+            Padding(
+              //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
+              padding: EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 7.5, bottom: 7.5),
+              child: TextField(
+                onChanged: (String s) {
+                  setState(() {
+                  error = false;
+
+                  });
+                },
+                obscureText: true,
+                cursorColor: globals.themeColor,
+                controller: passwordController,
+                decoration: InputDecoration(
+                    errorText: error ? "Username is taken" : null,
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: globals.themeColor, width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
+                    ),
+                    errorBorder: OutlineInputBorder(borderSide: BorderSide(
+                          color: globals.themeColor, width: 0.5)),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: globals.themeColor),
+                    hintText: 'Enter a secure password'),
+              ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.07,
+              width: MediaQuery.of(context).size.height * 0.07,
+              decoration: BoxDecoration(
+                  color: globals.themeColor,
+                  borderRadius: BorderRadius.circular(20)),
+              child: IconButton(
+                iconSize: 35,
+                icon: Icon(Icons.check, color: Colors.white),
+                onPressed: () async {
+                  Map response = await register(
+                      usernameController.text, passwordController.text);
+                  if (response.values.elementAt(0)) {
+                    //success
+                    globals.token = response.values.elementAt(1);
+                    print('CREATED ACCOUNT SUCCESSFULLY');
+                    Navigator.of(context).pushReplacementNamed('/home');
+                    error = false;
+                  } else {
+                    //fail
+                    print('ERROR');
+
+
+                    error = true;
+                  }
+                  //attemptRegisterAccount(usernameController.text,
+                  //emailController.text, passwordController.text);
+                },
+              ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: TextButton(
+                child: Text(
+                  'Already have an account? Sign in',
+                  style: TextStyle(color: globals.themeColor),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  /*Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                  );*/
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

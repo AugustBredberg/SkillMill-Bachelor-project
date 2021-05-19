@@ -45,5 +45,6 @@ List<EmojiMetadata> globalEmojiList1 = [
 double editCanvasWidth = 1;
 double editCanvasHeight = 1;
 bool isLoggedIn = false;
+ const Color themeColor = Color(0xff71af6c);
 
 String token;
