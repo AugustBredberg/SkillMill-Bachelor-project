@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
+import 'emojiCanvas.dart';
 
 void main() => runApp(MyApp());
 
-//Color color1 = HexColor("b74093");
+//Converts a color to a string in the form "0xffffff", so it can be saved in the database
+String colorToString(Color color) {
+  String colorString = color.toString();
+  if (colorString.length != 17) {
+    return "";
+  }
+  String colorConverted = "";
+  for (int i = 6; i < colorString.length - 1; i++) {
+    colorConverted += colorString[i];
+  }
+  return colorConverted;
+}
 
 /*
 Call with: await login(String username, String password)
@@ -20,6 +33,31 @@ Future<Map> login(String username, String password) async {
   Map data = {"username": username, "password": password};
   http.Response response = await http.post(
     Uri.parse("https://hayashida.se/skillmill/api/v1/auth/login"),
+    body: data,
+  );
+  bool success = response.statusCode == 200;
+  if (success) {
+    Map convertedResponse = json.decode(response.body);
+    String token = convertedResponse.values.elementAt(1);
+    Map returnMessage = {"success": success, "token": token};
+    return (returnMessage);
+  } else {
+    Map returnMessage = {"success": success};
+    return returnMessage;
+  }
+}
+
+/*
+Call with: await register(String username, String password)
+Returns a Map:
+  if success: {"success": true, "token": String}
+  else      : {"success": false}
+Token is used for API to find the right user
+*/
+Future<Map> register(String username, String password) async {
+  Map data = {"username": username, "password": password};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/register"),
     body: data,
   );
   bool success = response.statusCode == 200;
@@ -74,7 +112,6 @@ Future<Map> createSituation(String token) async {
 }
 
 /*
-TODO: Bugged, seems to only fetch to first situation
 Get all situation ID's for the account.
 Call with: await getAllSituations(String token)
 Returns Map: 
@@ -100,7 +137,6 @@ Future<Map> getAllSituations(String token) async {
 }
 
 /*
-TODO: Returns nothing.. Not sure who's fault, mine or API's.
 Returns the title and description of a situation.
 Call with: await getSituationInfo(String token, int situationId)
 Returns Map: 
@@ -111,10 +147,9 @@ Future<Map> getSituationInfo(String token, int situationId) async {
   Map data = {"token": token, "situation_id": situationId};
   http.Response response = await http.post(
     Uri.parse("https://hayashida.se/skillmill/api/v1/situation/get_info"),
-    body: data,
+    body: json.encode(data),
   );
   bool success = response.statusCode == 200;
-  print(success.toString() + "getSituation reponse");
   if (success) {
     Map convertedResponse = json.decode(response.body);
     String title = convertedResponse.values.elementAt(1);
@@ -131,24 +166,30 @@ Future<Map> getSituationInfo(String token, int situationId) async {
   }
 }
 
-//TODO: Bugged.... returns nothing
+//TODO: Situation ID's are to be strings?
 Future<bool> setSituationInfo(
     String token, int situationId, String title, String description) async {
   Map data = {
     "token": token,
     "situation_id": situationId,
     "title": title,
-    "description": description
+    "description": description,
   };
   http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/set_info"),
-    body: data,
+    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/test"),
+    body: json.encode(data),
   );
-  print(json.decode(response.body.toString()));
+  print("test" + json.decode(response.body).values.elementAt(0));
+  print(response.statusCode);
+  //print(json.decode(response.body).values.elementAt[0]);
   return response.statusCode == 200;
 }
 
-//Varför vill kentaro ha situation id?
+/*Count the number of situations made by a user
+Call with: await countSituation(String token)
+Returns if success: {"success": true, "count": int count}
+        if failure: {"success": false}
+*/
 Future<Map> countSituations(String token) async {
   Map data = {"token": token};
   http.Response response = await http.post(
@@ -158,7 +199,7 @@ Future<Map> countSituations(String token) async {
   bool success = response.statusCode == 200;
   if (success) {
     Map convertedResponse = json.decode(response.body);
-    int count = convertedResponse.values.elementAt(1);
+    int count = int.parse(convertedResponse.values.elementAt(1));
     Map returnMessage = {"success": success, "count": count};
     return returnMessage;
   } else {
@@ -167,11 +208,97 @@ Future<Map> countSituations(String token) async {
   }
 }
 
-//TODO setEmojiData
+/*
+Update a canvas with its emojis and their positions
+Call with: await setEmojiData(String token, int situationId, List<EmojiMetadata> emojiData)
+Returns: bool success
+*/
+Future<bool> setEmojiData(
+    String token, int situationId, List<EmojiMetadata> emojiData) async {
+  List<Map> emojiDataAsList = [];
+  for (int i = 0; i < emojiData.length; i++) {
+    Map currentEmoji = {
+      "emoji": emojiData[i].emoji,
+      "matrixArguments": emojiData[i].matrixArguments
+    };
+    emojiDataAsList.add(currentEmoji);
+  }
+  Map data = {
+    "token": token,
+    "situation_id": situationId,
+    "emoji_data": (emojiDataAsList),
+  };
+  print(json.encode(data));
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/set_emojis"),
+    body: json.encode(data),
+  );
+  print(response.statusCode);
+  return (response.statusCode == 200);
+}
 
-//TODO getEmojiData
+//TODO: Does not work, emoji_data is a string?
+//
+Future<Map> getEmojiData(String token, int situationId) async {
+  Map data = {"token": token, "situation_id": situationId};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/get_emojis"),
+    body: json.encode(data),
+  );
+  bool success = response.statusCode == 200;
+  if (success) {
+    Map convertedResponse = json.decode(response.body);
+    print(convertedResponse.values.elementAt(1));
+    return {"success": success};
+  } else {
+    return {"success": success};
+  }
+}
 
-//TODO setCanvasColor
+/*
+Sets the background color of a canvas
+Call with: await getCanvasColor(String token, int situationId)
+Returns bool success
+*/
+Future<bool> setCanvasColor(String token, int situationId, Color color) async {
+  String colorString = colorToString(color);
+  print(colorString);
+  Map data = {
+    "token": token,
+    "situation_id": situationId,
+    "color": colorString
+  };
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/set_color"),
+    body: json.encode(data),
+  );
+  bool success = response.statusCode == 200;
+  return success;
+}
+
+/*
+Gets the background color of a canvas
+Call with: await getCanvasColor(String token, int situationId)
+Returns if success: {"success": true, "color": Color color}
+        if failure: {"success": false}
+*/
+Future<Map> getCanvasColor(String token, int situationId) async {
+  Map data = {"token": token, "situation_id": situationId};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/get_color"),
+    body: json.encode(data),
+  );
+  bool success = response.statusCode == 200;
+  if (success) {
+    Map convertedResponse = json.decode(response.body);
+    String colorString = convertedResponse.values.elementAt(1);
+    Color color = new Color(int.parse(colorString));
+    Map returnMessage = {"success": success, "color": color};
+    return returnMessage;
+  } else {
+    return {"success": success};
+  }
+}
 
 //////////////////////Testar API-funktioner///////////////////////////////////
 
@@ -199,19 +326,40 @@ void testAllSituation(String token) async {
 
 void testGetSituationInfo(String token, int situationId) async {
   Map response = await getSituationInfo(token, situationId);
-  print(response.values.elementAt(0));
+  print(response);
 }
 
 void testSetSituationInfo(
     String token, int situationId, String title, String description) async {
   bool response =
       await setSituationInfo(token, situationId, title, description);
-  print(response);
+  print(response.toString());
 }
 
 void testCountSituations(String token) async {
   Map response = await countSituations(token);
   print(response);
+}
+
+void testSetEmojiData(
+    String token, int situationId, List<EmojiMetadata> emojiData) async {
+  bool response = await setEmojiData(token, situationId, emojiData);
+  print(response.toString());
+}
+
+void testGetEmojiData(String token, int situationId) async {
+  Map response = await getEmojiData(token, situationId);
+  print(response);
+}
+
+void testSetColor(String token, int situationId, Color color) async {
+  bool success = await setCanvasColor(token, situationId, color);
+  print(success);
+}
+
+void testGetColor(String token, int situationId) async {
+  Map response = await getCanvasColor(token, situationId);
+  print(response.values.elementAt(1) == Colors.white);
 }
 
 class MyApp extends StatelessWidget {
@@ -283,115 +431,153 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      body: Column(
-        children: [
-          Text("Test Login"),
-          Container(
-            child: TextField(
-              controller: usernameController,
-            ),
-            width: 200,
-          ),
-          Container(
-            child: TextField(
-              controller: passwordController,
-            ),
-            width: 200,
-          ),
-          Container(
-            child: FloatingActionButton(
-              onPressed: () {
-                testLogin(usernameController.text, passwordController.text);
-                print("login kört");
-              },
-              child: Text("Login"),
-            ),
-          ),
-          Container(
-            child: FloatingActionButton(
-              onPressed: () {
-                testLogout(globals.token);
-              },
-              child: Text("Logout"),
-            ),
-          ),
-          Container(
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(),
-              onPressed: () {
-                testNewSituation(globals.token);
-              },
-              child: Text("New situation"),
-            ),
-          ),
-          Container(
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(),
-              onPressed: () {
-                testAllSituation(globals.token);
-              },
-              child: Text("All situations"),
-            ),
-          ),
-          Container(
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(),
-              onPressed: () {
-                testGetSituationInfo(globals.token, 59);
-              },
-              child: Text("GetSituationInfo"),
-            ),
-          ),
-          Text("Test set situation"),
-          Container(
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Title",
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text("Test Login"),
+            Container(
+              child: TextField(
+                controller: usernameController,
               ),
-              controller: titleController,
+              width: 200,
             ),
-            width: 200,
-          ),
-          Container(
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Description",
+            Container(
+              child: TextField(
+                controller: passwordController,
               ),
-              controller: descriptionController,
+              width: 200,
             ),
-            width: 200,
-          ),
-          Container(
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: "Situation ID",
+            Container(
+              child: FloatingActionButton(
+                onPressed: () {
+                  testLogin(usernameController.text, passwordController.text);
+                  print("login kört");
+                },
+                child: Text("Login"),
               ),
-              controller: situationController,
             ),
-            width: 200,
-          ),
-          Container(
-            child: FloatingActionButton(
-              onPressed: () {
-                testSetSituationInfo(
-                    globals.token,
-                    int.parse(situationController.text),
-                    titleController.text,
-                    descriptionController.text);
-              },
-              child: Text("Set"),
+            Container(
+              child: FloatingActionButton(
+                onPressed: () {
+                  testLogout(globals.token);
+                },
+                child: Text("Logout"),
+              ),
             ),
-          ),
-          Container(
-            child: FloatingActionButton(
-              shape: RoundedRectangleBorder(),
-              onPressed: () {
-                testCountSituations(globals.token);
-              },
-              child: Text("Count situations"),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testNewSituation(globals.token);
+                },
+                child: Text("New situation"),
+              ),
             ),
-          ),
-        ],
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testAllSituation(globals.token);
+                },
+                child: Text("All situations"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testGetSituationInfo(globals.token, 59);
+                },
+                child: Text("GetSituationInfo 59"),
+              ),
+            ),
+            Text("Test set situation"),
+            Container(
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: "Title",
+                ),
+                controller: titleController,
+              ),
+              width: 200,
+            ),
+            Container(
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: "Description",
+                ),
+                controller: descriptionController,
+              ),
+              width: 200,
+            ),
+            Container(
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: "Situation ID",
+                ),
+                controller: situationController,
+              ),
+              width: 200,
+            ),
+            Container(
+              child: FloatingActionButton(
+                onPressed: () {
+                  testSetSituationInfo(
+                      globals.token,
+                      int.parse(situationController.text),
+                      titleController.text,
+                      descriptionController.text);
+                },
+                child: Text("Set"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testCountSituations(globals.token);
+                },
+                child: Text("Count situations"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testSetEmojiData(globals.token, 59, globals.globalEmojiList1);
+                },
+                child: Text("setEmojiData"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testGetEmojiData(globals.token, 59);
+                },
+                child: Text("getEmojiData"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testSetColor(globals.token, 59, Colors.white);
+                },
+                child: Text("setColor"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testGetColor(globals.token, 59);
+                },
+                child: Text("getColor"),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
