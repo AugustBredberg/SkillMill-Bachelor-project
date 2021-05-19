@@ -47,6 +47,24 @@ Future<Map> login(String username, String password) async {
   }
 }
 
+Future<Map> register(String username, String password) async {
+  Map data = {"username": username, "password": password};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/register"),
+    body: data,
+  );
+  bool success = response.statusCode == 200;
+  if (success) {
+    Map convertedResponse = json.decode(response.body);
+    String token = convertedResponse.values.elementAt(1);
+    Map returnMessage = {"success": success, "token": token};
+    return (returnMessage);
+  } else {
+    Map returnMessage = {"success": success};
+    return returnMessage;
+  }
+}
+
 /*
 Deactivates the active token.
 Call with: await logout(String token)
@@ -201,7 +219,7 @@ Future<bool> setEmojiData(
   Map data = {
     "token": token,
     "situation_id": situationId,
-    "emoji_data": emojiDataAsList,
+    "emoji_data": (emojiDataAsList),
   };
   print(json.encode(data));
   http.Response response = await http.post(
@@ -223,7 +241,7 @@ Future<Map> getEmojiData(String token, int situationId) async {
   bool success = response.statusCode == 200;
   if (success) {
     Map convertedResponse = json.decode(response.body);
-    print(convertedResponse.values.elementAt(1)[1]);
+    print(convertedResponse.values.elementAt(1));
     return {"success": success};
   } else {
     return {"success": success};
