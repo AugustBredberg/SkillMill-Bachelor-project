@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         // Set named routes for using the Navigator.
         '/home': (BuildContext context) => new NavigationBar(),
-        '/journal': (BuildContext context) => new NewJournal(oldCanvasEmojis: [], oldCanvasColor: Colors.white),
+        '/journal': (BuildContext context) => new NewJournal(oldCanvasEmojis: [], oldCanvasColor: Colors.white, oldCanvasTitle: "", canvasID: null),
         '/login': (BuildContext context) => new LoginView(),
         '/signUp': (BuildContext context) => new NewUserView(),
       },

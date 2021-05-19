@@ -6,7 +6,8 @@ import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'objects/movableObject.dart';
-import 'objects/globals.dart';
+import 'objects/globals.dart' as globals;
+import 'objects/API-communication.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'editJournalView.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -14,9 +15,11 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
   Color oldCanvasColor;
+  String oldCanvasTitle;
+  int canvasID;
 
   NewJournal(
-      {Key key, @required this.oldCanvasEmojis, @required this.oldCanvasColor})
+      {Key key, @required this.oldCanvasEmojis, @required this.oldCanvasColor, @required this.oldCanvasTitle, @required this.canvasID})
       : super(key: key);
 
   @override
@@ -25,6 +28,7 @@ class NewJournal extends StatefulWidget {
 
 class _NewJournal extends State<NewJournal> {
   GlobalKey<EmojiCanvasPreviewState> _previewKey;
+  TextEditingController titleController;
 
   EmojiCanvas impact;
   EmojiCanvasPreview preview;
@@ -33,12 +37,13 @@ class _NewJournal extends State<NewJournal> {
   OverlayEntry backbuttonOverlay;
 
   Material editOverlay;
-
+  bool titleDoesntExists = false;
 
   @override
   void initState() {
     _previewKey = new GlobalKey<EmojiCanvasPreviewState>();
-
+    titleController = TextEditingController();
+    titleController.text = widget.oldCanvasTitle;
     List<MoveableStackItem> listOfItems = [];
     for (var i in widget.oldCanvasEmojis) {
       listOfItems.add(MoveableStackItem(i, new GlobalKey<MoveableStackItemState>()));
@@ -50,7 +55,8 @@ class _NewJournal extends State<NewJournal> {
         emojis: List.from(widget.oldCanvasEmojis),
         color: widget.oldCanvasColor,
         widthOfScreen: 0.6,
-        heightOfScreen: 0.6);
+        heightOfScreen: 0.6,
+        ID: widget.canvasID);
     super.initState();
   }
 
@@ -91,10 +97,11 @@ class _NewJournal extends State<NewJournal> {
                       padding: EdgeInsets.only(
                         top: (MediaQuery.of(context).size.width * 0.05)),
                         child: TextField(
+                          controller: titleController,
                           textAlign: TextAlign.center,
                           maxLength: 25,
                           maxLines: 1,
-                          style: TextStyle(fontSize: 25),
+                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(0),
                             alignLabelWithHint: true,
@@ -102,7 +109,15 @@ class _NewJournal extends State<NewJournal> {
                             focusedBorder: InputBorder.none,
                             border: InputBorder.none,
                             hintText: "Enter title",
+                            errorText: titleDoesntExists
+                              ? "Please enter a title"
+                              : null
                           ),
+                          onChanged: (change){
+                            this.titleDoesntExists = false;
+                            print(titleController.text);
+
+                          },
                         ),
                     ),]),
                     GestureDetector(
@@ -141,23 +156,54 @@ class _NewJournal extends State<NewJournal> {
                       margin: EdgeInsets.all(10),
                       child: ElevatedButton(
                         child: Text('Save Entry'),
-                          onPressed: () {
-                            if (_previewKey.currentState != null) {
-                              print("changed globalrmojilist1");
-                              globalEmojiList1 = this.preview.emojis;//_previewKey.currentState.currentMetadata;
+                          onPressed: () async {
+                            ////////////////////////////////////////////////////////
+                            /// UPLOAD CANVAS THROUGH API{}
+                            ////////////////////////////////////////////////////////
+                            Color currentColor = Colors.white;
+                            if(this._previewKey.currentState != null){
+                              currentColor = this._previewKey.currentState.currentColors;
                             }
-                            Alert(
-                              context: context,
-                              title: "ACHIEVEMENT UNLOCKED",
-                              desc: "You have successfully created your first journal entry",
-                              content: Column(
-                                children: [
-                                  Text("test"),
-                                  Image.asset('images/achievement.jpg')
-                                ],
-                              )
-                            ).show();
-                            /*
+                            if(this.titleController.text == ""){
+                              setState(() {
+                                this.titleDoesntExists = true;                                
+                              });
+                            return;
+                          }
+                            
+                            try{
+                              int situationID;
+                              //// IF ID IS NULL, THEN THIS IS A NEW CANVAS AND WE HAVE TO CREATE IT WITH THE API
+                              if(widget.canvasID == null){
+                                Map situation = await createSituation(globals.token);
+                                if(!situation.values.elementAt(0)){
+                                  return;
+                                }
+                                situationID = situation.values.elementAt(1);
+                              }
+                              /// IF ID IS NOT NULL, THEN WE CAN GO AHEAD AND EDIT THE CANVAS
+                              else{
+                                situationID = widget.canvasID;
+                              }
+                              
+                              
+                              
+                              
+                              print(situationID);
+                              bool successSetSituationInto = await setSituationInfo(globals.token, situationID, titleController.text, "Description");
+                              bool successSetCanvasColor = await setCanvasColor(globals.token, situationID, currentColor);
+                              if(!successSetCanvasColor || !successSetSituationInto){
+                                print("FAILED TO SET INFO OR COLOR OF SITUATION");
+                              }
+                            }
+                            catch(exception){
+                              print(exception);
+                              print("CAUGHT EXCEPTION IN SAVE JOURNAL");
+                            }
+
+
+                            
+                            
                             AwesomeDialog(
                               context: context,
                               animType: AnimType.LEFTSLIDE,
@@ -174,7 +220,7 @@ class _NewJournal extends State<NewJournal> {
                                 debugPrint('Dialog Dissmiss from callback');
                                 Navigator.of(context).pushReplacementNamed('/home');
                               }
-                            )..show();*/
+                            )..show();
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.purple,

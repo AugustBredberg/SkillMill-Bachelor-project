@@ -12,8 +12,11 @@ import 'emojiCanvas.dart';
 class CardCarousel extends StatefulWidget {
   double widthOfScreen;
   double heightOfScreen;
+  List<EmojiCanvasPreview> emojiCanvases;
 
-  CardCarousel(width, height) {
+  CardCarousel(givenCanvases, width, height) {
+    print("in constructor of emojipreview: " + givenCanvases.toString());
+    emojiCanvases = givenCanvases;
     widthOfScreen = width;
     heightOfScreen = height;
   }
@@ -46,7 +49,10 @@ class _CardCarousel extends State<CardCarousel> {
                       CupertinoPageRoute(
                           builder: (context) => new NewJournal(
                               oldCanvasEmojis: i.emojis,
-                              oldCanvasColor: i.color)),
+                              oldCanvasColor: i.color,
+                              oldCanvasTitle: i.title,
+                              canvasID: i.ID)
+                      ),
                     );
                   },
                   child: i,
@@ -65,7 +71,13 @@ class _CardCarousel extends State<CardCarousel> {
 
     /// replace this for-loop with API-call that returns all previous canvases.
     previewCanvases = [];
-
+    print("WIDGET.EMOJICANVSES " + widget.emojiCanvases.toString());
+    if(widget.emojiCanvases != null){
+      previewCanvases = widget.emojiCanvases;
+      
+    }
+    
+/*
     previewCanvases.add(
       EmojiCanvasPreview(
         title: "Golfing with dad",
@@ -92,7 +104,7 @@ class _CardCarousel extends State<CardCarousel> {
         widthOfScreen: widget.widthOfScreen,
         heightOfScreen: widget.heightOfScreen,
       )
-    );
+    );*/
     
     
     super.initState();
@@ -100,7 +112,12 @@ class _CardCarousel extends State<CardCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> carouselCanvases = buildCarouselCanvases();
+    List<Widget> carouselCanvases = [];
+    print("LENGTH: " + previewCanvases.length.toString());
+    if(previewCanvases.length > 0){
+      print("called buildCarouselCanses");
+      carouselCanvases = buildCarouselCanvases();
+    }
 
     if(carouselCanvases.length < 5){
       carouselCanvases.add(
@@ -115,7 +132,9 @@ class _CardCarousel extends State<CardCarousel> {
                     CupertinoPageRoute(
                       builder: (context) => new NewJournal(
                         oldCanvasEmojis: [],
-                        oldCanvasColor: Colors.white)),
+                        oldCanvasColor: Colors.white,
+                        oldCanvasTitle: "",
+                        canvasID: null,)),
                   );
                 }, 
                 child: Card(
@@ -212,7 +231,7 @@ class _CardCarousel extends State<CardCarousel> {
                 shape: BoxShape.circle,
                 color: index != carouselCanvases.length-1 
                     ? Color.fromRGBO(0, 0, 0, 1.9)
-                    : previewCanvases.length == 5 ? Color.fromRGBO(0, 0, 0, 0.6) : Color.fromRGBO(0, 0, 0, 0.3),
+                    : previewCanvases.length == 5 ? Color.fromRGBO(0, 0, 0, 1.9) : Color.fromRGBO(0, 0, 0, 0.3),
               ),
             );
           }).toList(),

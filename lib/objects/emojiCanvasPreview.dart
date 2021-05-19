@@ -12,8 +12,9 @@ class EmojiCanvasPreview extends StatefulWidget {
   Color color;
   double widthOfScreen; 
   double heightOfScreen;
+  int ID;
 
-  EmojiCanvasPreview({Key key, @required this.title, @required this.emojis, @required this.color, @required this.widthOfScreen, @required this.heightOfScreen}) : super(key: key);
+  EmojiCanvasPreview({Key key, @required this.title, @required this.emojis, @required this.color, @required this.widthOfScreen, @required this.heightOfScreen, @required this.ID}) : super(key: key);
   
   @override 
   State<StatefulWidget> createState() => EmojiCanvasPreviewState();
