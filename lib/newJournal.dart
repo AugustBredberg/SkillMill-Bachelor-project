@@ -77,6 +77,7 @@ class _NewJournal extends State<NewJournal> {
             padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
             child: Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Stack(
                     alignment: Alignment.center,
@@ -145,93 +146,86 @@ class _NewJournal extends State<NewJournal> {
                           width: MediaQuery.of(context).size.width * 0.6,
                           height: MediaQuery.of(context).size.height * 0.6,
                           child: this.preview,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                          ),
                         ),
                        Icon(Icons.edit),
                       ]),
                     ),
-                    Container(
-                      height: 50.0,
-                      margin: EdgeInsets.all(10),
-                      child: ElevatedButton(
-                        child: Text('Save Entry'),
-                          onPressed: () async {
-                            ////////////////////////////////////////////////////////
-                            /// UPLOAD CANVAS THROUGH API{}
-                            ////////////////////////////////////////////////////////
-                            Color currentColor = Colors.white;
-                            if(this._previewKey.currentState != null){
-                              currentColor = this._previewKey.currentState.currentColors;
-                            }
-                            if(this.titleController.text == ""){
-                              setState(() {
-                                this.titleDoesntExists = true;                                
-                              });
-                            return;
-                          }
-                            
-                            try{
-                              int situationID;
-                              //// IF ID IS NULL, THEN THIS IS A NEW CANVAS AND WE HAVE TO CREATE IT WITH THE API
-                              if(widget.canvasID == null){
-                                Map situation = await createSituation(globals.token);
-                                if(!situation.values.elementAt(0)){
+
+                    Padding(
+                      padding: const EdgeInsets.only(right:20.0, bottom: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.delete_outlined, size: MediaQuery.of(context).size.width*0.15),
+                            onPressed: (){
+                              ///DEATH
+                            },
+                          ),
+                          IconButton(
+                              icon: Icon(Icons.done_sharp, size: MediaQuery.of(context).size.width*0.15),
+                              onPressed: () async {
+                                //DONE
+                                ////////////////////////////////////////////////////////
+                                /// UPLOAD CANVAS THROUGH API{}
+                                ////////////////////////////////////////////////////////
+                                Color currentColor = Colors.white;
+                                if(this._previewKey.currentState != null){
+                                  currentColor = this._previewKey.currentState.currentColors;
+                                }
+                                if(this.titleController.text == ""){
+                                  setState(() {
+                                    this.titleDoesntExists = true;                                
+                                  });
                                   return;
                                 }
-                                situationID = situation.values.elementAt(1);
-                              }
-                              /// IF ID IS NOT NULL, THEN WE CAN GO AHEAD AND EDIT THE CANVAS
-                              else{
-                                situationID = widget.canvasID;
-                              }
-                              
-                              
-                              
-                              
-                              print(situationID);
-                              bool successSetSituationInto = await setSituationInfo(globals.token, situationID, titleController.text, "Description");
-                              bool successSetCanvasColor = await setCanvasColor(globals.token, situationID, currentColor);
-                              if(!successSetCanvasColor || !successSetSituationInto){
-                                print("FAILED TO SET INFO OR COLOR OF SITUATION");
-                              }
-                            }
-                            catch(exception){
-                              print(exception);
-                              print("CAUGHT EXCEPTION IN SAVE JOURNAL");
-                            }
-
-
-                            
-                            
-                            AwesomeDialog(
-                              context: context,
-                              animType: AnimType.LEFTSLIDE,
-                              headerAnimationLoop: false,
-                              dialogType: DialogType.SUCCES,
-                              title: 'Success',
-                              desc:
-                                  'Successfully saved journal entry',
-                              btnOkOnPress: () {
-                                debugPrint('');
+                                
+                                try{
+                                  int situationID;
+                                  //// IF ID IS NULL, THEN THIS IS A NEW CANVAS AND WE HAVE TO CREATE IT WITH THE API
+                                  if(widget.canvasID == null){
+                                    Map situation = await createSituation(globals.token);
+                                    if(!situation.values.elementAt(0)){
+                                      return;
+                                    }
+                                    situationID = situation.values.elementAt(1);
+                                  }
+                                  /// IF ID IS NOT NULL, THEN WE CAN GO AHEAD AND EDIT THE CANVAS
+                                  else{
+                                    situationID = widget.canvasID;
+                                  }
+                                  
+                                  print(situationID);
+                                  bool successSetSituationInto = await setSituationInfo(globals.token, situationID, titleController.text, "Description");
+                                  bool successSetCanvasColor = await setCanvasColor(globals.token, situationID, currentColor);
+                                  if(!successSetCanvasColor || !successSetSituationInto){
+                                    print("FAILED TO SET INFO OR COLOR OF SITUATION");
+                                  }
+                                }
+                                catch(exception){
+                                  print(exception);
+                                  print("CAUGHT EXCEPTION IN SAVE JOURNAL");
+                                }
+                                AwesomeDialog(
+                                  context: context,
+                                  animType: AnimType.LEFTSLIDE,
+                                  headerAnimationLoop: false,
+                                  dialogType: DialogType.SUCCES,
+                                  title: 'Success',
+                                  desc:
+                                      'Successfully saved journal entry',
+                                  btnOkOnPress: () {
+                                    debugPrint('');
+                                  },
+                                  btnOkIcon: Icons.check_circle,
+                                  onDissmissCallback: () {
+                                    debugPrint('Dialog Dissmiss from callback');
+                                    Navigator.of(context).pushReplacementNamed('/home');
+                                  }
+                                )..show();
                               },
-                              btnOkIcon: Icons.check_circle,
-                              onDissmissCallback: () {
-                                debugPrint('Dialog Dissmiss from callback');
-                                Navigator.of(context).pushReplacementNamed('/home');
-                              }
-                            )..show();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.purple,
-                            padding:
-                              EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                              textStyle: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
                           ),
+                        ],    
                       ),
                     ),
                   ],

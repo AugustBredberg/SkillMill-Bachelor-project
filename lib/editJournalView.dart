@@ -142,6 +142,13 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
     super.dispose();
   }
 
+  /////////////////////////////////////////////////////////////
+  /// THIS CODE IS NOT OPTIMAL 
+  /// WE WERE IN A HURRY TO MAKE THE PANELS SLIDEABLE AND THIS WAS THE FASTEST SOLUTION 
+  /// SlidingUpPanel is wrapped in SlidingUpPanel, which is wrapped SlidingUpPanel
+  /// Each sliding-up panel contains keyboard/color-slider
+  /////////////////////////////////////////////////////////////
+  
   @override
   Widget build(BuildContext context) {
     print(MediaQuery.of(context).size.height * globals.editCanvasHeight);
