@@ -92,6 +92,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.0"
+  emojis:
+    dependency: "direct main"
+    description:
+      name: emojis
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.3"
   fake_async:
     dependency: transitive
     description:
@@ -132,6 +139,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_emoji:
+    dependency: "direct main"
+    description:
+      name: flutter_emoji
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.1+1"
   flutter_emoji_keyboard:
     dependency: "direct main"
     description:
@@ -212,6 +226,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.4.0"
+  lists:
+    dependency: transitive
+    description:
+      name: lists
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   matcher:
     dependency: transitive
     description:
@@ -462,6 +483,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  unicode:
+    dependency: "direct main"
+    description:
+      name: unicode
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   vector_math:
     dependency: transitive
     description:
