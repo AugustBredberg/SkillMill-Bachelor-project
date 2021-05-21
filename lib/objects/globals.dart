@@ -34,7 +34,7 @@ EmojiMetadata("😰", [0.5350404093681398, 0.14954366183520787, 0.0, 0.0, -0.149
 double editCanvasWidth = 1;
 double editCanvasHeight = 1;
 bool isLoggedIn = false;
- const Color themeColor = Color(0xff71af6c);
+ const Color themeColor = Colors.green;//Color(0xff71af6c);
 
 String token;
 

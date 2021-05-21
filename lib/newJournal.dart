@@ -54,8 +54,8 @@ class _NewJournal extends State<NewJournal> {
         key: this._previewKey,
         emojis: List.from(widget.oldCanvasEmojis),
         color: widget.oldCanvasColor,
-        widthOfScreen: 0.6,
-        heightOfScreen: 0.6,
+        widthOfScreen: 0.7,
+        heightOfScreen: 0.7,
         ID: widget.canvasID);
     super.initState();
   }
@@ -143,10 +143,14 @@ class _NewJournal extends State<NewJournal> {
                       },
                       child: Stack(alignment: Alignment.center, children: [
                         Container(
-                        //alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: this.preview,
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: ClipPath(
+                            clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30))
+                            ),
+                            child: this.preview,
+                          ),
                         ),
                        Icon(Icons.edit),
                       ]),

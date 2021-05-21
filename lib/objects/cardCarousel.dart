@@ -36,31 +36,37 @@ class _CardCarousel extends State<CardCarousel> {
         builder: (BuildContext context) {
           return Padding(
             padding: const EdgeInsets.only(bottom:15.0),
-            child: ClipPath(
-              clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30))
-              ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) => new NewJournal(
+                          oldCanvasEmojis: i.emojis,
+                          oldCanvasColor: i.color,
+                          oldCanvasTitle: i.title,
+                          canvasID: i.ID)
+                  ),
+                );
+              },
               child: Card(
-                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                color: Colors.transparent,
+                elevation: 4,
+                child: ClipPath(
+                clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30))
+                ),
                 child: Container(
+                  color: Colors.transparent,
                   width: MediaQuery.of(context).size.width * widget.widthOfScreen,
                   height: MediaQuery.of(context).size.height *widget.heightOfScreen,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            builder: (context) => new NewJournal(
-                                oldCanvasEmojis: i.emojis,
-                                oldCanvasColor: i.color,
-                                oldCanvasTitle: i.title,
-                                canvasID: i.ID)
-                        ),
-                      );
-                    },
-                    child: i,
-                  )
+                  
+                  child: i,
+                )
                 ),
               
               ),
@@ -111,18 +117,20 @@ class _CardCarousel extends State<CardCarousel> {
                         oldCanvasTitle: "",
                         canvasID: null,)),
                   );
-                }, //////////////////////////////////////////////////////////////////////////////////////////////
+                }, 
+                /////////////////////////////////////////////////////////////////////////////////////////////////
                 ////// CLIPPERN TAR BORT SKUGGA OXÅ, AJA BAJA 
                 /////////////////////////////////////////////////////////////////////////////////////////////////
-                child: ClipPath(
+                
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    elevation: 4,
+                    child: ClipPath(
                   clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))
                   ),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    elevation: 4,
                     child:Container(
                       height: MediaQuery.of(context).size.height *widget.heightOfScreen,
                       width: MediaQuery.of(context).size.width * widget.widthOfScreen,
