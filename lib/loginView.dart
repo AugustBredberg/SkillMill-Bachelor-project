@@ -71,7 +71,6 @@ class _LoginViewState extends State<LoginView> {
                 cursorColor: globals.themeColor,
                 controller: usernameController,
                 decoration: InputDecoration(
-                    //errorText: loginFail ? "" : null,
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: globals.themeColor, width: 2.0),),
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: globals.themeColor, width: 0.5),),
                     errorBorder: OutlineInputBorder(borderSide: const BorderSide(color: globals.themeColor, width: 0.5),),
@@ -98,6 +97,7 @@ class _LoginViewState extends State<LoginView> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
                     focusedBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
+                    focusedErrorBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
                     errorText: loginFail
                         ? "No account matches those credentials"
                         : null,
@@ -118,6 +118,7 @@ class _LoginViewState extends State<LoginView> {
                   color: globals.themeColor, borderRadius: BorderRadius.circular(20)),
                   child: IconButton(
                     onPressed: () async {
+                      FocusScope.of(context).unfocus();
                       Map response = await login(
                         usernameController.text, passwordController.text);
                       if (response.values.elementAt(0)) {
