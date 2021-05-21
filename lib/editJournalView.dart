@@ -498,7 +498,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
 
     this.emojiKeyboardController.close();
     //controller.text += emoji.text;
-    
+    var key = new GlobalKey<MoveableStackItemState>();
     MoveableStackItem item = MoveableStackItem(
         EmojiMetadata(emoji.text, [
           0.4360759627327983,
@@ -517,8 +517,8 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
           193.65734906587528,
           0.0,
           1.0
-        ]),
-        new GlobalKey<MoveableStackItemState>());
+        ], key),
+        key);
     _appendEmojiToImpactCanvas(item);
   }
 
@@ -526,9 +526,10 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
     print(text.substring(0, text.length));
 
     print(text);
+    var key = new GlobalKey<MoveableStackItemState>();
     MoveableStackItem item = MoveableStackItem(
-        EmojiMetadata(text, Matrix4.identity().storage),
-        new GlobalKey<MoveableStackItemState>());
+        EmojiMetadata(text, Matrix4.identity().storage, key),
+        key);
     _appendEmojiToImpactCanvas(item);
   }
 

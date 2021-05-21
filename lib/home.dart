@@ -89,6 +89,23 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                 bool success = await logout(globals.token);
                 if (success) {
                   globals.token = null;
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    PageRouteBuilder(pageBuilder: (BuildContext context, Animation animation,
+                        Animation secondaryAnimation) {
+                      return LoginView();
+                    }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+                        Animation<double> secondaryAnimation, Widget child) {
+                      return new SlideTransition(
+                        position: new Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    }),
+                    (Route route) => false);
+                  /*
                   Navigator.pushReplacement<void, void>(
                     context,
                     
@@ -96,6 +113,7 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                       builder: (BuildContext context) => LoginView(),
                     ),
                   );
+                  */
                 }
               },
               alignment: Alignment.topRight,

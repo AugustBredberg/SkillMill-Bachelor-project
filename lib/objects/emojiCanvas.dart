@@ -13,12 +13,13 @@ class EmojiMetadata {
   List<double> matrixArguments;
   GlobalKey<MoveableStackItemState> key;
 
-  EmojiMetadata(String emoji, List<double> args) {
+  EmojiMetadata(String emoji, List<double> args, GlobalKey<MoveableStackItemState> key) {
     this.emoji = emoji;
     this.matrixArguments = args;
+    this.key = key;
   }
 
-  EmojiMetadata.clone(EmojiMetadata metadata): this(metadata.emoji, metadata.matrixArguments);
+  EmojiMetadata.clone(EmojiMetadata metadata): this(metadata.emoji, metadata.matrixArguments, metadata.key);
 }
 
 class EmojiCanvas extends StatefulWidget {
@@ -178,7 +179,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
               /// Create a copy of the item, but with the new edited text instead of the old
               /// Remove the old item from the list of emojis, and add the new edited item with the same matrixarguments as before the edit
               /// 
-              /// PROBLEM MED LISTENER, DEN FORTSÄTTER LYSSNA PÅ ALLA SOM BLIVIT EDITED 
+              /// PROBLEM: DEN TAR ALLTID BORT DEN SOM LIGGER LÄNGST UPP I STACKEN!!!
               
               if(textAtStartOfEdit != globals.editStateKey.currentState.controller.text){
                 /*
@@ -186,16 +187,22 @@ class EmojiCanvasState extends State<EmojiCanvas> {
                   return item.key == i.key;
                 });
                 */
+                var newKey = new GlobalKey<MoveableStackItemState>();
                 MoveableStackItem editedItem = MoveableStackItem(
-                  EmojiMetadata(globals.editStateKey.currentState.controller.text, matrixArgumentsOfEditedItem),
-                  GlobalKey<MoveableStackItemState>(),
+                  EmojiMetadata(globals.editStateKey.currentState.controller.text, matrixArgumentsOfEditedItem, newKey),
+                  newKey,
                 );
                 //editedItem.emojiMetadata.key = GlobalKey<MoveableStackItemState>();
 
               
-
-                this.currentEmojis.removeLast();
-                this.currentMetaData.removeLast();
+                currentEmojis.removeWhere((item){
+                  return item.key == i.key;
+                });
+                currentMetaData.removeWhere((metadata){
+                  return metadata.key == i.key;
+                });
+                //this.currentEmojis.removeLast();
+                //this.currentMetaData.removeLast();
                 currentEmojis.add(editedItem); 
                 currentMetaData.add(editedItem.emojiMetadata);
 
@@ -310,29 +317,12 @@ class EmojiCanvasState extends State<EmojiCanvas> {
                     drawTrashCan(), //this.hoveringOverTrashCan ? Colors.green : Colors.red,
                 height: 100,
                 width: 100,
-              ), //trashcan(),
+              ), 
             ),
             Stack(
               fit: StackFit.expand,
               clipBehavior: Clip.hardEdge,
-              //alignment: Alignment.center,
               children: emojisOnCanvas,
-                  /*[  
-                    for ( var i in currentEmojis ) GestureDetector(
-                      child: i,
-                      onLongPress: (){
-                        print("pressing");
-                        
-                        setState(() {
-                          removeEmojiAtLongpress(i);
-
-                        
-                         
-                        });
-                      },
-                    ), 
-                  ]
-                  */
             ),
           ]),
         ),
