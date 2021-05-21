@@ -161,10 +161,14 @@ class _NewJournal extends State<NewJournal> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          widget.canvasID == null ?
+                          Text('') :
                           IconButton(
                             icon: Icon(Icons.delete_outlined, size: MediaQuery.of(context).size.width*0.15),
                             onPressed: (){
-                              ///DEATH
+                              /// PERMANENTLY REMOVE A CANVAS FROM THE DATABASE WITH API FUNCTIONS
+                              
+                              
                             },
                           ),
                           IconButton(
@@ -201,6 +205,7 @@ class _NewJournal extends State<NewJournal> {
                                   }
                                   print(situationID);
                                   bool successSetSituationInto = await setSituationInfo(globals.token, situationID, titleController.text, "Description");
+                                  print("TILTLE CONTROLLER TEXT: " + titleController.text);
                                   bool successSetCanvasColor = await setCanvasColor(globals.token, situationID, currentColor);
                                   bool successSetCanvasEmojis = await setEmojiData(globals.token, situationID, this._previewKey.currentState.currentMetadata);
                                   if(!successSetCanvasColor || !successSetSituationInto || !successSetCanvasEmojis){

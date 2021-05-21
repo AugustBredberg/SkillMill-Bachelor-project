@@ -40,7 +40,7 @@ class _Home extends State<Home> with TickerProviderStateMixin{
           successGetSituationInfo.values.elementAt(0) &&
           successGetCanvasEmojis.values.elementAt(0)) {
         EmojiCanvasPreview preview = EmojiCanvasPreview(
-          title: successGetSituationInfo.values.elementAt(1),
+          title: successGetSituationInfo.values.elementAt(1) != null ? successGetSituationInfo.values.elementAt(1) : "",
           emojis: successGetCanvasEmojis.values.elementAt(1),
           color: successGetCanvasColor.values.elementAt(1),
           widthOfScreen: 0.7,
