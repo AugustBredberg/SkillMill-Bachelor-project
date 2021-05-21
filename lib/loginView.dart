@@ -40,7 +40,10 @@ class _LoginViewState extends State<LoginView> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: globals.themeColor,
-        title: Text("SkillMill", style: TextStyle(fontSize: 30),),
+        title: Text(
+          "SkillMill",
+          style: TextStyle(fontSize: 30),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -64,17 +67,29 @@ class _LoginViewState extends State<LoginView> {
               child: TextField(
                 onChanged: (String s) {
                   setState(() {
-                  loginFail = false;
-
+                    loginFail = false;
                   });
                 },
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 cursorColor: globals.themeColor,
                 controller: usernameController,
                 decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: globals.themeColor, width: 2.0),),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: globals.themeColor, width: 0.5),),
-                    errorBorder: OutlineInputBorder(borderSide: const BorderSide(color: globals.themeColor, width: 0.5),),
-                    border: OutlineInputBorder(borderSide: const BorderSide(color: globals.themeColor, width: 0.5),),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: globals.themeColor, width: 0.5),
+                    ),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: globals.themeColor, width: 0.5),
+                    ),
                     labelText: 'Username',
                     labelStyle: TextStyle(color: globals.themeColor),
                     hintText: 'Enter your username'),
@@ -85,24 +100,52 @@ class _LoginViewState extends State<LoginView> {
                   left: 15.0, right: 15.0, top: 0, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                onSubmitted: (String s) async  {
+                  FocusScope.of(context).unfocus();
+                  Map response = await login(
+                      usernameController.text, passwordController.text);
+                  if (response.values.elementAt(0)) {
+                    globals.token = response.values.elementAt(1);
+                    //Check for succesful login
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  } else {
+                    setState(() {
+                      loginFail = true;
+                    });
+                  }
+                },
                 onChanged: (String s) {
                   setState(() {
-                  loginFail = false;
-
+                    loginFail = false;
                   });
                 },
                 cursorColor: globals.themeColor,
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
-                    focusedBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
-                    focusedErrorBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
+                    border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
+                    ),
                     errorText: loginFail
                         ? "No account matches those credentials"
                         : null,
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: globals.themeColor, width: 0.5),),
-                    errorBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 0.5),),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
+                    ),
                     labelText: 'Password',
                     labelStyle: TextStyle(color: globals.themeColor),
                     hintText: 'Enter your password'),
@@ -115,52 +158,52 @@ class _LoginViewState extends State<LoginView> {
               height: MediaQuery.of(context).size.height * 0.07,
               width: MediaQuery.of(context).size.height * 0.07,
               decoration: BoxDecoration(
-                  color: globals.themeColor, borderRadius: BorderRadius.circular(20)),
-                  child: IconButton(
-                    onPressed: () async {
-                      FocusScope.of(context).unfocus();
-                      Map response = await login(
-                        usernameController.text, passwordController.text);
-                      if (response.values.elementAt(0)) {
-                        globals.token = response.values.elementAt(1);
-                        //Check for succesful login
-                        Navigator.of(context).pushReplacementNamed('/home');
-                      } else {
-                        setState(() {
-                          loginFail = true;
-                        });
-                    }
-                  },
-                  icon:  Icon(Icons.check, color: Colors.white),
-                  iconSize: 35,
-                  ),
+                  color: globals.themeColor,
+                  borderRadius: BorderRadius.circular(20)),
+              child: IconButton(
+                onPressed: () async {
+                  FocusScope.of(context).unfocus();
+                  Map response = await login(
+                      usernameController.text, passwordController.text);
+                  if (response.values.elementAt(0)) {
+                    globals.token = response.values.elementAt(1);
+                    //Check for succesful login
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  } else {
+                    setState(() {
+                      loginFail = true;
+                    });
+                  }
+                },
+                icon: Icon(Icons.check, color: Colors.white),
+                iconSize: 35,
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => ForgotPasswordView()),
+                  CupertinoPageRoute(
+                      builder: (context) => ForgotPasswordView()),
                 );
               },
               child: Text(
                 'Forgot Password',
-                style: TextStyle(
-                  color: globals.themeColor
-                ),
+                style: TextStyle(color: globals.themeColor),
                 //style: TextStyle(color: Colors.white, fontSize: 15),
               ),
             ),
-            
+
             /*SizedBox(
               height: 70,
             ), */
             Container(
               alignment: Alignment.bottomCenter,
               child: TextButton(
-                child: Text('New User? Create Account',
-                style: TextStyle(
-                  color: globals.themeColor
-                ),),
+                child: Text(
+                  'New User? Create Account',
+                  style: TextStyle(color: globals.themeColor),
+                ),
                 onPressed: () async {
                   Navigator.push(
                     context,
