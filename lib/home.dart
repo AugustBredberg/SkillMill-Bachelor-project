@@ -4,6 +4,7 @@ import 'package:skillmill_demo/objects/API-communication.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'objects/cardCarousel.dart';
 import 'objects/globals.dart' as globals;
+import 'loginView.dart';
 
 class Home extends StatefulWidget {
   String name;
@@ -47,6 +48,7 @@ class _Home extends State<Home> {
     return listOfCanvases;
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +63,12 @@ class _Home extends State<Home> {
                 bool success = await logout(globals.token);
                 if (success) {
                   globals.token = null;
-                  Navigator.of(context).pushReplacementNamed('/login');
+                  Navigator.pushReplacement<void, void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => LoginView(),
+                    ),
+                  );
                 }
               },
               alignment: Alignment.topRight,
@@ -85,7 +92,14 @@ class _Home extends State<Home> {
                   print(data.data);
                   if (data.data == null) {
                     print("");
-                    return Container(); //CardCarousel(null, 0.7, 0.7);
+                    return Container(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 8,
+                          valueColor: new AlwaysStoppedAnimation<Color>(globals.themeColor),
+                        ),
+                      ),
+                    ); //CardCarousel(null, 0.7, 0.7);
                   } else {
                     print("creating cardcarousel with the canvses from API");
                     return CardCarousel(data.data, 0.7, 0.7);
