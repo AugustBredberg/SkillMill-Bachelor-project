@@ -25,6 +25,24 @@ String colorToString(Color color) {
 }
 
 /*
+Delete a situation
+Returns: bool success
+*/
+Future<bool> removeSituation(String token, int situationId) async {
+  try {
+    Map data = {"token": token, "situation_id": situationId};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/remove"),
+      body: json.encode(data),
+    );
+    bool success = response.statusCode == 200;
+    return success;
+  } catch (exception) {
+    throw ("failed to remove situation exception");
+  }
+}
+
+/*
 Checks if the current token is valid.
 Returns true if valid, else false
 */
@@ -36,7 +54,7 @@ Future<bool> validateToken(String token) async {
     Map data = {"token": token};
     http.Response response = await http.post(
       Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
-      body: data,
+      body: json.encode(data),
     );
     bool success = response.statusCode == 200;
     if (success) {
@@ -76,7 +94,7 @@ Future<Map> login(String username, String password) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("login exception");
   }
 }
 
@@ -105,7 +123,7 @@ Future<Map> register(String username, String password) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("register exception");
   }
 }
 
@@ -123,7 +141,7 @@ Future<bool> logout(String token) async {
     );
     return response.statusCode == 200;
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("logout exception");
   }
 }
 
@@ -182,7 +200,7 @@ Future<Map> getAllSituations(String token) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("getAllSituations exception");
   }
 }
 
@@ -216,31 +234,31 @@ Future<Map> getSituationInfo(String token, int situationId) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("getSituationInfo exception");
   }
 }
 
 //TODO: Situation ID's are to be strings?
 Future<bool> setSituationInfo(
     String token, int situationId, String title, String description) async {
-  try {
-    Map data = {
-      "token": token,
-      "situation_id": situationId,
-      "title": title,
-      "description": description,
-    };
-    http.Response response = await http.post(
-      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/test"),
-      body: json.encode(data),
-    );
-    print("test" + json.decode(response.body).values.elementAt(0));
-    print(response.statusCode);
-    //print(json.decode(response.body).values.elementAt[0]);
-    return response.statusCode == 200;
-  } catch (exception) {
-    throw ("validateToken exception");
-  }
+  //try {
+  Map data = {
+    "token": token,
+    "situation_id": situationId,
+    "title": title,
+    "description": description,
+  };
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/set_info"),
+    body: json.encode(data),
+  );
+  print("test" + json.decode(response.body).values.elementAt(0));
+  print(response.statusCode);
+  //print(json.decode(response.body).values.elementAt[0]);
+  return response.statusCode == 200;
+  //} catch (exception) {
+  //  throw ("setSituationInfo exception");
+  // }
 }
 
 /*Count the number of situations made by a user
@@ -266,7 +284,7 @@ Future<Map> countSituations(String token) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("countSituations exception");
   }
 }
 
@@ -302,7 +320,7 @@ Future<bool> setEmojiData(
     print("RESPONSE:   " + response.body);
     return (response.statusCode == 200);
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("setEmojiData exception");
   }
 }
 
@@ -334,7 +352,7 @@ List<EmojiMetadata> createEmojiList(http.Response response) {
     }
     return newList;
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("createEmojiList exception");
   }
 }
 
@@ -358,7 +376,7 @@ Future<Map> getEmojiData(String token, int situationId) async {
       return {"success": success};
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("getEmojiData exception");
   }
 }
 
@@ -384,7 +402,7 @@ Future<bool> setCanvasColor(String token, int situationId, Color color) async {
     bool success = response.statusCode == 200;
     return success;
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("setColor exception");
   }
 }
 
@@ -413,7 +431,7 @@ Future<Map> getCanvasColor(String token, int situationId) async {
       return {"success": success};
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    throw ("getColor exception");
   }
 }
 
@@ -482,6 +500,13 @@ void testGetColor(String token, int situationId) async {
 void testValidate(String token) async {
   bool success = await validateToken(token);
   print(success);
+}
+
+void testRemove(String token) async {
+  Map response = await createSituation(token);
+  int situationId = response.values.elementAt(1);
+  bool success = await removeSituation(token, situationId);
+  print("Remove:  " + success.toString());
 }
 
 class MyApp extends StatelessWidget {
@@ -705,6 +730,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   testValidate(globals.token);
                 },
                 child: Text("validate"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testRemove(globals.token);
+                },
+                child: Text("TestRemove"),
               ),
             ),
           ],
