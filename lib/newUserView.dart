@@ -66,6 +66,7 @@ class _NewUserViewState extends State<NewUserView> {
               padding: EdgeInsets.only(
                   left: 15.0, right: 15.0, top: 15.0, bottom: 7.5),
               child: TextField(
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
                 onChanged: (String s) {
                   setState(() {
                     error = false;
@@ -104,6 +105,37 @@ class _NewUserViewState extends State<NewUserView> {
                   setState(() {
                     error = false;
                   });
+                },
+                onSubmitted: (String s) async {
+                  Map response = await register(
+                      usernameController.text, passwordController.text);
+                  if (response.values.elementAt(0)) {
+                    //success
+                    globals.token = response.values.elementAt(1);
+                    print('CREATED ACCOUNT SUCCESSFULLY');
+                    FocusScope.of(context).unfocus();
+                    Navigator.of(context).pushReplacementNamed('/home');
+                    error = false;
+                    AwesomeDialog(
+                        context: context,
+                        animType: AnimType.LEFTSLIDE,
+                        headerAnimationLoop: false,
+                        dialogType: DialogType.SUCCES,
+                        title: 'Welcome to SkillMill',
+                        desc:
+                            'This is your home screen, here you can create your first situation',
+                        btnOkOnPress: null,
+                        btnOkIcon: Icons.check_circle,
+                        onDissmissCallback: null)
+                      ..show();
+                  } else {
+                    //fail
+                    print('ERROR FROM API');
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      error = true;
+                    });
+                  }
                 },
                 obscureText: true,
                 cursorColor: globals.themeColor,
