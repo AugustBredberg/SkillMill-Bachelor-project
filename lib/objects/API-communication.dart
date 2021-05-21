@@ -8,6 +8,22 @@ import 'emojiCanvas.dart';
 
 void main() => runApp(MyApp());
 
+//Validates a token
+Future<bool> validateToken(String token) async {
+  if (token == null) {
+    return false;
+  }
+  Map data = {"token": token};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
+    body: data,
+  );
+  bool success = response.statusCode == 200;
+  Map convertedResponse = json.decode(response.body);
+  print(convertedResponse.values.elementAt(0));
+  return success;
+}
+
 //Converts a color to a string in the form "0xffffff", so it can be saved in the database
 String colorToString(Color color) {
   String colorString = color.toString();
