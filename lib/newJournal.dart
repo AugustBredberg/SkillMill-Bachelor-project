@@ -194,12 +194,12 @@ class _NewJournal extends State<NewJournal> {
                                   else{
                                     situationID = widget.canvasID;
                                   }
-                                  
                                   print(situationID);
                                   bool successSetSituationInto = await setSituationInfo(globals.token, situationID, titleController.text, "Description");
                                   bool successSetCanvasColor = await setCanvasColor(globals.token, situationID, currentColor);
-                                  if(!successSetCanvasColor || !successSetSituationInto){
-                                    print("FAILED TO SET INFO OR COLOR OF SITUATION");
+                                  bool successSetCanvasEmojis = await setEmojiData(globals.token, situationID, this._previewKey.currentState.currentMetadata);
+                                  if(!successSetCanvasColor || !successSetSituationInto || !successSetCanvasEmojis){
+                                    print("FAILED TO SET INFO OR COLOR OR EMOJIS OF SITUATION");
                                   }
                                 }
                                 catch(exception){

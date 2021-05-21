@@ -32,17 +32,16 @@ class _Home extends State<Home> with TickerProviderStateMixin{
     }
     List<EmojiCanvasPreview> listOfCanvases = [];
     for (int i = 0; i < allSituationIDs.values.elementAt(1).length; i++) {
-      Map successGetCanvasColor = await getCanvasColor(
-          globals.token, allSituationIDs.values.elementAt(1)[i]);
-      Map successGetSituationInfo = await getSituationInfo(
-          globals.token, allSituationIDs.values.elementAt(1)[i]);
-      //Map successGetCanvasEmojis = null;
+      Map successGetCanvasColor = await getCanvasColor(globals.token, allSituationIDs.values.elementAt(1)[i]);
+      Map successGetSituationInfo = await getSituationInfo(globals.token, allSituationIDs.values.elementAt(1)[i]);
+      Map successGetCanvasEmojis = await getEmojiData(globals.token, allSituationIDs.values.elementAt(1)[i]);
 
       if (successGetCanvasColor.values.elementAt(0) &&
-          successGetSituationInfo.values.elementAt(0)) {
+          successGetSituationInfo.values.elementAt(0) &&
+          successGetCanvasEmojis.values.elementAt(0)) {
         EmojiCanvasPreview preview = EmojiCanvasPreview(
           title: successGetSituationInfo.values.elementAt(1),
-          emojis: [],
+          emojis: successGetCanvasEmojis.values.elementAt(1),
           color: successGetCanvasColor.values.elementAt(1),
           widthOfScreen: 0.7,
           heightOfScreen: 0.7,

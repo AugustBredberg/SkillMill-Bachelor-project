@@ -494,7 +494,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
     print("printing text without first character: " + emoji.text.split(new RegExp(r'u+')).toString()); //.replaceAll(r'u', r'HAJ'));
     */
     
-    
+    print(unicode.toRunes("hall🤯"));
 
     this.emojiKeyboardController.close();
     //controller.text += emoji.text;
