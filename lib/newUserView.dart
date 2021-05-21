@@ -3,6 +3,7 @@ import 'dart:convert';
 //import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/loginView.dart';
 import 'package:skillmill_demo/objects/API-communication.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'objects/globals.dart' as globals;
 
 class NewUserView extends StatefulWidget {
@@ -67,23 +68,28 @@ class _NewUserViewState extends State<NewUserView> {
               child: TextField(
                 onChanged: (String s) {
                   setState(() {
-                  error = false;
-
+                    error = false;
                   });
                 },
                 cursorColor: globals.themeColor,
                 controller: usernameController,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 2.0),),
+                    border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: globals.themeColor, width: 2.0),
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: globals.themeColor, width: 0.5),
                     ),
-                    errorBorder: OutlineInputBorder(borderSide:  BorderSide(color: globals.themeColor, width: 0.5),),
+                    errorBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
+                    ),
                     labelText: 'Username',
                     labelStyle: TextStyle(color: globals.themeColor),
                     hintText: 'Enter your new username'),
@@ -96,8 +102,7 @@ class _NewUserViewState extends State<NewUserView> {
               child: TextField(
                 onChanged: (String s) {
                   setState(() {
-                  error = false;
-
+                    error = false;
                   });
                 },
                 obscureText: true,
@@ -106,16 +111,21 @@ class _NewUserViewState extends State<NewUserView> {
                 decoration: InputDecoration(
                     errorText: error ? "Username is taken" : null,
                     border: OutlineInputBorder(),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
+                    ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: globals.themeColor, width: 2.0),
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 2.0),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: globals.themeColor, width: 0.5),
                     ),
-                    errorBorder: OutlineInputBorder(borderSide: BorderSide(
-                          color: globals.themeColor, width: 0.5)),
+                    errorBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: globals.themeColor, width: 0.5)),
                     labelText: 'Password',
                     labelStyle: TextStyle(color: globals.themeColor),
                     hintText: 'Enter a secure password'),
@@ -137,14 +147,28 @@ class _NewUserViewState extends State<NewUserView> {
                     //success
                     globals.token = response.values.elementAt(1);
                     print('CREATED ACCOUNT SUCCESSFULLY');
+                    FocusScope.of(context).unfocus();
                     Navigator.of(context).pushReplacementNamed('/home');
                     error = false;
+                    AwesomeDialog(
+                        context: context,
+                        animType: AnimType.LEFTSLIDE,
+                        headerAnimationLoop: false,
+                        dialogType: DialogType.SUCCES,
+                        title: 'Welcome to SkillMill',
+                        desc:
+                            'This is your home screen, here you can create your first situation',
+                        btnOkOnPress: null,
+                        btnOkIcon: Icons.check_circle,
+                        onDissmissCallback: null)
+                      ..show();
                   } else {
                     //fail
-                    print('ERROR');
-
-
-                    error = true;
+                    print('ERROR FROM API');
+                    FocusScope.of(context).unfocus();
+                    setState(() {
+                      error = true;
+                    });
                   }
                   //attemptRegisterAccount(usernameController.text,
                   //emailController.text, passwordController.text);
@@ -160,6 +184,7 @@ class _NewUserViewState extends State<NewUserView> {
                 ),
                 onPressed: () {
                   Navigator.pop(context);
+
                   /*Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => LoginView()),

@@ -238,9 +238,9 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
 
 
                   Positioned(
-                    top: 50,
+                    top: MediaQuery.of(context).size.height * 0.05,
                     right: 0,
-                    child: Column(
+                    child: Row(
                       children: [
                         Material(
                           type: MaterialType.transparency,

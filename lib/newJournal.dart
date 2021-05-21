@@ -88,6 +88,7 @@ class _NewJournal extends State<NewJournal> {
                     alignment: Alignment.topLeft,
                     child: IconButton(
                       onPressed: (){
+                        FocusScope.of(context).unfocus();
                         showBackbuttonOverlay();
                       },
                     icon: Icon(Icons.arrow_back_rounded, color: Colors.grey, size: 40.0,),)),//child: Icon(Icons.arrow_back, color: Colors.red))),
