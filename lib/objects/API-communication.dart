@@ -23,8 +23,15 @@ String colorToString(Color color) {
   return colorConverted;
 }
 
+/*
+Checks if the current token is valid.
+Returns true if valid, else false
+*/
 Future<bool> validateToken(String token) async {
   try{
+    if (token == null) {
+      return false;
+    }
     Map data = {"token": token};
     http.Response response = await http.post(
       Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
@@ -306,6 +313,9 @@ Future<bool> setEmojiData(
   }
 }
 
+/*
+Converts the response to a 
+*/
 List<EmojiMetadata> createEmojiList(http.Response response) {
   try{
     if(response.body == null){
