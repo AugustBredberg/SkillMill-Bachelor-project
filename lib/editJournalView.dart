@@ -15,6 +15,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:unicode/unicode.dart' as unicode;
 
 class EditJournalView extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -39,7 +40,7 @@ class EditJournalView extends StatefulWidget {
 }
 
 class EditJournalViewState extends State<EditJournalView> with SingleTickerProviderStateMixin{
-  final TextEditingController controller = TextEditingController();
+  TextEditingController controller = TextEditingController();
   PanelController normalKeyboardController;
   PanelController emojiKeyboardController;
   PanelController colorSliderController;
@@ -58,14 +59,6 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
   AnimationController _controller;
   Animation _animation;
 
-  void finishedEditingText(){
-    print("CALLING ONtEXTdONE");
-    onTextDone(controller.text);
-    controller.text = '';
-    //Navigator.of(context).pop();
-    this.normalKeyboardController.close();
-  }
-
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
       keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
@@ -75,7 +68,8 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
         KeyboardActionsItem(
           focusNode: this.keyboardFocusNode,
           onTapAction: () {
-            finishedEditingText();
+            this.normalKeyboardController.close();
+            dismissNormalKeyboard();
           },
         ),
       ],
@@ -89,6 +83,22 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
 
   void _appendEmojiToImpactCanvas(MoveableStackItem item) {
       this._myEmojiCanvas.currentState.appendEmoji(item);
+  }
+
+  void dismissNormalKeyboard(){
+    print("dissmiss");
+    if(controller.text.length != 0 && creatingNewText){
+      onTextDone(controller.text);
+    }
+    controller.text = '';
+    this.keyboardFocusNode.unfocus();
+    print("dismissCalled");
+    this.creatingNewText = false;
+    if(this._myEmojiCanvas.currentState != null){
+      for(var listener in this._myEmojiCanvas.currentState.listeners){
+        this.controller.removeListener(listener);
+      }
+    }
   }
 
   @override
@@ -127,11 +137,9 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
     }
 
     this.impact = EmojiCanvas(
-        key: this._myEmojiCanvas,
-        emojis: listOfItems,
-        color: widget.oldCanvasColor);
-
-    
+      key: this._myEmojiCanvas,
+      emojis: listOfItems,
+      color: widget.oldCanvasColor);
   }
 
   @override
@@ -183,8 +191,9 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
           //// NORMAL KEYBOARD PANEL
           ///////////////////////////////
           onPanelClosed: (){
-            this.keyboardFocusNode.unfocus();
-            this.controller.text = "";
+            dismissNormalKeyboard();
+            //this.keyboardFocusNode.unfocus();
+            //this.controller.text = "";
           },
           isDraggable: false,
           backdropEnabled: true,
@@ -229,9 +238,9 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
 
 
                   Positioned(
-                    top: 50,
+                    top: MediaQuery.of(context).size.height * 0.05,
                     right: 0,
-                    child: Column(
+                    child: Row(
                       children: [
                         Material(
                           type: MaterialType.transparency,
@@ -271,6 +280,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
                               shadowColor: Colors.white54,
                             ),
                             onPressed: () {
+                              this.creatingNewText = true;
                               this.keyboardFocusNode.requestFocus();
                               normalKeyboardController.open();                           
                             },
@@ -476,9 +486,19 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
 
   void onEmojiSelected(Emoji emoji) {
     //popEditOverlay(context);
+    /*
+    int bang = unicode.toRune(emoji.text);
+    print("printing TEXT: " + bang.toString());
+    print("emoji from charcode: " + String.fromCharCode(bang));
+    print("printing NAME: " + emoji.name);
+    print("printing text without first character: " + emoji.text.split(new RegExp(r'u+')).toString()); //.replaceAll(r'u', r'HAJ'));
+    */
+    
+    print(unicode.toRunes("hall🤯"));
+
     this.emojiKeyboardController.close();
-    controller.text += emoji.text;
-    print(emoji.text);
+    //controller.text += emoji.text;
+    var key = new GlobalKey<MoveableStackItemState>();
     MoveableStackItem item = MoveableStackItem(
         EmojiMetadata(emoji.text, [
           0.4360759627327983,
@@ -497,39 +517,19 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
           193.65734906587528,
           0.0,
           1.0
-        ]),
-        new GlobalKey<MoveableStackItemState>());
+        ], key),
+        key);
     _appendEmojiToImpactCanvas(item);
   }
 
   void onTextDone(String text) {
+    print(text.substring(0, text.length));
 
-    if(text.length == 0){
-      print("returnning");
-      return;
-    }
-    controller.text += text;
     print(text);
+    var key = new GlobalKey<MoveableStackItemState>();
     MoveableStackItem item = MoveableStackItem(
-        EmojiMetadata(text, Matrix4.identity().storage/*[
-          0.4360759627327983,
-          -0.00499969555783915,
-          0.0,
-          0.0,
-          0.00499969555783915,
-          0.4360759627327983,
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          1.0,
-          0.0,
-          100.90648195061966,
-          193.65734906587528,
-          0.0,
-          1.0
-        ]*/),
-        new GlobalKey<MoveableStackItemState>());
+        EmojiMetadata(text, Matrix4.identity().storage, key),
+        key);
     _appendEmojiToImpactCanvas(item);
   }
 

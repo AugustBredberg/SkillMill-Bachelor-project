@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/newJournal.dart';
 import 'package:skillmill_demo/objects/API-communication.dart';
@@ -16,7 +17,12 @@ class Home extends StatefulWidget {
   _Home createState() => _Home();
 }
 
-class _Home extends State<Home> {
+
+
+
+class _Home extends State<Home> with TickerProviderStateMixin{
+  AnimationController rotationController;
+
   Future<List<EmojiCanvasPreview>> getEmojiCanvases() async {
     Map allSituationIDs = await getAllSituations(globals.token);
     print(allSituationIDs);
@@ -26,17 +32,16 @@ class _Home extends State<Home> {
     }
     List<EmojiCanvasPreview> listOfCanvases = [];
     for (int i = 0; i < allSituationIDs.values.elementAt(1).length; i++) {
-      Map successGetCanvasColor = await getCanvasColor(
-          globals.token, allSituationIDs.values.elementAt(1)[i]);
-      Map successGetSituationInfo = await getSituationInfo(
-          globals.token, allSituationIDs.values.elementAt(1)[i]);
-      //Map successGetCanvasEmojis = null;
+      Map successGetCanvasColor = await getCanvasColor(globals.token, allSituationIDs.values.elementAt(1)[i]);
+      Map successGetSituationInfo = await getSituationInfo(globals.token, allSituationIDs.values.elementAt(1)[i]);
+      Map successGetCanvasEmojis = await getEmojiData(globals.token, allSituationIDs.values.elementAt(1)[i]);
 
       if (successGetCanvasColor.values.elementAt(0) &&
-          successGetSituationInfo.values.elementAt(0)) {
+          successGetSituationInfo.values.elementAt(0) &&
+          successGetCanvasEmojis.values.elementAt(0)) {
         EmojiCanvasPreview preview = EmojiCanvasPreview(
           title: successGetSituationInfo.values.elementAt(1),
-          emojis: [],
+          emojis: successGetCanvasEmojis.values.elementAt(1),
           color: successGetCanvasColor.values.elementAt(1),
           widthOfScreen: 0.7,
           heightOfScreen: 0.7,
@@ -48,6 +53,27 @@ class _Home extends State<Home> {
     return listOfCanvases;
   }
 
+  @override
+    void initState() {
+      // TODO: implement initState
+      
+      rotationController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
+
+      //rotationController.addListener(() => setState(() {}));
+      TickerFuture tickerFuture = rotationController.repeat();
+      tickerFuture.timeout(Duration(seconds:  3 * 10), onTimeout:  () {
+        rotationController.forward(from: 0);
+        rotationController.stop(canceled: true);
+      });
+      super.initState();
+    }
+
+    @override
+      void dispose() {
+        // TODO: implement dispose
+        rotationController.dispose();
+        super.dispose();
+      }
 
   @override
   Widget build(BuildContext context) {
@@ -63,12 +89,31 @@ class _Home extends State<Home> {
                 bool success = await logout(globals.token);
                 if (success) {
                   globals.token = null;
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    PageRouteBuilder(pageBuilder: (BuildContext context, Animation animation,
+                        Animation secondaryAnimation) {
+                      return LoginView();
+                    }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+                        Animation<double> secondaryAnimation, Widget child) {
+                      return new SlideTransition(
+                        position: new Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    }),
+                    (Route route) => false);
+                  /*
                   Navigator.pushReplacement<void, void>(
                     context,
-                    MaterialPageRoute<void>(
+                    
+                    CupertinoPageRoute<void>(
                       builder: (BuildContext context) => LoginView(),
                     ),
                   );
+                  */
                 }
               },
               alignment: Alignment.topRight,
@@ -90,14 +135,28 @@ class _Home extends State<Home> {
                   }
                   print("recieved some kind of data");
                   print(data.data);
+                  
+                  //rotationController.forward(from: 0.0);
+                  //rotationController.repeat();
                   if (data.data == null) {
                     print("");
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
+                    return 
+                    Center(
+                      child: Container(
+                      height: MediaQuery.of(context).size.width * 0.50,
+                      width: MediaQuery.of(context).size.width * 0.50,
+                       //child: Image.asset('images/skillmill_logo_transparent.png'),
+                        
+                        child: RotationTransition(
+                          turns: Tween(begin: 0.0, end: 1.0).animate(rotationController),
+                          child: Image.asset('images/skillmill_logo_transparent.png'),
+                        
+                        
+                         ), // it starts the animation
+                        /*CircularProgressIndicator(
                           strokeWidth: 8,
                           valueColor: new AlwaysStoppedAnimation<Color>(globals.themeColor),
-                        ),
+                        ),*/
                       ),
                     ); //CardCarousel(null, 0.7, 0.7);
                   } else {

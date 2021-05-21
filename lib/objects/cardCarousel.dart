@@ -36,27 +36,33 @@ class _CardCarousel extends State<CardCarousel> {
         builder: (BuildContext context) {
           return Padding(
             padding: const EdgeInsets.only(bottom:15.0),
-            child: Card(
-              elevation: 8,
-              child: Container(
-                width: MediaQuery.of(context).size.width * widget.widthOfScreen,
-                height: MediaQuery.of(context).size.height *widget.heightOfScreen,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => new NewJournal(
-                              oldCanvasEmojis: i.emojis,
-                              oldCanvasColor: i.color,
-                              oldCanvasTitle: i.title,
-                              canvasID: i.ID)
-                      ),
-                    );
-                  },
-                  child: i,
-                )
+            child: ClipPath(
+              clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30))
+              ),
+              child: Card(
+                elevation: 2,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * widget.widthOfScreen,
+                  height: MediaQuery.of(context).size.height *widget.heightOfScreen,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => new NewJournal(
+                                oldCanvasEmojis: i.emojis,
+                                oldCanvasColor: i.color,
+                                oldCanvasTitle: i.title,
+                                canvasID: i.ID)
+                        ),
+                      );
+                    },
+                    child: i,
+                  )
+                ),
+              
               ),
             ),
           );
@@ -76,37 +82,6 @@ class _CardCarousel extends State<CardCarousel> {
       previewCanvases = widget.emojiCanvases;
       
     }
-    
-/*
-    previewCanvases.add(
-      EmojiCanvasPreview(
-        title: "Golfing with dad",
-        emojis: globalEmojiList1,
-        color: Colors.green,
-        widthOfScreen: widget.widthOfScreen,
-        heightOfScreen: widget.heightOfScreen,
-      )
-    );
-    previewCanvases.add(
-      EmojiCanvasPreview(
-        title: "Rat Invasion",
-        emojis: globalEmojiList1,
-        color: Colors.red,
-        widthOfScreen: widget.widthOfScreen,
-        heightOfScreen: widget.heightOfScreen,
-      )
-    );
-    previewCanvases.add(
-      EmojiCanvasPreview(
-        title: "Project presentation",
-        emojis: globalEmojiList1,
-        color: Colors.yellow,
-        widthOfScreen: widget.widthOfScreen,
-        heightOfScreen: widget.heightOfScreen,
-      )
-    );*/
-    
-    
     super.initState();
   }
 
@@ -136,35 +111,45 @@ class _CardCarousel extends State<CardCarousel> {
                         oldCanvasTitle: "",
                         canvasID: null,)),
                   );
-                }, 
-                child: Card(
-                  elevation: 8,
-                  child:Container(
-                    height: MediaQuery.of(context).size.height *widget.heightOfScreen,
-                    width: MediaQuery.of(context).size.width * widget.widthOfScreen,
-                    child:  Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Text("Add a new Situation", 
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.black,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                }, //////////////////////////////////////////////////////////////////////////////////////////////
+                ////// CLIPPERN TAR BORT SKUGGA OXÅ, AJA BAJA 
+                /////////////////////////////////////////////////////////////////////////////////////////////////
+                child: ClipPath(
+                  clipper: ShapeBorderClipper(shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30))
+                  ),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    elevation: 4,
+                    child:Container(
+                      height: MediaQuery.of(context).size.height *widget.heightOfScreen,
+                      width: MediaQuery.of(context).size.width * widget.widthOfScreen,
+                      child:  Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text("Add a new Situation", 
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                            ),
                           ),
-                        ),
-                        IconShadowWidget(
-                        Icon(
-                          Icons.add_circle_outline,
-                          size: 80,
-                        ),
-                        shadowColor: Colors.grey[200],
+                          IconShadowWidget(
+                          Icon(
+                            Icons.add_circle_outline,
+                            size: 80,
+                          ),
+                          shadowColor: Colors.grey[200],
 
-                        ),
-                        
-                      ],
+                          ),
+                          
+                        ],
+                      ),
                     ),
                   ),
                 ),

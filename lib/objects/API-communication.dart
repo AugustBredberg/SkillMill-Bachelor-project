@@ -5,10 +5,8 @@ import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
 import 'emojiCanvas.dart';
-import 'package:flutter_emoji/flutter_emoji.dart';
-import 'package:emojis/emojis.dart'; // to use Emoji collection
-import 'package:emojis/emoji.dart'; // to use Emoji utilities
 import 'package:unicode/unicode.dart' as unicode;
+import 'movableObject.dart';
 
 void main() => runApp(MyApp());
 
@@ -30,19 +28,25 @@ Checks if the current token is valid.
 Returns true if valid, else false
 */
 Future<bool> validateToken(String token) async {
-  if (token == null) {
-    return false;
-  }
-  Map data = {"token": token};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
-    body: data,
-  );
-  bool success = response.statusCode == 200;
-  Map convertedResponse = json.decode(response.body);
+  try {
+    if (token == null) {
+      return false;
+    }
+    Map data = {"token": token};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
+      body: data,
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map convertedResponse = json.decode(response.body);
+      print(convertedResponse.values.elementAt(0));
+    }
 
-  print(convertedResponse.values.elementAt(0));
-  return success;
+    return success;
+  } catch (exception) {
+    throw ("validateToken exception");
+  }
 }
 
 /*
@@ -54,20 +58,24 @@ Token is used for API to find the right user
 Existing account: username: adam, password: 123
 */
 Future<Map> login(String username, String password) async {
-  Map data = {"username": username, "password": password};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/login"),
-    body: data,
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    String token = convertedResponse.values.elementAt(1);
-    Map returnMessage = {"success": success, "token": token};
-    return (returnMessage);
-  } else {
-    Map returnMessage = {"success": success};
-    return returnMessage;
+  try {
+    Map data = {"username": username, "password": password};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/auth/login"),
+      body: data,
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      String token = convertedResponse.values.elementAt(1);
+      Map returnMessage = {"success": success, "token": token};
+      return (returnMessage);
+    } else {
+      Map returnMessage = {"success": success};
+      return returnMessage;
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
@@ -79,20 +87,24 @@ Returns a Map:
 Token is used for API to find the right user
 */
 Future<Map> register(String username, String password) async {
-  Map data = {"username": username, "password": password};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/register"),
-    body: data,
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    String token = convertedResponse.values.elementAt(1);
-    Map returnMessage = {"success": success, "token": token};
-    return (returnMessage);
-  } else {
-    Map returnMessage = {"success": success};
-    return returnMessage;
+  try {
+    Map data = {"username": username, "password": password};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/auth/register"),
+      body: data,
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      String token = convertedResponse.values.elementAt(1);
+      Map returnMessage = {"success": success, "token": token};
+      return (returnMessage);
+    } else {
+      Map returnMessage = {"success": success};
+      return returnMessage;
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
@@ -102,12 +114,16 @@ Call with: await logout(String token)
 Returns bool. True if statuscode==200 (success), else false
 */
 Future<bool> logout(String token) async {
-  Map data = {"token": token};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/invalidate"),
-    body: data,
-  );
-  return response.statusCode == 200;
+  try {
+    Map data = {"token": token};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/auth/invalidate"),
+      body: data,
+    );
+    return response.statusCode == 200;
+  } catch (exception) {
+    throw ("validateToken exception");
+  }
 }
 
 /*
@@ -118,20 +134,24 @@ Returns Map:
   else       : {"success": false}
 */
 Future<Map> createSituation(String token) async {
-  Map data = {"token": token};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/create"),
-    body: data,
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    int situationId = convertedResponse.values.elementAt(1);
-    Map returnMessage = {"success": success, "situation_id": situationId};
-    return (returnMessage);
-  } else {
-    Map returnMessage = {"success": success};
-    return (returnMessage);
+  try {
+    Map data = {"token": token};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/create"),
+      body: data,
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      int situationId = convertedResponse.values.elementAt(1);
+      Map returnMessage = {"success": success, "situation_id": situationId};
+      return (returnMessage);
+    } else {
+      Map returnMessage = {"success": success};
+      return (returnMessage);
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
@@ -143,20 +163,25 @@ if success: {"success": true, "allSituations": List<int>}
 if failure: {"success": false}
 */
 Future<Map> getAllSituations(String token) async {
-  Map data = {"token": token};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/all"),
-    body: data,
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    List allSituations = convertedResponse.values.elementAt(1);
-    Map returnMessage = {"success": success, "allSituations": allSituations};
-    return (returnMessage);
-  } else {
-    Map returnMessage = {"success": success};
-    return returnMessage;
+  try {
+    Map data = {"token": token};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/all"),
+      body: data,
+    );
+    bool success = response.statusCode == 200;
+    if (success && response.body != null) {
+      print(response.body);
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      List allSituations = convertedResponse.values.elementAt(1);
+      Map returnMessage = {"success": success, "allSituations": allSituations};
+      return (returnMessage);
+    } else {
+      Map returnMessage = {"success": success};
+      return returnMessage;
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
@@ -168,48 +193,53 @@ Returns Map:
   if failure: {"success": false}
 */
 Future<Map> getSituationInfo(String token, int situationId) async {
-  Map data = {"token": token, "situation_id": situationId};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/get_info"),
-    body: json.encode(data),
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    String title = convertedResponse.values.elementAt(1);
-    String description = convertedResponse.values.elementAt(2);
-    Map returnMessage = {
-      "success": success,
-      "title": title,
-      "description": description
-    };
-    return returnMessage;
-  } else {
-    Map returnMessage = {"success": success};
-    return returnMessage;
+  try {
+    Map data = {"token": token, "situation_id": situationId};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/get_info"),
+      body: json.encode(data),
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      String title = convertedResponse.values.elementAt(1);
+      String description = convertedResponse.values.elementAt(2);
+      Map returnMessage = {
+        "success": success,
+        "title": title,
+        "description": description
+      };
+      return returnMessage;
+    } else {
+      Map returnMessage = {"success": success};
+      return returnMessage;
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
-/*
-Sets the title of a situation
-Returns: true if successful, else false
-*/
+//TODO: Situation ID's are to be strings?
 Future<bool> setSituationInfo(
     String token, int situationId, String title, String description) async {
-  Map data = {
-    "token": token,
-    "situation_id": situationId,
-    "title": title,
-    "description": description,
-  };
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/test"),
-    body: json.encode(data),
-  );
-  print("test" + json.decode(response.body).values.elementAt(0));
-  print(response.statusCode);
-  //print(json.decode(response.body).values.elementAt[0]);
-  return response.statusCode == 200;
+  try {
+    Map data = {
+      "token": token,
+      "situation_id": situationId,
+      "title": title,
+      "description": description,
+    };
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/test"),
+      body: json.encode(data),
+    );
+    print("test" + json.decode(response.body).values.elementAt(0));
+    print(response.statusCode);
+    //print(json.decode(response.body).values.elementAt[0]);
+    return response.statusCode == 200;
+  } catch (exception) {
+    throw ("validateToken exception");
+  }
 }
 
 /*Count the number of situations made by a user
@@ -218,20 +248,24 @@ Returns if success: {"success": true, "count": int count}
         if failure: {"success": false}
 */
 Future<Map> countSituations(String token) async {
-  Map data = {"token": token};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/count"),
-    body: data,
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    int count = int.parse(convertedResponse.values.elementAt(1));
-    Map returnMessage = {"success": success, "count": count};
-    return returnMessage;
-  } else {
-    Map returnMessage = {"success": success};
-    return returnMessage;
+  try {
+    Map data = {"token": token};
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/count"),
+      body: data,
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      int count = int.parse(convertedResponse.values.elementAt(1));
+      Map returnMessage = {"success": success, "count": count};
+      return returnMessage;
+    } else {
+      Map returnMessage = {"success": success};
+      return returnMessage;
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
@@ -242,28 +276,33 @@ Returns: bool success
 */
 Future<bool> setEmojiData(
     String token, int situationId, List<EmojiMetadata> emojiData) async {
-  List<Map> emojiDataAsList = [];
-  for (int i = 0; i < emojiData.length; i++) {
-    List<int> emojiCode = unicode.toRunes(emojiData[i].emoji);
-    Map currentEmoji = {
-      "emoji": emojiCode,
-      //"emoji": emojiData[i].emoji,
-      "matrixArguments": emojiData[i].matrixArguments
+  try {
+    List<Map> emojiDataAsList = [];
+    for (int i = 0; i < emojiData.length; i++) {
+      List<int> emojiCode = unicode.toRunes(emojiData[i].emoji);
+      Map currentEmoji = {
+        "emoji": emojiCode,
+        //"emoji": emojiData[i].emoji,
+        "matrixArguments": emojiData[i].matrixArguments
+      };
+      emojiDataAsList.add(currentEmoji);
+    }
+    Map data = {
+      "token": (token),
+      "situation_id": (situationId),
+      "emoji_data": json.encode(emojiDataAsList),
     };
-    emojiDataAsList.add(currentEmoji);
+    print(json.encode(data));
+    http.Response response = await http.post(
+      Uri.parse(
+          "https://hayashida.se/skillmill/api/v1/journal/emoji/set_emojis"),
+      body: json.encode(data),
+    );
+    print("RESPONSE:   " + response.body);
+    return (response.statusCode == 200);
+  } catch (exception) {
+    throw ("validateToken exception");
   }
-  Map data = {
-    "token": (token),
-    "situation_id": (situationId),
-    "emoji_data": json.encode(emojiDataAsList),
-  };
-  print(json.encode(data));
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/set_emojis"),
-    body: json.encode(data),
-  );
-  print("RESPONSE:   " + response.body);
-  return (response.statusCode == 200);
 }
 
 /*
@@ -271,21 +310,31 @@ Converts the response to a list of EmojiMetadata.
 Used only by getEmojiData.
 */
 List<EmojiMetadata> createEmojiList(http.Response response) {
-  Map convertedResponse = json.decode(response.body);
-  List<EmojiMetadata> newList = [];
-  List emojiList = json.decode(convertedResponse.values.elementAt(1));
-  for (int i = 0; i < emojiList.length; i++) {
-    String emoji =
-        String.fromCharCodes(List<int>.from(emojiList[i].values.elementAt(0)));
-    List matrixArguments = emojiList[i].values.elementAt(1);
-    List matrixArgumentsConverted = List<double>.from(matrixArguments);
-    print(emoji);
-    print(matrixArgumentsConverted);
-    EmojiMetadata emojiData =
-        new EmojiMetadata(emoji, matrixArgumentsConverted);
-    newList.add(emojiData);
+  try {
+    if (response.body == null) {
+      return [];
+    }
+    Map convertedResponse = json.decode(response.body);
+    List<EmojiMetadata> newList = [];
+    if (convertedResponse.values.elementAt(1) == null) {
+      return [];
+    }
+    List emojiList = json.decode(convertedResponse.values.elementAt(1));
+    for (int i = 0; i < emojiList.length; i++) {
+      String emoji = String.fromCharCodes(
+          List<int>.from(emojiList[i].values.elementAt(0)));
+      List matrixArguments = emojiList[i].values.elementAt(1);
+      List matrixArgumentsConverted = List<double>.from(matrixArguments);
+      print(emoji);
+      print(matrixArgumentsConverted);
+      EmojiMetadata emojiData = new EmojiMetadata(emoji,
+          matrixArgumentsConverted, new GlobalKey<MoveableStackItemState>());
+      newList.add(emojiData);
+    }
+    return newList;
+  } catch (exception) {
+    throw ("validateToken exception");
   }
-  return newList;
 }
 
 /*
@@ -293,17 +342,22 @@ Fetches the emoji/text data from the server for the canvas.
 Returns: {"success": bool, "emojis": [emojiMetaData]}
 */
 Future<Map> getEmojiData(String token, int situationId) async {
-  Map data = {"token": token, "situation_id": situationId};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/get_emojis"),
-    body: json.encode(data),
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    List newList = createEmojiList(response);
-    return {"success": success, "emojis": newList};
-  } else {
-    return {"success": success};
+  try {
+    Map data = {"token": token, "situation_id": situationId};
+    http.Response response = await http.post(
+      Uri.parse(
+          "https://hayashida.se/skillmill/api/v1/journal/emoji/get_emojis"),
+      body: json.encode(data),
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      List newList = createEmojiList(response);
+      return {"success": success, "emojis": newList};
+    } else {
+      return {"success": success};
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 
@@ -313,19 +367,24 @@ Call with: await getCanvasColor(String token, int situationId)
 Returns bool success
 */
 Future<bool> setCanvasColor(String token, int situationId, Color color) async {
-  String colorString = colorToString(color);
-  print(colorString);
-  Map data = {
-    "token": token,
-    "situation_id": situationId,
-    "color": colorString
-  };
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/set_color"),
-    body: json.encode(data),
-  );
-  bool success = response.statusCode == 200;
-  return success;
+  try {
+    String colorString = colorToString(color);
+    print(colorString);
+    Map data = {
+      "token": token,
+      "situation_id": situationId,
+      "color": colorString
+    };
+    http.Response response = await http.post(
+      Uri.parse(
+          "https://hayashida.se/skillmill/api/v1/journal/emoji/set_color"),
+      body: json.encode(data),
+    );
+    bool success = response.statusCode == 200;
+    return success;
+  } catch (exception) {
+    throw ("validateToken exception");
+  }
 }
 
 /*
@@ -335,20 +394,25 @@ Returns if success: {"success": true, "color": Color color}
         if failure: {"success": false}
 */
 Future<Map> getCanvasColor(String token, int situationId) async {
-  Map data = {"token": token, "situation_id": situationId};
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/get_color"),
-    body: json.encode(data),
-  );
-  bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    String colorString = convertedResponse.values.elementAt(1);
-    Color color = new Color(int.parse(colorString));
-    Map returnMessage = {"success": success, "color": color};
-    return returnMessage;
-  } else {
-    return {"success": success};
+  try {
+    Map data = {"token": token, "situation_id": situationId};
+    http.Response response = await http.post(
+      Uri.parse(
+          "https://hayashida.se/skillmill/api/v1/journal/emoji/get_color"),
+      body: json.encode(data),
+    );
+    bool success = response.statusCode == 200;
+    if (success && response.body != null) {
+      Map<String, dynamic> convertedResponse = json.decode(response.body);
+      String colorString = convertedResponse.values.elementAt(1);
+      Color color = new Color(int.parse(colorString));
+      Map returnMessage = {"success": success, "color": color};
+      return returnMessage;
+    } else {
+      return {"success": success};
+    }
+  } catch (exception) {
+    throw ("validateToken exception");
   }
 }
 

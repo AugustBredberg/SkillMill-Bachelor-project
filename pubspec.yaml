@@ -22,8 +22,8 @@ environment:
 
 dependencies: 
   unicode: ^0.3.0
-  emojis: ^0.9.3
-  flutter_emoji: ">= 2.2.1+1"
+  flutter_launcher_icons: ^0.9.0
+  flutter_spinning_wheel: ^1.1.0
   rflutter_alert: ^2.0.2
   keyboard_actions: "^3.3.1+1"
   awesome_dialog: ^2.0.0
@@ -53,6 +53,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/SkillMill_logo.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -76,6 +80,7 @@ flutter:
     - images/don_quixote.jpg
     - images/achievement.jpg
     - images/skillmill_logo.png
+    - images/skillmill_logo_transparent.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

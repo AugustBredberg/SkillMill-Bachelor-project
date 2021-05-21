@@ -19,15 +19,15 @@ class EmojiKeyboardClass extends StatelessWidget {
     controller.text += emoji.text;
     //ChosenEmoji.chosenEmoji = emoji.text;
     //EmojiCanvas.
-    
+    var key = new GlobalKey<MoveableStackItemState>();
     MoveableStackItem item = MoveableStackItem(
         EmojiMetadata(emoji.text,
         [0.6463089079186324, 0.13423912881164965, 0.0, 0.0,
         -0.13423912881164965,0.6463089079186324, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
-        58.29945312195869, 11.104368977904983, 0.0, 1.0]
-        ),
-        new GlobalKey<MoveableStackItemState>(),
+        58.29945312195869, 11.104368977904983, 0.0, 1.0],
+        key),
+        key,
     );
     //_EmojiCanvas()._appendEmoji(item);
     //_appendEmojiToCanvas(item);
