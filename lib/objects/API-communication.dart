@@ -22,6 +22,21 @@ String colorToString(Color color) {
   return colorConverted;
 }
 
+Future<bool> validateToken(String token) async {
+  Map data = {"token": token};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
+    body: data,
+  );
+  bool success = response.statusCode == 200;
+  if (success) {
+    Map convertedResponse = json.decode(response.body);
+    print(convertedResponse.values.elementAt(0));
+  }
+
+  return success;
+}
+
 /*
 Call with: await login(String username, String password)
 Returns a Map:
@@ -219,7 +234,7 @@ Future<bool> setEmojiData(
     String token, int situationId, List<EmojiMetadata> emojiData) async {
   List<Map> emojiDataAsList = [];
   for (int i = 0; i < emojiData.length; i++) {
-    int emojiCode = unicode.toRune(emojiData[i].emoji);
+    List<int> emojiCode = unicode.toRunes(emojiData[i].emoji);
     Map currentEmoji = {
       "emoji": emojiCode,
       //"emoji": emojiData[i].emoji,
@@ -252,7 +267,8 @@ List<EmojiMetadata> createEmojiList(http.Response response) {
   }
   List emojiList = json.decode(convertedResponse.values.elementAt(1));
   for (int i = 0; i < emojiList.length; i++) {
-    String emoji = String.fromCharCode(emojiList[i].values.elementAt(0));
+    String emoji =
+        String.fromCharCodes(List<int>.from(emojiList[i].values.elementAt(0)));
     List matrixArguments = emojiList[i].values.elementAt(1);
     List matrixArgumentsConverted = List<double>.from(matrixArguments);
     print(emoji);
@@ -386,6 +402,11 @@ void testSetColor(String token, int situationId, Color color) async {
 void testGetColor(String token, int situationId) async {
   Map response = await getCanvasColor(token, situationId);
   print(response.values.elementAt(1) == Colors.white);
+}
+
+void testValidate(String token) async {
+  bool success = await validateToken(token);
+  print(success);
 }
 
 class MyApp extends StatelessWidget {
@@ -600,6 +621,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   testGetColor(globals.token, 59);
                 },
                 child: Text("getColor"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testValidate(globals.token);
+                },
+                child: Text("validate"),
               ),
             ),
           ],
