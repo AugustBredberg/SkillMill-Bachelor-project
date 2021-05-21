@@ -5,6 +5,10 @@ import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'dart:convert';
 import 'globals.dart' as globals;
 import 'emojiCanvas.dart';
+import 'package:flutter_emoji/flutter_emoji.dart';
+import 'package:emojis/emojis.dart'; // to use Emoji collection
+import 'package:emojis/emoji.dart'; // to use Emoji utilities
+import 'package:unicode/unicode.dart' as unicode;
 
 void main() => runApp(MyApp());
 
@@ -217,27 +221,46 @@ Future<bool> setEmojiData(
     String token, int situationId, List<EmojiMetadata> emojiData) async {
   List<Map> emojiDataAsList = [];
   for (int i = 0; i < emojiData.length; i++) {
+    int emojiCode = unicode.toRune(emojiData[i].emoji);
     Map currentEmoji = {
-      "emoji": emojiData[i].emoji,
+      "emoji": emojiCode,
+      //"emoji": emojiData[i].emoji,
       "matrixArguments": emojiData[i].matrixArguments
     };
     emojiDataAsList.add(currentEmoji);
   }
   Map data = {
-    "token": token,
-    "situation_id": situationId,
-    "emoji_data": (emojiDataAsList),
+    "token": (token),
+    "situation_id": (situationId),
+    "emoji_data": json.encode(emojiDataAsList),
   };
   print(json.encode(data));
   http.Response response = await http.post(
     Uri.parse("https://hayashida.se/skillmill/api/v1/journal/emoji/set_emojis"),
     body: json.encode(data),
   );
-  print(response.statusCode);
+  print("RESPONSE:   " + response.body);
   return (response.statusCode == 200);
 }
 
-//TODO: Does not work, emoji_data is a string?
+List<EmojiMetadata> createEmojiList(http.Response response) {
+  Map convertedResponse = json.decode(response.body);
+  List<EmojiMetadata> newList = [];
+  List emojiList = json.decode(convertedResponse.values.elementAt(1));
+  for (int i = 0; i < emojiList.length; i++) {
+    String emoji = String.fromCharCode(emojiList[i].values.elementAt(0));
+    List matrixArguments = emojiList[i].values.elementAt(1);
+    List matrixArgumentsConverted = List<double>.from(matrixArguments);
+    print(emoji);
+    print(matrixArgumentsConverted);
+    EmojiMetadata emojiData =
+        new EmojiMetadata(emoji, matrixArgumentsConverted);
+    newList.add(emojiData);
+  }
+  return newList;
+}
+
+//TODO: doc
 //
 Future<Map> getEmojiData(String token, int situationId) async {
   Map data = {"token": token, "situation_id": situationId};
@@ -247,9 +270,8 @@ Future<Map> getEmojiData(String token, int situationId) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
-    print(convertedResponse.values.elementAt(1));
-    return {"success": success};
+    List newList = createEmojiList(response);
+    return {"success": success, "emojis": newList};
   } else {
     return {"success": success};
   }
