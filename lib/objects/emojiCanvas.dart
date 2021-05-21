@@ -45,6 +45,8 @@ class EmojiCanvasState extends State<EmojiCanvas> {
   Color currentColors;
   RenderBox currentConstraints;
 
+  List<Function> listeners = [];
+
   void appendEmoji(MoveableStackItem item) {
     EmojiMetadata metadata = item.getMetaData();
     metadata.key = item.key;
@@ -165,17 +167,56 @@ class EmojiCanvasState extends State<EmojiCanvas> {
           final RegExp REGEX_EMOJI = RegExp(r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
           Iterable<RegExpMatch> matches = REGEX_EMOJI.allMatches(i.emojiMetadata.emoji);
           print("matches: " + matches.toString());
-
+          List<double> matrixArgumentsOfEditedItem = i.emojiMetadata.matrixArguments;
+          String textAtStartOfEdit = globals.editStateKey.currentState.controller.text;
           globals.editStateKey.currentState.normalKeyboardController.open();
           globals.editStateKey.currentState.controller.text = i.emojiMetadata.emoji;
           globals.editStateKey.currentState.keyboardFocusNode.requestFocus();
-          globals.editStateKey.currentState.controller.addListener(() {
+          var listenerFunction = (){
             setState(() {
-              print("something happened on the keyboard " + globals.editStateKey.currentState.controller.text);
-              i.emojiMetadata.emoji = globals.editStateKey.currentState.controller.text;
+              /// IF THE TEXT HAS BEEN UPDATED
+              /// Create a copy of the item, but with the new edited text instead of the old
+              /// Remove the old item from the list of emojis, and add the new edited item with the same matrixarguments as before the edit
+              /// 
+              /// PROBLEM MED LISTENER, DEN FORTSÄTTER LYSSNA PÅ ALLA SOM BLIVIT EDITED 
+              
+              if(textAtStartOfEdit != globals.editStateKey.currentState.controller.text){
+                /*
+                currentEmojis.removeWhere((item){
+                  return item.key == i.key;
+                });
+                */
+                MoveableStackItem editedItem = MoveableStackItem(
+                  EmojiMetadata(globals.editStateKey.currentState.controller.text, matrixArgumentsOfEditedItem),
+                  GlobalKey<MoveableStackItemState>(),
+                );
+                //editedItem.emojiMetadata.key = GlobalKey<MoveableStackItemState>();
 
+              
+
+                this.currentEmojis.removeLast();
+                this.currentMetaData.removeLast();
+                currentEmojis.add(editedItem); 
+                currentMetaData.add(editedItem.emojiMetadata);
+
+                
+                //editedItem.key.currentState.setState(() {});
+                //editedItem.emojiMetadata.key.currentState.setState(() {});
+                /*
+                currentMetaData.removeWhere((metadata){
+                  print("removed metadata from currentMetaData");
+                  return metadata.key == i.key;
+                });*/
+                
+                
+                
+                
+                i = editedItem;
+              }
             });
-          });
+          };
+          globals.editStateKey.currentState.controller.addListener(listenerFunction);
+          this.listeners.add(listenerFunction);
         },
         child: Opacity(
             opacity:
@@ -246,13 +287,14 @@ class EmojiCanvasState extends State<EmojiCanvas> {
           if (currentEmojis.length > 0 && this.fingerPositions.length == 2 && this.focusEmoji != null) {
             print("IN MATRIX DETECT");
             setState(() {
-              Matrix4 currentMatrix =
-                  focusEmoji.key.currentState.notifier.value;
-              currentMatrix =
-                  MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+              Matrix4 currentMatrix = focusEmoji.key.currentState.notifier.value;
+              currentMatrix = MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
               focusEmoji.key.currentState.notifier.value = currentMatrix;
               focusEmoji.emojiMetadata.matrixArguments = currentMatrix.storage;
-              focusEmoji.emojiMetadata.key.currentState.setState(() {});
+              focusEmoji.key.currentState.setState(() {
+                              
+                            });
+              //focusEmoji.emojiMetadata.key.currentState.setState(() {});
             });
           }
         },

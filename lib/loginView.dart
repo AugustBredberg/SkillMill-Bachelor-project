@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'home.dart';
 import 'objects/API-communication.dart';
 import 'objects/globals.dart' as globals;
+import 'package:flutter_spinning_wheel/flutter_spinning_wheel.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -55,7 +56,16 @@ class _LoginViewState extends State<LoginView> {
                     /*decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('images/skillmill_logo.png')),
+                    child: SpinningWheel(
+              Image.asset('images/skillmill_logo_transparent.png'),
+              width: MediaQuery.of(context).size.width * 0.6,
+              height: MediaQuery.of(context).size.height * 0.4,
+              dividers: 2,
+              onUpdate: (test){},
+
+              onEnd: (test){},
+            ),
+            ),
               ),
             ),
             Padding(

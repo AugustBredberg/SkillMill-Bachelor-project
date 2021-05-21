@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:skillmill_demo/newJournal.dart';
 import 'package:skillmill_demo/objects/API-communication.dart';
@@ -16,7 +17,12 @@ class Home extends StatefulWidget {
   _Home createState() => _Home();
 }
 
-class _Home extends State<Home> {
+
+
+
+class _Home extends State<Home> with TickerProviderStateMixin{
+  AnimationController rotationController;
+
   Future<List<EmojiCanvasPreview>> getEmojiCanvases() async {
     Map allSituationIDs = await getAllSituations(globals.token);
     print(allSituationIDs);
@@ -48,6 +54,27 @@ class _Home extends State<Home> {
     return listOfCanvases;
   }
 
+  @override
+    void initState() {
+      // TODO: implement initState
+      
+      rotationController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
+
+      //rotationController.addListener(() => setState(() {}));
+      TickerFuture tickerFuture = rotationController.repeat();
+      tickerFuture.timeout(Duration(seconds:  3 * 10), onTimeout:  () {
+        rotationController.forward(from: 0);
+        rotationController.stop(canceled: true);
+      });
+      super.initState();
+    }
+
+    @override
+      void dispose() {
+        // TODO: implement dispose
+        rotationController.dispose();
+        super.dispose();
+      }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +92,8 @@ class _Home extends State<Home> {
                   globals.token = null;
                   Navigator.pushReplacement<void, void>(
                     context,
-                    MaterialPageRoute<void>(
+                    
+                    CupertinoPageRoute<void>(
                       builder: (BuildContext context) => LoginView(),
                     ),
                   );
@@ -90,14 +118,28 @@ class _Home extends State<Home> {
                   }
                   print("recieved some kind of data");
                   print(data.data);
+                  
+                  //rotationController.forward(from: 0.0);
+                  //rotationController.repeat();
                   if (data.data == null) {
                     print("");
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
+                    return 
+                    Center(
+                      child: Container(
+                      height: MediaQuery.of(context).size.width * 0.50,
+                      width: MediaQuery.of(context).size.width * 0.50,
+                       //child: Image.asset('images/skillmill_logo_transparent.png'),
+                        
+                        child: RotationTransition(
+                          turns: Tween(begin: 0.0, end: 1.0).animate(rotationController),
+                          child: Image.asset('images/skillmill_logo_transparent.png'),
+                        
+                        
+                         ), // it starts the animation
+                        /*CircularProgressIndicator(
                           strokeWidth: 8,
                           valueColor: new AlwaysStoppedAnimation<Color>(globals.themeColor),
-                        ),
+                        ),*/
                       ),
                     ); //CardCarousel(null, 0.7, 0.7);
                   } else {

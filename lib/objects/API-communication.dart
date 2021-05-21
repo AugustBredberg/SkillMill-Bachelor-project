@@ -37,7 +37,7 @@ Future<Map> login(String username, String password) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     String token = convertedResponse.values.elementAt(1);
     Map returnMessage = {"success": success, "token": token};
     return (returnMessage);
@@ -62,7 +62,7 @@ Future<Map> register(String username, String password) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     String token = convertedResponse.values.elementAt(1);
     Map returnMessage = {"success": success, "token": token};
     return (returnMessage);
@@ -101,7 +101,7 @@ Future<Map> createSituation(String token) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     int situationId = convertedResponse.values.elementAt(1);
     Map returnMessage = {"success": success, "situation_id": situationId};
     return (returnMessage);
@@ -125,8 +125,9 @@ Future<Map> getAllSituations(String token) async {
     body: data,
   );
   bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
+  if (success && response.body != null) {
+    print(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     List allSituations = convertedResponse.values.elementAt(1);
     Map returnMessage = {"success": success, "allSituations": allSituations};
     return (returnMessage);
@@ -151,7 +152,7 @@ Future<Map> getSituationInfo(String token, int situationId) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     String title = convertedResponse.values.elementAt(1);
     String description = convertedResponse.values.elementAt(2);
     Map returnMessage = {
@@ -198,7 +199,7 @@ Future<Map> countSituations(String token) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     int count = int.parse(convertedResponse.values.elementAt(1));
     Map returnMessage = {"success": success, "count": count};
     return returnMessage;
@@ -247,7 +248,7 @@ Future<Map> getEmojiData(String token, int situationId) async {
   );
   bool success = response.statusCode == 200;
   if (success) {
-    Map convertedResponse = json.decode(response.body);
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     print(convertedResponse.values.elementAt(1));
     return {"success": success};
   } else {
@@ -289,8 +290,8 @@ Future<Map> getCanvasColor(String token, int situationId) async {
     body: json.encode(data),
   );
   bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
+  if (success && response.body != null) {
+    Map<String, dynamic> convertedResponse = json.decode(response.body);
     String colorString = convertedResponse.values.elementAt(1);
     Color color = new Color(int.parse(colorString));
     Map returnMessage = {"success": success, "color": color};

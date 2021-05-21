@@ -49,7 +49,7 @@ class _NewUserViewState extends State<NewUserView> {
                     /*decoration: BoxDecoration(
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('images/skillmill_logo.png')),
+                    child: Image.asset('images/skillmill_logo_transparent.png')), //Image.asset('images/skillmill_logo.png')),
               ),
             ),
             /*Padding(
