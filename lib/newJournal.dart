@@ -10,7 +10,6 @@ import 'objects/globals.dart' as globals;
 import 'objects/API-communication.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'editJournalView.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class NewJournal extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
