@@ -236,7 +236,7 @@ Future<bool> setEmojiData(
     String token, int situationId, List<EmojiMetadata> emojiData) async {
   List<Map> emojiDataAsList = [];
   for (int i = 0; i < emojiData.length; i++) {
-    int emojiCode = unicode.toRune(emojiData[i].emoji);
+    List<int> emojiCode = unicode.toRunes(emojiData[i].emoji);
     Map currentEmoji = {
       "emoji": emojiCode,
       //"emoji": emojiData[i].emoji,
@@ -263,7 +263,8 @@ List<EmojiMetadata> createEmojiList(http.Response response) {
   List<EmojiMetadata> newList = [];
   List emojiList = json.decode(convertedResponse.values.elementAt(1));
   for (int i = 0; i < emojiList.length; i++) {
-    String emoji = String.fromCharCode(emojiList[i].values.elementAt(0));
+    String emoji =
+        String.fromCharCodes(List<int>.from(emojiList[i].values.elementAt(0)));
     List matrixArguments = emojiList[i].values.elementAt(1);
     List matrixArgumentsConverted = List<double>.from(matrixArguments);
     print(emoji);
