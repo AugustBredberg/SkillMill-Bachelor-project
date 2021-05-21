@@ -165,10 +165,9 @@ class _NewJournal extends State<NewJournal> {
                           Text('') :
                           IconButton(
                             icon: Icon(Icons.delete_outlined, size: MediaQuery.of(context).size.width*0.15),
-                            onPressed: (){
+                            onPressed: () async {
                               /// PERMANENTLY REMOVE A CANVAS FROM THE DATABASE WITH API FUNCTIONS
-                              
-                              
+                              deleteSituation();
                             },
                           ),
                           IconButton(
@@ -273,5 +272,52 @@ class _NewJournal extends State<NewJournal> {
       })
     ..show();
     return Future.value(false);
+  }
+
+  deleteSituation() async {
+    AwesomeDialog(
+      context: context,
+      animType: AnimType.LEFTSLIDE,
+      headerAnimationLoop: false,
+      dialogType: DialogType.WARNING,
+      title: 'Are you sure?',
+      desc: 'This action will permanently delete the journal',
+      btnOkText: "Yes",
+      btnOkOnPress: () async {
+        /////////////////////////////////////////////////////////////////////////
+        //// DELETES THE SITUATION PERMANENTLY
+        /////////////////////////////////////////////////////////////////////////
+        bool successDeleteSituation = await removeSituation(globals.token, widget.canvasID);
+        if(!successDeleteSituation){
+          print("DELETE SITUATION FAILED");
+          return;
+        }
+        AwesomeDialog(
+            context: context,
+            animType: AnimType.LEFTSLIDE,
+            headerAnimationLoop: false,
+            dialogType: DialogType.INFO,
+            title: 'Deleted',
+            desc:
+                'Successfully deleted journal',
+            btnOkOnPress: () {
+              debugPrint('');
+            },
+            btnOkIcon: Icons.check_circle,
+            onDissmissCallback: () {
+              debugPrint('Dialog Dissmiss from callback');
+              Navigator.of(context).pushReplacementNamed('/home');
+            }
+          )..show();
+
+      },
+      
+      btnCancelText: "No",
+      //btnOkIcon: Icons.check_circle,
+      onDissmissCallback: () {},
+      btnCancelOnPress: (){
+        return;
+      }
+    )..show();
   }
 }

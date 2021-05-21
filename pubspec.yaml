@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
+  connectivity: ^3.0.4
   unicode: ^0.3.0
   flutter_launcher_icons: ^0.9.0
   flutter_spinning_wheel: ^1.1.0

@@ -160,7 +160,7 @@ class _LoginViewState extends State<LoginView> {
                     labelStyle: TextStyle(color: globals.themeColor),
                     hintText: 'Enter your password'),
               ),
-            ),
+            ),/*
             CheckboxListTile(
               title: Text("Remember me"), //    <-- label
               value: false,
@@ -169,7 +169,7 @@ class _LoginViewState extends State<LoginView> {
               },
               controlAffinity:
                   ListTileControlAffinity.leading, //  <-- leading Checkbox
-            ),
+            ),*/
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.04,
             ),

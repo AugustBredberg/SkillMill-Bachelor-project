@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +9,9 @@ import 'globals.dart' as globals;
 import 'emojiCanvas.dart';
 import 'package:unicode/unicode.dart' as unicode;
 import 'movableObject.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import '../main.dart' as mainFile;
 
 void main() => runApp(MyApp());
 
@@ -38,7 +43,8 @@ Future<bool> removeSituation(String token, int situationId) async {
     bool success = response.statusCode == 200;
     return success;
   } catch (exception) {
-    throw ("failed to remove situation exception");
+    testInternetConnection(exception);
+    //throw ("failed to remove situation exception");
   }
 }
 
@@ -64,7 +70,8 @@ Future<bool> validateToken(String token) async {
 
     return success;
   } catch (exception) {
-    throw ("validateToken exception");
+    testInternetConnection(exception);
+    //throw ("validateToken exception");
   }
 }
 
@@ -94,7 +101,8 @@ Future<Map> login(String username, String password) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("login exception");
+    testInternetConnection(exception);
+    //throw ("login exception");
   }
 }
 
@@ -123,7 +131,8 @@ Future<Map> register(String username, String password) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("register exception");
+    testInternetConnection(exception);
+    //throw ("register exception");
   }
 }
 
@@ -141,7 +150,8 @@ Future<bool> logout(String token) async {
     );
     return response.statusCode == 200;
   } catch (exception) {
-    throw ("logout exception");
+    testInternetConnection(exception);
+    //throw ("logout exception");
   }
 }
 
@@ -170,7 +180,8 @@ Future<Map> createSituation(String token) async {
       return (returnMessage);
     }
   } catch (exception) {
-    throw ("validateToken exception");
+    testInternetConnection(exception);
+    //throw ("validateToken exception");
   }
 }
 
@@ -200,7 +211,8 @@ Future<Map> getAllSituations(String token) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("getAllSituations exception");
+    testInternetConnection(exception);
+    //throw ("getAllSituations exception");
   }
 }
 
@@ -234,31 +246,33 @@ Future<Map> getSituationInfo(String token, int situationId) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("getSituationInfo exception");
+    testInternetConnection(exception);
+    //throw ("getSituationInfo exception");
   }
 }
 
 //TODO: Situation ID's are to be strings?
-Future<bool> setSituationInfo(
-    String token, int situationId, String title, String description) async {
-  //try {
-  Map data = {
-    "token": token,
-    "situation_id": situationId,
-    "title": title,
-    "description": description,
-  };
-  http.Response response = await http.post(
-    Uri.parse("https://hayashida.se/skillmill/api/v1/situation/set_info"),
-    body: json.encode(data),
-  );
-  print("test" + json.decode(response.body).values.elementAt(0));
-  print(response.statusCode);
-  //print(json.decode(response.body).values.elementAt[0]);
-  return response.statusCode == 200;
-  //} catch (exception) {
-  //  throw ("setSituationInfo exception");
-  // }
+Future<bool> setSituationInfo(String token, int situationId, String title, String description) async {
+    try {
+    Map data = {
+      "token": token,
+      "situation_id": situationId,
+      "title": title,
+      "description": description,
+    };
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/set_info"),
+      body: json.encode(data),
+    );
+    print("test" + json.decode(response.body).values.elementAt(0));
+    print(response.statusCode);
+    //print(json.decode(response.body).values.elementAt[0]);
+    return response.statusCode == 200;
+  } 
+  catch (exception) {
+    testInternetConnection(exception);
+    //throw ("setSituationInfo exception");
+  }
 }
 
 /*Count the number of situations made by a user
@@ -284,7 +298,8 @@ Future<Map> countSituations(String token) async {
       return returnMessage;
     }
   } catch (exception) {
-    throw ("countSituations exception");
+    testInternetConnection(exception);
+    //throw ("countSituations exception");
   }
 }
 
@@ -320,7 +335,8 @@ Future<bool> setEmojiData(
     print("RESPONSE:   " + response.body);
     return (response.statusCode == 200);
   } catch (exception) {
-    throw ("setEmojiData exception");
+    testInternetConnection(exception);
+    //throw ("setEmojiData exception");
   }
 }
 
@@ -352,7 +368,8 @@ List<EmojiMetadata> createEmojiList(http.Response response) {
     }
     return newList;
   } catch (exception) {
-    throw ("createEmojiList exception");
+    testInternetConnection(exception);
+    //throw ("createEmojiList exception");
   }
 }
 
@@ -376,7 +393,8 @@ Future<Map> getEmojiData(String token, int situationId) async {
       return {"success": success};
     }
   } catch (exception) {
-    throw ("getEmojiData exception");
+    testInternetConnection(exception);
+    //throw ("getEmojiData exception");
   }
 }
 
@@ -402,7 +420,8 @@ Future<bool> setCanvasColor(String token, int situationId, Color color) async {
     bool success = response.statusCode == 200;
     return success;
   } catch (exception) {
-    throw ("setColor exception");
+    testInternetConnection(exception);
+    //throw ("setColor exception");
   }
 }
 
@@ -431,7 +450,36 @@ Future<Map> getCanvasColor(String token, int situationId) async {
       return {"success": success};
     }
   } catch (exception) {
-    throw ("getColor exception");
+    testInternetConnection(exception);
+    //throw ("getColor exception");
+  }
+}
+
+Future<void> testInternetConnection(dynamic exception) async {
+  try {
+  final result = await InternetAddress.lookup('google.com');
+  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+    print('connected');
+    //throw(exception);
+  }
+  } on SocketException catch (_) {
+    print('not connected');
+    AwesomeDialog(
+      context: mainFile.navigatorKey.currentContext,
+      animType: AnimType.LEFTSLIDE,
+      headerAnimationLoop: false,
+      dialogType: DialogType.INFO,
+      title: 'No Internet Connection',
+      btnOkOnPress: () {
+        debugPrint('');
+      },
+      btnOkIcon: Icons.check_circle,
+      onDissmissCallback: () {
+        debugPrint('Dialog Dissmiss from callback');
+        mainFile.navigatorKey.currentState.pushNamed('/login');
+        //Navigator.of(mainFile.navigatorKey).pushReplacementNamed('/home');
+      }
+    )..show();
   }
 }
 
