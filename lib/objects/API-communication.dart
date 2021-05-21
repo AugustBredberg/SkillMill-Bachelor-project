@@ -25,18 +25,23 @@ String colorToString(Color color) {
   return colorConverted;
 }
 
+/*
+Checks if the current token is valid.
+Returns true if valid, else false
+*/
 Future<bool> validateToken(String token) async {
+  if (token == null) {
+    return false;
+  }
   Map data = {"token": token};
   http.Response response = await http.post(
     Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
     body: data,
   );
   bool success = response.statusCode == 200;
-  if (success) {
-    Map convertedResponse = json.decode(response.body);
-    print(convertedResponse.values.elementAt(0));
-  }
+  Map convertedResponse = json.decode(response.body);
 
+  print(convertedResponse.values.elementAt(0));
   return success;
 }
 
@@ -258,6 +263,9 @@ Future<bool> setEmojiData(
   return (response.statusCode == 200);
 }
 
+/*
+Converts the response to a 
+*/
 List<EmojiMetadata> createEmojiList(http.Response response) {
   Map convertedResponse = json.decode(response.body);
   List<EmojiMetadata> newList = [];
