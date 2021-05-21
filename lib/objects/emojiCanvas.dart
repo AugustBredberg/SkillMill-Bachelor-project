@@ -233,7 +233,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
           trashcan();
           print('                     M OVE               ');
         }
-        if (focusEmoji != null) {
+        else {
           setState(() {
           this.shouldShowTrashCan = false;
           this.hoveringOverTrashCan = false;

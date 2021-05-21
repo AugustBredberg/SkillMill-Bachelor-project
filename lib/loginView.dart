@@ -83,11 +83,11 @@ class _LoginViewState extends State<LoginView> {
                           BorderSide(color: globals.themeColor, width: 0.5),
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                           color: globals.themeColor, width: 0.5),
                     ),
                     border: OutlineInputBorder(
-                      borderSide: const BorderSide(
+                      borderSide: BorderSide(
                           color: globals.themeColor, width: 0.5),
                     ),
                     labelText: 'Username',
