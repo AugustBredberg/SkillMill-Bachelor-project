@@ -190,7 +190,10 @@ Future<Map> getSituationInfo(String token, int situationId) async {
   }
 }
 
-//TODO: Situation ID's are to be strings?
+/*
+Sets the title of a situation
+Returns: true if successful, else false
+*/
 Future<bool> setSituationInfo(
     String token, int situationId, String title, String description) async {
   Map data = {
@@ -264,7 +267,8 @@ Future<bool> setEmojiData(
 }
 
 /*
-Converts the response to a 
+Converts the response to a list of EmojiMetadata.
+Used only by getEmojiData.
 */
 List<EmojiMetadata> createEmojiList(http.Response response) {
   Map convertedResponse = json.decode(response.body);
@@ -284,8 +288,10 @@ List<EmojiMetadata> createEmojiList(http.Response response) {
   return newList;
 }
 
-//TODO: doc
-//
+/*
+Fetches the emoji/text data from the server for the canvas.
+Returns: {"success": bool, "emojis": [emojiMetaData]}
+*/
 Future<Map> getEmojiData(String token, int situationId) async {
   Map data = {"token": token, "situation_id": situationId};
   http.Response response = await http.post(
