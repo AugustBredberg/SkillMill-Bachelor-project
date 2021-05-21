@@ -10,6 +10,7 @@ import 'movableObject.dart';
 
 void main() => runApp(MyApp());
 
+
 //Converts a color to a string in the form "0xffffff", so it can be saved in the database
 String colorToString(Color color) {
   String colorString = color.toString();

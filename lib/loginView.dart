@@ -161,6 +161,15 @@ class _LoginViewState extends State<LoginView> {
                     hintText: 'Enter your password'),
               ),
             ),
+            CheckboxListTile(
+              title: Text("Remember me"), //    <-- label
+              value: false,
+              onChanged: (newValue) {
+                newValue = true;
+              },
+              controlAffinity:
+                  ListTileControlAffinity.leading, //  <-- leading Checkbox
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.04,
             ),
