@@ -25,6 +25,21 @@ String colorToString(Color color) {
   return colorConverted;
 }
 
+Future<bool> validateToken(String token) async {
+  Map data = {"token": token};
+  http.Response response = await http.post(
+    Uri.parse("https://hayashida.se/skillmill/api/v1/auth/validate"),
+    body: data,
+  );
+  bool success = response.statusCode == 200;
+  if (success) {
+    Map convertedResponse = json.decode(response.body);
+    print(convertedResponse.values.elementAt(0));
+  }
+
+  return success;
+}
+
 /*
 Call with: await login(String username, String password)
 Returns a Map:
@@ -384,6 +399,11 @@ void testGetColor(String token, int situationId) async {
   print(response.values.elementAt(1) == Colors.white);
 }
 
+void testValidate(String token) async {
+  bool success = await validateToken(token);
+  print(success);
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -596,6 +616,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   testGetColor(globals.token, 59);
                 },
                 child: Text("getColor"),
+              ),
+            ),
+            Container(
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(),
+                onPressed: () {
+                  testValidate(globals.token);
+                },
+                child: Text("validate"),
               ),
             ),
           ],
