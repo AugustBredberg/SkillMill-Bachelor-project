@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'dart:convert';
+import '../loginView.dart';
 import 'globals.dart' as globals;
 import 'emojiCanvas.dart';
 import 'package:unicode/unicode.dart' as unicode;
@@ -476,7 +477,25 @@ Future<void> testInternetConnection(dynamic exception) async {
       btnOkIcon: Icons.check_circle,
       onDissmissCallback: () {
         debugPrint('Dialog Dissmiss from callback');
-        mainFile.navigatorKey.currentState.pushNamed('/login');
+        //mainFile.navigatorKey.currentState.pushNamed('/login');
+
+
+        Navigator.pushAndRemoveUntil(
+                    mainFile.navigatorKey.currentContext,
+                    PageRouteBuilder(pageBuilder: (BuildContext context, Animation animation,
+                        Animation secondaryAnimation) {
+                      return LoginView();
+                    }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+                        Animation<double> secondaryAnimation, Widget child) {
+                      return new SlideTransition(
+                        position: new Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    }),
+                    (Route route) => false);
         //Navigator.of(mainFile.navigatorKey).pushReplacementNamed('/home');
       }
     )..show();

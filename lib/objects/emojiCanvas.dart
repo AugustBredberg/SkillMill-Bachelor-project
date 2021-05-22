@@ -318,7 +318,29 @@ class EmojiCanvasState extends State<EmojiCanvas> {
             print("IN MATRIX DETECT");
             setState(() {
               Matrix4 currentMatrix = focusEmoji.key.currentState.notifier.value;
-              currentMatrix = MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+              Matrix4 tempMatrix = MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+              
+              if(tempMatrix.storage[0] < 0.15 || tempMatrix.storage[5] < 0.15){
+              print("too small");
+              /// If the matrix after detection is larger than the matrix before detection, we know that we can compose with the new scale-matrix
+              /// since the new matrix will be larger, i.e enforcing minimum size without making the gestures feel buggy.  
+                if(tempMatrix.storage[0] > currentMatrix.storage[0] || tempMatrix.storage[5] > currentMatrix.storage[5]){
+                  currentMatrix = MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+                }
+                else{
+                  currentMatrix = MatrixGestureDetector.compose(currentMatrix, tm, null, rm);
+                  /*if(currentMatrix.storage[0] < 0.15 || currentMatrix.storage[5] < 0.15){
+                    currentMatrix.setEntry(0, 0, 0.15);
+                    currentMatrix.setEntry(1, 1, 0.15);
+                  }*/
+                  
+                }
+              }
+              else{
+                currentMatrix = MatrixGestureDetector.compose(currentMatrix, tm, sm, rm);
+              }
+             
+
               focusEmoji.key.currentState.notifier.value = currentMatrix;
               focusEmoji.emojiMetadata.matrixArguments = currentMatrix.storage;
               focusEmoji.key.currentState.setState(() {
