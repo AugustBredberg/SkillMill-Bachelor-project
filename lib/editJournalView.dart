@@ -296,13 +296,13 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
                   child: Material(
                     color: Colors.transparent,
                     child: IconButton(
-                      iconSize: MediaQuery.of(context).size.width*0.15,
+                      iconSize: MediaQuery.of(context).size.width * 0.15,
                       padding: EdgeInsets.all(0),
                       color: Colors.green,
                       icon: IconShadowWidget(
                               Icon(
                                 Icons.done_sharp,
-                                size: MediaQuery.of(context).size.width*0.15,
+                                size: MediaQuery.of(context).size.width * 0.15,
                                 color: Colors.black,
                               ),
                               shadowColor: Colors.white54, 
