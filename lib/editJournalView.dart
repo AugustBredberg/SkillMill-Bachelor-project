@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
@@ -16,6 +17,8 @@ import 'package:icon_shadow/icon_shadow.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:unicode/unicode.dart' as unicode;
+//import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:spring_button/spring_button.dart';
 
 class EditJournalView extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -104,7 +107,16 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
   @override
   void initState() {
     super.initState();
-    
+    /*
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        if(!visible){
+          normalKeyboardController.close();
+        }
+      },
+    );
+    */
+
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = Tween(begin: 300.0, end: 50.0).animate(_controller)
     ..addListener(() {
@@ -163,223 +175,225 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
     return WillPopScope(
       onWillPop: showBackbuttonOverlay,
       child: SlidingUpPanel(
-      ///////////////////////////////
-      //// COLOR-SLIDER PANEL
-      ///////////////////////////////
-      backdropEnabled: true,
-      backdropOpacity: 0,
-      boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
-      color: Colors.transparent,
-      controller: this.colorSliderController,
-      minHeight: 1,
-      maxHeight: MediaQuery.of(context).size.height*0.42,
-      panel: showColorSlider(context),
-      body: SlidingUpPanel(
-        ///////////////////////////////
-        //// EMOJI KEYBOARD PANEL
-        ///////////////////////////////
+        ////////////////////////////
+        //// COLOR-SLIDER PANEL ////
+        ////////////////////////////
         backdropEnabled: true,
         backdropOpacity: 0,
         boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
         color: Colors.transparent,
-        controller: this.emojiKeyboardController,
+        controller: this.colorSliderController,
         minHeight: 1,
-        maxHeight: MediaQuery.of(context).size.height*0.87, 
-        panel: showEmojiKeyboard(context),
+        maxHeight: MediaQuery.of(context).size.height*0.42,
+        panel: showColorSlider(context),
         body: SlidingUpPanel(
           ///////////////////////////////
-          //// NORMAL KEYBOARD PANEL
+          //// EMOJI KEYBOARD PANEL
           ///////////////////////////////
-          onPanelClosed: (){
-            dismissNormalKeyboard();
-            //this.keyboardFocusNode.unfocus();
-            //this.controller.text = "";
-          },
-          isDraggable: false,
           backdropEnabled: true,
           backdropOpacity: 0,
           boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
           color: Colors.transparent,
-          controller: this.normalKeyboardController,
+          controller: this.emojiKeyboardController,
           minHeight: 1,
-          maxHeight: MediaQuery.of(context).size.height* 0.7, 
-          panel: showNormalKeyboard(context),
-          body:Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height * 1,
-            width: MediaQuery.of(context).size.width * 1,
-            child: Center(
-              child: Stack(
-                children: [
-                  Material(
-                    child: this.impact,
+          maxHeight: MediaQuery.of(context).size.height*0.87, 
+          panel: showEmojiKeyboard(context),
+          body: SlidingUpPanel(
+            ///////////////////////////////
+            //// NORMAL KEYBOARD PANEL
+            ///////////////////////////////
+            onPanelClosed: (){
+              dismissNormalKeyboard();
+              //this.keyboardFocusNode.unfocus();
+              //this.controller.text = "";
+            },
+            isDraggable: false,
+            backdropEnabled: true,
+            backdropOpacity: 0,
+            boxShadow: [BoxShadow(blurRadius: 8.0, color: Colors.transparent)],
+            color: Colors.transparent,
+            controller: this.normalKeyboardController,
+            minHeight: 1,
+            maxHeight: MediaQuery.of(context).size.height* 0.7, 
+            panel: showNormalKeyboard(context),
+            body:Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height * 1,
+              width: MediaQuery.of(context).size.width * 1,
+              child: Center(
+                child: Stack(
+                  children: [
+                    Material(
+                      child: this.impact,
+                    ),
+                    Positioned(
+                      top: MediaQuery.of(context).size.height * 0.05,
+                      child: Material(
+                        color:Colors.transparent,
+                        child: SpringButton(
+                          SpringButtonType.WithOpacity,
+                          IconShadowWidget(
+                            Icon(Icons.arrow_back_rounded, 
+                              color: Colors.black, 
+                              size: MediaQuery.of(context).size.width*0.15,
+                            ),
+                            shadowColor: Colors.white54,
+                          ),
+                          onTap:  (){
+                            print("pressing toggle");
+                            showBackbuttonOverlay();
+                            },
+                        ),
+                      ),
+                    ),
+
+
+                    Positioned(
+                      top: MediaQuery.of(context).size.height * 0.05,
+                      right: 0,
+                      child: Row(
+                        children: [
+                          Material(
+                            type: MaterialType.transparency,
+                            child: SpringButton(
+                              SpringButtonType.WithOpacity,
+                              IconShadowWidget(
+                                Icon(
+                                  Icons.color_lens,
+                                  size: MediaQuery.of(context).size.width*0.15,
+                                ),
+                                shadowColor: Colors.white54,
+                              ),
+                              onTap: () {
+                                this.colorSliderController.open();   
+                              },
+                            ),
+                          ),
+                          Material(
+                            type: MaterialType.transparency,
+                            child: SpringButton(
+                              SpringButtonType.WithOpacity,
+                              IconShadowWidget(
+                                Icon(Icons.emoji_emotions, size: MediaQuery.of(context).size.width*0.15,),
+                                shadowColor: Colors.white54,
+                              ),
+                              onTap: () {
+                                this.emojiKeyboardController.open();                             
+                              },
+                            ),
+                          ),
+                          Material(
+                            type: MaterialType.transparency,
+                            child: SpringButton(
+                              SpringButtonType.WithOpacity,
+                              IconShadowWidget(
+                                Icon(Icons.keyboard, size: MediaQuery.of(context).size.width*0.15,),
+                                shadowColor: Colors.white54,
+                              ),
+                              onTap: () {
+                                this.creatingNewText = true;
+                                this.keyboardFocusNode.requestFocus();
+                                normalKeyboardController.open();                           
+                              },
+                            ),
+                          ),
+                        ],
+                    ),
                   ),
                   Positioned(
-                    top: MediaQuery.of(context).size.height * 0.05,
+                    bottom:30,
+                    right:30,
                     child: Material(
-                      color:Colors.transparent,
-                      child: IconButton(
-                        iconSize: MediaQuery.of(context).size.width*0.15,
-                        onPressed:  (){
-                          print("pressing toggle");
-                          showBackbuttonOverlay();
-                          },
-
-                          icon: IconShadowWidget(
-                          Icon(Icons.arrow_back_rounded, 
-                            color: Colors.black, 
+                      color: Colors.transparent,
+                      child: SpringButton(
+                        SpringButtonType.WithOpacity,
+                        IconShadowWidget(
+                          Icon(
+                            Icons.done_sharp,
                             size: MediaQuery.of(context).size.width*0.15,
+                            color: Colors.black,
                           ),
-                          shadowColor: Colors.white54,
+                          shadowColor: Colors.white54, 
                         ),
+                        onTap: () {
+                          setState(() {
+                            print("DONE");
+                            widget.callback(this._myEmojiCanvas.currentState.currentMetaData, this._myEmojiCanvas.currentState.currentColors);
+                            Navigator.pop(context);
+                          });
+                        },
                       ),
                     ),
                   ),
-
-
-                  Positioned(
-                    top: MediaQuery.of(context).size.height * 0.05,
-                    right: 0,
-                    child: Row(
-                      children: [
-                        Material(
-                          type: MaterialType.transparency,
-                          child: IconButton(
-                            iconSize: MediaQuery.of(context).size.width*0.15,
-                            icon: IconShadowWidget(
-                              Icon(
-                                Icons.color_lens,
-                                size: MediaQuery.of(context).size.width*0.15,
-                              ),
-                              shadowColor: Colors.white54,
-                            ),
-                            onPressed: () {
-                              this.colorSliderController.open();   
-                            },
-                          ),
-                        ),
-                        Material(
-                          type: MaterialType.transparency,
-                          child: IconButton(
-                            iconSize: MediaQuery.of(context).size.width*0.15,
-                            icon: IconShadowWidget(
-                              Icon(Icons.emoji_emotions, size: MediaQuery.of(context).size.width*0.15,),
-                              shadowColor: Colors.white54,
-                            ),
-                            onPressed: () {
-                              this.emojiKeyboardController.open();                             
-                            },
-                          ),
-                        ),
-                        Material(
-                          type: MaterialType.transparency,
-                          child: IconButton(
-                            iconSize: MediaQuery.of(context).size.width*0.15,
-                            icon: IconShadowWidget(
-                              Icon(Icons.keyboard, size: MediaQuery.of(context).size.width*0.15,),
-                              shadowColor: Colors.white54,
-                            ),
-                            onPressed: () {
-                              this.creatingNewText = true;
-                              this.keyboardFocusNode.requestFocus();
-                              normalKeyboardController.open();                           
-                            },
-                          ),
-                        ),
-                        
-                      ],
-                  ),
-                ),
-                Positioned(
-                  bottom:30,
-                  right:30,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: IconButton(
-                      iconSize: MediaQuery.of(context).size.width*0.15,
-                      padding: EdgeInsets.all(0),
-                      color: Colors.green,
-                      icon: IconShadowWidget(
-                              Icon(
-                                Icons.done_sharp,
-                                size: MediaQuery.of(context).size.width*0.15,
-                                color: Colors.black,
-                              ),
-                              shadowColor: Colors.white54, 
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          print("DONE");
-                          widget.callback(this._myEmojiCanvas.currentState.currentMetaData, this._myEmojiCanvas.currentState.currentColors);
-                          Navigator.pop(context);
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                
-              ],
+                  
+                ],
+              ),
             ),
-          ),
+            ),
           ),
         ),
       ),
-      ),
     );
+  }
+
+  Future<bool> poppedHardwareKeyboard(){
+    dismissNormalKeyboard();
+    return Future.value(false);
   }
 
   Material showNormalKeyboard(BuildContext context) {
     //this.controller.text = "";
     return Material(
       color: Colors.white54,
-      child:  Container(
-          //padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: <Widget>[
-              //SizedBox(height: _animation.value),
-               KeyboardActions(
-              autoScroll: false,
-              config: _buildConfig(context),
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: TextField(
-                    style: TextStyle(fontSize: 25),
-                    controller: this.controller,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    //maxLength: 50,
-                    focusNode: this.keyboardFocusNode,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "",
-                     
-                    ),
-                    //te
-                    onChanged: (input){
-                      print("ändraddd " + input);
-                      print(input.length);
-                      int moden = input.length;
-                      
-                      //if(moden % 15 == 0){
-                        //setState(() {
-                          /// Den radbryter mitt i ord
-                          //this.controller.text = this.controller.text + '\n';   
-                          //controller.                        
-                          print("controller: "+ controller.text);
-                          controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
-                        //});
-                        
-                        print("MOD 10 ÄR TRUE ");
-                      
-                    }
+      child: Container(
+        //padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: <Widget>[
+            //SizedBox(height: _animation.value),
+              KeyboardActions(
+            autoScroll: false,
+            config: _buildConfig(context),
+            child: Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextField(
+                  style: TextStyle(fontSize: 25),
+                  controller: this.controller,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  //maxLength: 50,
+                  focusNode: this.keyboardFocusNode,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "",
+                    
                   ),
+                  //te
+                  onChanged: (input){
+                    print("ändraddd " + input);
+                    print(input.length);
+                    int moden = input.length;
+                    
+                    //if(moden % 15 == 0){
+                      //setState(() {
+                        /// Den radbryter mitt i ord
+                        //this.controller.text = this.controller.text + '\n';   
+                        //controller.                        
+                        print("controller: "+ controller.text);
+                        controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+                      //});
+                      
+                      print("MOD 10 ÄR TRUE ");
+                    
+                  }
                 ),
               ),
             ),
-            ],
           ),
+          ],
         ),
+      ),
+      
     );
   }
 
@@ -485,6 +499,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
   }
 
   void onEmojiSelected(Emoji emoji) {
+    HapticFeedback.lightImpact();
     //popEditOverlay(context);
     /*
     int bang = unicode.toRune(emoji.text);

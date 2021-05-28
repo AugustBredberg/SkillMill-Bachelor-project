@@ -6,6 +6,8 @@ import 'package:skillmill_demo/objects/API-communication.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'objects/globals.dart' as globals;
 import 'services/storage.dart';
+import 'package:flutter_spinning_wheel/flutter_spinning_wheel.dart';
+import 'package:spring_button/spring_button.dart';
 
 class NewUserView extends StatefulWidget {
   @override
@@ -46,13 +48,20 @@ class _NewUserViewState extends State<NewUserView> {
               padding: const EdgeInsets.only(top: 60.0),
               child: Center(
                 child: Container(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  /*decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(50.0)),*/
+                  child: SpinningWheel(
+                    Image.asset('images/skillmill_logo_transparent.png'),
                     width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.width * 0.60,
-                    /*decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset(
-                        'images/skillmill_logo_transparent.png')), //Image.asset('images/skillmill_logo.png')),
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    dividers: 2,
+                    onUpdate: (test) {},
+                    onEnd: (test) {},
+                  ),
+                ),
               ),
             ),
             /*Padding(
@@ -173,56 +182,56 @@ class _NewUserViewState extends State<NewUserView> {
                     hintText: 'Enter a secure password'),
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.height * 0.07,
-              decoration: BoxDecoration(
-                  color: globals.themeColor,
-                  borderRadius: BorderRadius.circular(20)),
-              child: IconButton(
-                iconSize: 35,
-                icon: Icon(Icons.check, color: Colors.white),
-                onPressed: () async {
-                  Map response = await register(
-                      usernameController.text, passwordController.text);
-                  if (response.values.elementAt(0)) {
-                    //success
-                    globals.token = response.values.elementAt(1);
-                    //want to make sure there isn't an old token in storage
-                    removeToken();
-                    // New token is but into storage
-                    print('in loginView am gonna addTokenToSF');
-                    addTokenToSF(globals.token);
-                    print('addedTokenToSF');
-
-                    print('CREATED ACCOUNT SUCCESSFULLY');
-                    FocusScope.of(context).unfocus();
-                    Navigator.of(context).pushReplacementNamed('/home');
-                    error = false;
-                    AwesomeDialog(
-                        context: context,
-                        animType: AnimType.LEFTSLIDE,
-                        headerAnimationLoop: false,
-                        dialogType: DialogType.SUCCES,
-                        title: 'Welcome to SkillMill',
-                        desc:
-                            'This is your home screen, here you can create your first situation',
-                        btnOkOnPress: null,
-                        btnOkIcon: Icons.check_circle,
-                        onDissmissCallback: null)
-                      ..show();
-                  } else {
-                    //fail
-                    print('ERROR FROM API');
-                    FocusScope.of(context).unfocus();
-                    setState(() {
-                      error = true;
-                    });
-                  }
-                  //attemptRegisterAccount(usernameController.text,
-                  //emailController.text, passwordController.text);
-                },
+            SpringButton(
+              SpringButtonType.WithOpacity,
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.height * 0.07,
+                decoration: BoxDecoration(
+                    color: globals.themeColor,
+                    borderRadius: BorderRadius.circular(20)),
+                child: Icon(Icons.check, color: Colors.white, size: 35),
               ),
+              onTap: () async {
+                Map response = await register(
+                    usernameController.text, passwordController.text);
+                if (response.values.elementAt(0)) {
+                  //success
+                  globals.token = response.values.elementAt(1);
+                  //want to make sure there isn't an old token in storage
+                  removeToken();
+                  // New token is but into storage
+                  print('in loginView am gonna addTokenToSF');
+                  addTokenToSF(globals.token);
+                  print('addedTokenToSF');
+
+                  print('CREATED ACCOUNT SUCCESSFULLY');
+                  FocusScope.of(context).unfocus();
+                  Navigator.of(context).pushReplacementNamed('/home');
+                  error = false;
+                  AwesomeDialog(
+                      context: context,
+                      animType: AnimType.LEFTSLIDE,
+                      headerAnimationLoop: false,
+                      dialogType: DialogType.SUCCES,
+                      title: 'Welcome to SkillMill',
+                      desc:
+                          'This is your home screen, here you can create your first situation',
+                      btnOkOnPress: null,
+                      btnOkIcon: Icons.check_circle,
+                      onDissmissCallback: null)
+                    ..show();
+                } else {
+                  //fail
+                  print('ERROR FROM API');
+                  FocusScope.of(context).unfocus();
+                  setState(() {
+                    error = true;
+                  });
+                }
+                //attemptRegisterAccount(usernameController.text,
+                //emailController.text, passwordController.text);
+              },
             ),
             Container(
               alignment: Alignment.bottomCenter,
