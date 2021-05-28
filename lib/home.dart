@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:skillmill_demo/newJournal.dart';
 import 'package:skillmill_demo/objects/API-communication.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
@@ -138,6 +139,7 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                   
                   //rotationController.forward(from: 0.0);
                   //rotationController.repeat();
+                 
                   if (data.data == null) {
                     print("");
                     return 
@@ -161,6 +163,8 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                     ); //CardCarousel(null, 0.7, 0.7);
                   } else {
                     print("creating cardcarousel with the canvses from API");
+                    
+                    
                     return CardCarousel(data.data, 0.7, 0.7);
                   }
                 },

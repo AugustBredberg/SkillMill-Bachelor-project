@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
@@ -228,7 +229,28 @@ class _NewJournal extends State<NewJournal> {
                                   btnOkIcon: Icons.check_circle,
                                   onDissmissCallback: () {
                                     debugPrint('Dialog Dissmiss from callback');
-                                    Navigator.of(context).pushReplacementNamed('/home');
+                                    
+                                    Alert(
+                                       onWillPopActive: true,
+                                      useRootNavigator: true,
+                                      context: context,
+                                      title: "ACHIEVEMENT UNLOCKED",
+                                      desc: "You have successfully created your first journal entry",
+                                      //closeFunction: (haj){},
+                                      //closeIcon: Text("Awesome!"),
+                                      buttons: [
+                                        DialogButton(child: Text("Awesome!", style: TextStyle(color: Colors.white, fontSize: 20,)), 
+                                          onPressed: (){
+                                            Navigator.of(context).pushReplacementNamed('/home');
+                                          }
+                                        )
+                                      ],
+                                      content: Column(
+                                        children: [
+                                          Image.asset('images/achievement.jpg')
+                                        ],
+                                      )
+                                    ).show();
                                   }
                                 )..show();
                               },
