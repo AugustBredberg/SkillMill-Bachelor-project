@@ -16,7 +16,6 @@ import '../main.dart' as mainFile;
 
 void main() => runApp(MyApp());
 
-
 //Converts a color to a string in the form "0xffffff", so it can be saved in the database
 String colorToString(Color color) {
   String colorString = color.toString();
@@ -41,6 +40,7 @@ Future<bool> removeSituation(String token, int situationId) async {
       Uri.parse("https://hayashida.se/skillmill/api/v1/situation/remove"),
       body: json.encode(data),
     );
+    print(json.decode(response.body).values.elementAt(0));
     bool success = response.statusCode == 200;
     return success;
   } catch (exception) {
@@ -253,8 +253,9 @@ Future<Map> getSituationInfo(String token, int situationId) async {
 }
 
 //TODO: Situation ID's are to be strings?
-Future<bool> setSituationInfo(String token, int situationId, String title, String description) async {
-    try {
+Future<bool> setSituationInfo(
+    String token, int situationId, String title, String description) async {
+  try {
     Map data = {
       "token": token,
       "situation_id": situationId,
@@ -269,8 +270,7 @@ Future<bool> setSituationInfo(String token, int situationId, String title, Strin
     print(response.statusCode);
     //print(json.decode(response.body).values.elementAt[0]);
     return response.statusCode == 200;
-  } 
-  catch (exception) {
+  } catch (exception) {
     testInternetConnection(exception);
     //throw ("setSituationInfo exception");
   }
@@ -458,11 +458,11 @@ Future<Map> getCanvasColor(String token, int situationId) async {
 
 Future<void> testInternetConnection(dynamic exception) async {
   try {
-  final result = await InternetAddress.lookup('google.com');
-  if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-    print('connected');
-    //throw(exception);
-  }
+    final result = await InternetAddress.lookup('google.com');
+    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      print('connected');
+      //throw(exception);
+    }
   } on SocketException catch (_) {
     print('not connected');
     AwesomeDialog(
