@@ -42,6 +42,8 @@ dependencies:
   matrix_gesture_detector: ^0.1.0
   flutter_emoji_keyboard: ^0.1.3
   flutter_multi_carousel: ^1.0.0
+  flutter_secure_storage: ^4.2.0
+  shared_preferences: ^0.5.4+1 #not the latest but is needed due to shared dependency with emoji_picker
   flutter:
     sdk: flutter
 

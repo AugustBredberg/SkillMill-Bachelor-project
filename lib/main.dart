@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'dart:async';
 import 'objects/globals.dart' as globals;
+import 'services/storage.dart';
 
 Widget _defaultHome;
 Socket socket;
@@ -20,17 +21,38 @@ Stream<Uint8List> socketStream;
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
-  // Connection to the server
-  bool tokenIsValid = await validateToken(globals.token);
-
-  if (!tokenIsValid) {
-    // Sets the startwidget
-    _defaultHome = new LoginView();
-  } else {
-    _defaultHome = new Home("Homepage");
-  }
-  // Runs app and prevents user from switching oritentation
+  //Look instorage for old token
+  String oldToken;
   WidgetsFlutterBinding.ensureInitialized();
+  // Is there a token that is locally stored?
+  if (await tokenExists()) {
+    oldToken = await getStringTokenSF();
+    print('old token exists');
+    bool tokenIsValid = await validateToken(oldToken);
+    // If yes - is it valid?
+    if (tokenIsValid) {
+      globals.token = oldToken;
+      _defaultHome = new Home("Homepage");
+    } else {
+      removeToken();
+      _defaultHome = new LoginView();
+    }
+  } else {
+    print('old token does not exist');
+    oldToken = '';
+    bool tokenIsValid = await validateToken(globals.token);
+
+    if (tokenIsValid) {
+      _defaultHome = new Home("Homepage");
+    } else {
+      _defaultHome = new LoginView();
+    }
+  }
+
+  print('hej');
+
+  // Runs app and prevents user from switching oritentation
+  //WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(new MyApp());

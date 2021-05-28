@@ -11,6 +11,7 @@ import 'home.dart';
 import 'objects/API-communication.dart';
 import 'objects/globals.dart' as globals;
 import 'package:flutter_spinning_wheel/flutter_spinning_wheel.dart';
+import 'services/storage.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -33,6 +34,18 @@ class _LoginViewState extends State<LoginView> {
     return (response.statusCode == 200);
   }
 
+/*
+  Future<bool> attemptLoginWithStoredToken() {
+    String oldToken = '';
+    globals.secureStorage.readSecureData('token').then((String result) {
+      setState(() {
+        oldToken = result;
+      });
+    });
+    return validateToken(oldToken);
+  }
+*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,21 +67,20 @@ class _LoginViewState extends State<LoginView> {
               padding: const EdgeInsets.only(top: 25.0),
               child: Center(
                 child: Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    /*decoration: BoxDecoration(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  /*decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(50.0)),*/
-                    child: SpinningWheel(
-              Image.asset('images/skillmill_logo_transparent.png'),
-              width: MediaQuery.of(context).size.width * 0.6,
-              height: MediaQuery.of(context).size.height * 0.4,
-              dividers: 2,
-              onUpdate: (test){},
-
-              onEnd: (test){},
-            ),
-            ),
+                  child: SpinningWheel(
+                    Image.asset('images/skillmill_logo_transparent.png'),
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    dividers: 2,
+                    onUpdate: (test) {},
+                    onEnd: (test) {},
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -93,12 +105,12 @@ class _LoginViewState extends State<LoginView> {
                           BorderSide(color: globals.themeColor, width: 0.5),
                     ),
                     errorBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: globals.themeColor, width: 0.5),
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: globals.themeColor, width: 0.5),
+                      borderSide:
+                          BorderSide(color: globals.themeColor, width: 0.5),
                     ),
                     labelText: 'Username',
                     labelStyle: TextStyle(color: globals.themeColor),
@@ -110,12 +122,18 @@ class _LoginViewState extends State<LoginView> {
                   left: 15.0, right: 15.0, top: 0, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-                onSubmitted: (String s) async  {
+                onSubmitted: (String s) async {
                   FocusScope.of(context).unfocus();
                   Map response = await login(
                       usernameController.text, passwordController.text);
                   if (response.values.elementAt(0)) {
                     globals.token = response.values.elementAt(1);
+                    //want to make sure there isn't an old token in storage
+                    removeToken();
+                    // New token is but into storage
+                    print('in loginView am gonna addTokenToSF');
+                    addTokenToSF(globals.token);
+                    print('addedTokenToSF');
                     //Check for succesful login
                     Navigator.of(context).pushReplacementNamed('/home');
                   } else {
@@ -160,7 +178,8 @@ class _LoginViewState extends State<LoginView> {
                     labelStyle: TextStyle(color: globals.themeColor),
                     hintText: 'Enter your password'),
               ),
-            ),/*
+            ),
+            /*
             CheckboxListTile(
               title: Text("Remember me"), //    <-- label
               value: false,
