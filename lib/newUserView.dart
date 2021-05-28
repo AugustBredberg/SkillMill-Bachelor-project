@@ -5,6 +5,7 @@ import 'package:skillmill_demo/loginView.dart';
 import 'package:skillmill_demo/objects/API-communication.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'objects/globals.dart' as globals;
+import 'services/storage.dart';
 
 class NewUserView extends StatefulWidget {
   @override
@@ -50,7 +51,8 @@ class _NewUserViewState extends State<NewUserView> {
                     /*decoration: BoxDecoration(
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('images/skillmill_logo_transparent.png')), //Image.asset('images/skillmill_logo.png')),
+                    child: Image.asset(
+                        'images/skillmill_logo_transparent.png')), //Image.asset('images/skillmill_logo.png')),
               ),
             ),
             /*Padding(
@@ -112,6 +114,14 @@ class _NewUserViewState extends State<NewUserView> {
                   if (response.values.elementAt(0)) {
                     //success
                     globals.token = response.values.elementAt(1);
+
+                    globals.token = response.values.elementAt(1);
+                    //want to make sure there isn't an old token in storage
+                    removeToken();
+                    // New token is but into storage
+                    print('in loginView am gonna addTokenToSF');
+                    addTokenToSF(globals.token);
+                    print('addedTokenToSF');
                     print('CREATED ACCOUNT SUCCESSFULLY');
                     FocusScope.of(context).unfocus();
                     Navigator.of(context).pushReplacementNamed('/home');
@@ -178,6 +188,13 @@ class _NewUserViewState extends State<NewUserView> {
                   if (response.values.elementAt(0)) {
                     //success
                     globals.token = response.values.elementAt(1);
+                    //want to make sure there isn't an old token in storage
+                    removeToken();
+                    // New token is but into storage
+                    print('in loginView am gonna addTokenToSF');
+                    addTokenToSF(globals.token);
+                    print('addedTokenToSF');
+
                     print('CREATED ACCOUNT SUCCESSFULLY');
                     FocusScope.of(context).unfocus();
                     Navigator.of(context).pushReplacementNamed('/home');

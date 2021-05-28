@@ -134,7 +134,6 @@ class _LoginViewState extends State<LoginView> {
                     print('in loginView am gonna addTokenToSF');
                     addTokenToSF(globals.token);
                     print('addedTokenToSF');
-                    //Check for succesful login
                     Navigator.of(context).pushReplacementNamed('/home');
                   } else {
                     setState(() {
@@ -179,16 +178,6 @@ class _LoginViewState extends State<LoginView> {
                     hintText: 'Enter your password'),
               ),
             ),
-            /*
-            CheckboxListTile(
-              title: Text("Remember me"), //    <-- label
-              value: false,
-              onChanged: (newValue) {
-                newValue = true;
-              },
-              controlAffinity:
-                  ListTileControlAffinity.leading, //  <-- leading Checkbox
-            ),*/
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.04,
             ),
@@ -204,8 +193,14 @@ class _LoginViewState extends State<LoginView> {
                   Map response = await login(
                       usernameController.text, passwordController.text);
                   if (response.values.elementAt(0)) {
+                    //SHOULD NOW WORK FOR STUPID GREEN BUTTON
                     globals.token = response.values.elementAt(1);
-                    //Check for succesful login
+                    //want to make sure there isn't an old token in storage
+                    removeToken();
+                    // New token is but into storage
+                    print('in loginView am gonna addTokenToSF');
+                    addTokenToSF(globals.token);
+                    print('addedTokenToSF');
                     Navigator.of(context).pushReplacementNamed('/home');
                   } else {
                     setState(() {
