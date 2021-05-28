@@ -456,9 +456,28 @@ Future<Map> getCanvasColor(String token, int situationId) async {
   }
 }
 
+Future<Map> randomPrompts() async {
+  try {
+    http.Response response = await http.post(
+      Uri.parse("https://hayashida.se/skillmill/api/v1/situation/prompts"),
+    );
+    bool success = response.statusCode == 200;
+    if (success) {
+      Map convertedResponse = json.decode(response.body);
+      List randomPrompts = convertedResponse.values.elementAt(1);
+      Map returnMessage = {"success": success, "randomPrompt": randomPrompts};
+      return returnMessage;
+    } else {
+      return {"success": success};
+    }
+  } catch (exception) {
+    testInternetConnection(exception);
+  }
+}
+
 Future<void> testInternetConnection(dynamic exception) async {
   try {
-    final result = await InternetAddress.lookup('google.com');
+    final result = await InternetAddress.lookup('google.com'); 
     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
       print('connected');
       //throw(exception);

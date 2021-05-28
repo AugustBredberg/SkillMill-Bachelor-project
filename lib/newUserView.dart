@@ -5,6 +5,9 @@ import 'package:skillmill_demo/loginView.dart';
 import 'package:skillmill_demo/objects/API-communication.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'objects/globals.dart' as globals;
+import 'package:flutter_spinning_wheel/flutter_spinning_wheel.dart';
+import 'package:spring_button/spring_button.dart';
+
 
 class NewUserView extends StatefulWidget {
   @override
@@ -46,11 +49,19 @@ class _NewUserViewState extends State<NewUserView> {
               child: Center(
                 child: Container(
                     width: MediaQuery.of(context).size.width * 0.6,
-                    height: MediaQuery.of(context).size.width * 0.60,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     /*decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('images/skillmill_logo_transparent.png')), //Image.asset('images/skillmill_logo.png')),
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(50.0)),*/
+                    child: SpinningWheel(
+              Image.asset('images/skillmill_logo_transparent.png'),
+              width: MediaQuery.of(context).size.width * 0.6,
+              height: MediaQuery.of(context).size.height * 0.4,
+              dividers: 2,
+              onUpdate: (test){},
+              onEnd: (test){},
+            ),
+            ),
               ),
             ),
             /*Padding(
@@ -163,16 +174,17 @@ class _NewUserViewState extends State<NewUserView> {
                     hintText: 'Enter a secure password'),
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.height * 0.07,
-              decoration: BoxDecoration(
-                  color: globals.themeColor,
-                  borderRadius: BorderRadius.circular(20)),
-              child: IconButton(
-                iconSize: 35,
-                icon: Icon(Icons.check, color: Colors.white),
-                onPressed: () async {
+            SpringButton(
+              SpringButtonType.WithOpacity,
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.height * 0.07,
+                decoration: BoxDecoration(
+                color: globals.themeColor,
+                borderRadius: BorderRadius.circular(20)),
+                child: Icon(Icons.check, color: Colors.white, size:35),
+              ),
+              onTap: () async {
                   Map response = await register(
                       usernameController.text, passwordController.text);
                   if (response.values.elementAt(0)) {
@@ -205,7 +217,7 @@ class _NewUserViewState extends State<NewUserView> {
                   //attemptRegisterAccount(usernameController.text,
                   //emailController.text, passwordController.text);
                 },
-              ),
+              
             ),
             Container(
               alignment: Alignment.bottomCenter,

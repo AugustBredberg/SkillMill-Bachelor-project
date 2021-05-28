@@ -7,6 +7,7 @@ import 'package:skillmill_demo/objects/emojiCanvasPreview.dart';
 import 'objects/cardCarousel.dart';
 import 'objects/globals.dart' as globals;
 import 'loginView.dart';
+import 'package:spring_button/spring_button.dart';
 
 class Home extends StatefulWidget {
   String name;
@@ -54,6 +55,37 @@ class _Home extends State<Home> with TickerProviderStateMixin{
     return listOfCanvases;
   }
 
+  Future<List<Text>> getTextPrompts() async {
+    Map successGetPrompts = await randomPrompts();
+    List<Text> textWidgetList = [];
+    if(successGetPrompts.values.elementAt(0)){
+      List promptList = successGetPrompts.values.elementAt(1);
+      for(int i=0; i<promptList.length;i++){
+        textWidgetList.add(
+          Text(promptList[i].toString(),
+            style: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
+            textAlign: TextAlign.center,
+            
+          )
+        );
+      }
+    }
+    return textWidgetList;
+  }
+
+
+  Future<Map> getHomeInformation() async {
+    List<EmojiCanvasPreview> canvases;
+    List<Text> prompts;
+
+    canvases = await getEmojiCanvases();
+    prompts = await getTextPrompts();
+    print(prompts);
+    Map homeInfo = {canvases: canvases, prompts: prompts};
+    return homeInfo;
+
+  }
+
   @override
     void initState() {
       // TODO: implement initState
@@ -85,8 +117,10 @@ class _Home extends State<Home> with TickerProviderStateMixin{
             padding:
                 EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
             alignment: Alignment.topRight,
-            child: IconButton(
-              onPressed: () async {
+            child: SpringButton(
+              SpringButtonType.WithOpacity,
+              Icon(Icons.logout, size: MediaQuery.of(context).size.height * 0.05,),
+              onTap: () async {
                 bool success = await logout(globals.token);
                 if (success) {
                   globals.token = null;
@@ -117,9 +151,7 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                   */
                 }
               },
-              alignment: Alignment.topRight,
-              icon: Icon(Icons.logout),
-              iconSize: MediaQuery.of(context).size.height * 0.05,
+              
             ),
           ),
           Align(
@@ -164,11 +196,11 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                   } else {
                     print("creating cardcarousel with the canvses from API");
                     
-                    
-                    return CardCarousel(data.data, 0.7, 0.7);
+                    Map homeInfo = data.data;
+                    return CardCarousel(homeInfo.values.elementAt(0), 0.7, 0.7, homeInfo.values.elementAt(1));
                   }
                 },
-                future: getEmojiCanvases(),
+                future: getHomeInformation(), 
               ),
             ), //JournalFeed()
           ),

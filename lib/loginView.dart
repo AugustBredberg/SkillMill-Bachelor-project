@@ -11,6 +11,7 @@ import 'home.dart';
 import 'objects/API-communication.dart';
 import 'objects/globals.dart' as globals;
 import 'package:flutter_spinning_wheel/flutter_spinning_wheel.dart';
+import 'package:spring_button/spring_button.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -65,7 +66,6 @@ class _LoginViewState extends State<LoginView> {
               height: MediaQuery.of(context).size.height * 0.4,
               dividers: 2,
               onUpdate: (test){},
-
               onEnd: (test){},
             ),
             ),
@@ -173,30 +173,30 @@ class _LoginViewState extends State<LoginView> {
             SizedBox(
               height: MediaQuery.of(context).size.width * 0.04,
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.07,
-              width: MediaQuery.of(context).size.height * 0.07,
-              decoration: BoxDecoration(
-                  color: globals.themeColor,
-                  borderRadius: BorderRadius.circular(20)),
-              child: IconButton(
-                onPressed: () async {
-                  FocusScope.of(context).unfocus();
-                  Map response = await login(
-                      usernameController.text, passwordController.text);
-                  if (response.values.elementAt(0)) {
-                    globals.token = response.values.elementAt(1);
-                    //Check for succesful login
-                    Navigator.of(context).pushReplacementNamed('/home');
-                  } else {
-                    setState(() {
-                      loginFail = true;
-                    });
-                  }
-                },
-                icon: Icon(Icons.check, color: Colors.white),
-                iconSize: 35,
+            SpringButton(
+              SpringButtonType.WithOpacity,
+              Container(
+                height: MediaQuery.of(context).size.height * 0.07,
+                width: MediaQuery.of(context).size.height * 0.07,
+                decoration: BoxDecoration(
+                color: globals.themeColor,
+                borderRadius: BorderRadius.circular(20)),
+                child: Icon(Icons.check, color: Colors.white, size:35),
               ),
+              onTap: () async {
+                FocusScope.of(context).unfocus();
+                Map response = await login(
+                    usernameController.text, passwordController.text);
+                if (response.values.elementAt(0)) {
+                  globals.token = response.values.elementAt(1);
+                  //Check for succesful login
+                  Navigator.of(context).pushReplacementNamed('/home');
+                } else {
+                  setState(() {
+                    loginFail = true;
+                  });
+                }
+              },
             ),
             TextButton(
               onPressed: () {

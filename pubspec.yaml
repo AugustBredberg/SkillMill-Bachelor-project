@@ -21,7 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies: 
-  flutter_keyboard_visibility: ^4.0.6
+  spring_button: ^2.0.0
   keyboard_visibility: ^0.5.6
   connectivity: ^3.0.4
   unicode: ^0.3.0

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:matrix4_transform/matrix4_transform.dart';
 import 'movableObject.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
@@ -77,6 +78,9 @@ class EmojiCanvasState extends State<EmojiCanvas> {
                   .dy >
               MediaQuery.of(context).size.height * 0.85) {
         //if(currentEmojis[currentEmojis.length-1].key.currentState.currentPosition.dy > MediaQuery.of(context).size.height*0.7){
+        if(!this.hoveringOverTrashCan){
+          HapticFeedback.lightImpact();  
+        }
         this.hoveringOverTrashCan = true;
         this.hoveringKey = currentEmojis[currentEmojis.length - 1].key;
       } else {
@@ -171,6 +175,7 @@ class EmojiCanvasState extends State<EmojiCanvas> {
           currentMetaData.add(i.emojiMetadata);
         },
         onLongPress: () {
+          HapticFeedback.lightImpact();
           final RegExp REGEX_EMOJI = RegExp(
               r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])');
           Iterable<RegExpMatch> matches =

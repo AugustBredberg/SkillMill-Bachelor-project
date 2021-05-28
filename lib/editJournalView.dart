@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:skillmill_demo/objects/emojiCanvas.dart';
 import 'package:skillmill_demo/objects/movableObject.dart';
 import 'package:flutter_emoji_keyboard/flutter_emoji_keyboard.dart';
@@ -16,8 +17,8 @@ import 'package:icon_shadow/icon_shadow.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:unicode/unicode.dart' as unicode;
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:spring_button/spring_button.dart';
 
 class EditJournalView extends StatefulWidget {
   List<EmojiMetadata> oldCanvasEmojis;
@@ -227,20 +228,19 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
                       top: MediaQuery.of(context).size.height * 0.05,
                       child: Material(
                         color:Colors.transparent,
-                        child: IconButton(
-                          iconSize: MediaQuery.of(context).size.width*0.15,
-                          onPressed:  (){
-                            print("pressing toggle");
-                            showBackbuttonOverlay();
-                            },
-
-                            icon: IconShadowWidget(
+                        child: SpringButton(
+                          SpringButtonType.WithOpacity,
+                          IconShadowWidget(
                             Icon(Icons.arrow_back_rounded, 
                               color: Colors.black, 
                               size: MediaQuery.of(context).size.width*0.15,
                             ),
                             shadowColor: Colors.white54,
                           ),
+                          onTap:  (){
+                            print("pressing toggle");
+                            showBackbuttonOverlay();
+                            },
                         ),
                       ),
                     ),
@@ -253,49 +253,48 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
                         children: [
                           Material(
                             type: MaterialType.transparency,
-                            child: IconButton(
-                              iconSize: MediaQuery.of(context).size.width*0.15,
-                              icon: IconShadowWidget(
+                            child: SpringButton(
+                              SpringButtonType.WithOpacity,
+                              IconShadowWidget(
                                 Icon(
                                   Icons.color_lens,
                                   size: MediaQuery.of(context).size.width*0.15,
                                 ),
                                 shadowColor: Colors.white54,
                               ),
-                              onPressed: () {
+                              onTap: () {
                                 this.colorSliderController.open();   
                               },
                             ),
                           ),
                           Material(
                             type: MaterialType.transparency,
-                            child: IconButton(
-                              iconSize: MediaQuery.of(context).size.width*0.15,
-                              icon: IconShadowWidget(
+                            child: SpringButton(
+                              SpringButtonType.WithOpacity,
+                              IconShadowWidget(
                                 Icon(Icons.emoji_emotions, size: MediaQuery.of(context).size.width*0.15,),
                                 shadowColor: Colors.white54,
                               ),
-                              onPressed: () {
+                              onTap: () {
                                 this.emojiKeyboardController.open();                             
                               },
                             ),
                           ),
                           Material(
                             type: MaterialType.transparency,
-                            child: IconButton(
-                              iconSize: MediaQuery.of(context).size.width*0.15,
-                              icon: IconShadowWidget(
+                            child: SpringButton(
+                              SpringButtonType.WithOpacity,
+                              IconShadowWidget(
                                 Icon(Icons.keyboard, size: MediaQuery.of(context).size.width*0.15,),
                                 shadowColor: Colors.white54,
                               ),
-                              onPressed: () {
+                              onTap: () {
                                 this.creatingNewText = true;
                                 this.keyboardFocusNode.requestFocus();
                                 normalKeyboardController.open();                           
                               },
                             ),
                           ),
-                          
                         ],
                     ),
                   ),
@@ -304,19 +303,17 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
                     right:30,
                     child: Material(
                       color: Colors.transparent,
-                      child: IconButton(
-                        iconSize: MediaQuery.of(context).size.width*0.15,
-                        padding: EdgeInsets.all(0),
-                        color: Colors.green,
-                        icon: IconShadowWidget(
-                                Icon(
-                                  Icons.done_sharp,
-                                  size: MediaQuery.of(context).size.width*0.15,
-                                  color: Colors.black,
-                                ),
-                                shadowColor: Colors.white54, 
+                      child: SpringButton(
+                        SpringButtonType.WithOpacity,
+                        IconShadowWidget(
+                          Icon(
+                            Icons.done_sharp,
+                            size: MediaQuery.of(context).size.width*0.15,
+                            color: Colors.black,
+                          ),
+                          shadowColor: Colors.white54, 
                         ),
-                        onPressed: () {
+                        onTap: () {
                           setState(() {
                             print("DONE");
                             widget.callback(this._myEmojiCanvas.currentState.currentMetaData, this._myEmojiCanvas.currentState.currentColors);
@@ -500,6 +497,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
   }
 
   void onEmojiSelected(Emoji emoji) {
+    HapticFeedback.lightImpact();
     //popEditOverlay(context);
     /*
     int bang = unicode.toRune(emoji.text);
