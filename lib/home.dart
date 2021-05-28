@@ -8,6 +8,7 @@ import 'objects/cardCarousel.dart';
 import 'objects/globals.dart' as globals;
 import 'loginView.dart';
 import 'package:spring_button/spring_button.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class Home extends StatefulWidget {
   String name;
@@ -115,12 +116,29 @@ class _Home extends State<Home> with TickerProviderStateMixin{
         children: [
           Container(
             padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
             alignment: Alignment.topRight,
             child: SpringButton(
               SpringButtonType.WithOpacity,
               Icon(Icons.logout, size: MediaQuery.of(context).size.height * 0.05,),
               onTap: () async {
+
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.NO_HEADER,
+                  headerAnimationLoop: false,
+                  animType: AnimType.TOPSLIDE,
+                  btnOkText: "Yes",
+                  //showCloseIcon: true,
+                  //closeIcon: Icon(Icons.close_fullscreen_outlined),
+                  title: 'Logout',
+                  desc:
+                      'Are you sure you want to logout?',
+                  btnCancelOnPress: () {
+                    return;
+                  },
+                  btnOkOnPress: () async {
+                  
                 bool success = await logout(globals.token);
                 if (success) {
                   globals.token = null;
@@ -140,16 +158,8 @@ class _Home extends State<Home> with TickerProviderStateMixin{
                       );
                     }),
                     (Route route) => false);
-                  /*
-                  Navigator.pushReplacement<void, void>(
-                    context,
-                    
-                    CupertinoPageRoute<void>(
-                      builder: (BuildContext context) => LoginView(),
-                    ),
-                  );
-                  */
                 }
+                  })..show();  
               },
               
             ),
