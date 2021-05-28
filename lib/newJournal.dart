@@ -197,7 +197,26 @@ class _NewJournal extends State<NewJournal> {
                           child: this.preview,
                         ),
                       ),
-                      Icon(Icons.edit),
+                      Container(
+                      //color: Colors.cyan,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      height: MediaQuery.of(context).size.height* 0.1,
+                      child: Material(
+                        shape: CircleBorder(),
+                        //width: MediaQuery.of(context).size.width * 0.2,
+                        //height: MediaQuery.of(context).size.height* 0.1,
+                        //decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.35),                      
+                          //borderRadius: BorderRadius.all(Radius.circular(30),
+                        
+                        
+                        //borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * MediaQuery.of(context).size.width*0.002),
+                        child: Icon(Icons.edit, size: MediaQuery.of(context).size.height * MediaQuery.of(context).size.width*0.0002,)/*IconShadowWidget(Icon(Icons.edit, size: MediaQuery.of(context).size.height * MediaQuery.of(context).size.width*0.0002,), 
+                        shadowColor: Colors.white54,
+                        showShadow: false,),*/
+
+                      ),
+                    ),
                     ]),
                   ),
                   Padding(
