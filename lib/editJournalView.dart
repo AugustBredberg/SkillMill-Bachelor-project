@@ -17,7 +17,7 @@ import 'package:icon_shadow/icon_shadow.dart';
 import  'package:keyboard_actions/keyboard_actions.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:unicode/unicode.dart' as unicode;
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+//import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:spring_button/spring_button.dart';
 
 class EditJournalView extends StatefulWidget {
@@ -107,6 +107,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
   @override
   void initState() {
     super.initState();
+    /*
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
         if(!visible){
@@ -114,6 +115,7 @@ class EditJournalViewState extends State<EditJournalView> with SingleTickerProvi
         }
       },
     );
+    */
 
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = Tween(begin: 300.0, end: 50.0).animate(_controller)
