@@ -29,7 +29,7 @@ void main() async {
     oldToken = await getStringTokenSF();
     print('old token exists');
     bool tokenIsValid = await validateToken(oldToken);
-    // If yes - is it valid?
+    // If yes - is it valid? :)
     if (tokenIsValid) {
       globals.token = oldToken;
       _defaultHome = new Home("Homepage");
