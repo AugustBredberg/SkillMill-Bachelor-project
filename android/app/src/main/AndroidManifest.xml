@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.skillmill_demo">
+    package="com.skillmill.emoji_journal">
 	<uses-permission android:name="android.permission.INTERNET"/>
  	<uses-permission android:name="android.permission.VIBRATE" />
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that

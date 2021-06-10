@@ -1,4 +1,4 @@
-package com.example.skillmill_demo
+package com.skillmill.emoji_journal
 
 import io.flutter.embedding.android.FlutterActivity
 
